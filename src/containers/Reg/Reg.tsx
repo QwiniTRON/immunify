@@ -4,7 +4,7 @@ import TextField from '@material-ui/core/TextField';
 import RadioGroup from '@material-ui/core/RadioGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Radio from '@material-ui/core/Radio';
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles, useTheme } from '@material-ui/core/styles';
 
 import './reg.scss';
 
@@ -21,6 +21,7 @@ const useStyle = makeStyles({
 export const Reg: React.FC<RegProps> = (props) => {
     const [sex, setSex] = useState('');
     const clasess = useStyle();
+    const theme = useTheme();    
 
     return (
         <div className="reg">
@@ -34,16 +35,18 @@ export const Reg: React.FC<RegProps> = (props) => {
                 </p>
 
                 <form className="reg__form">
-                    <TextField label="как вас зовут?" variant="outlined" className="reg__input" />
+                    <TextField
+                        label="как вас зовут?"
+                        variant="outlined"
+                        className="reg__input"
+                        id="name-input" />
 
                     <TextField
                         label="сколько вам лет?"
                         type="number"
-                        InputLabelProps={{
-                            shrink: true,
-                        }}
                         variant="outlined"
                         className="reg__input"
+                        id="age-input"
                     />
 
                     <p>ваш пол?</p>
