@@ -1,0 +1,44 @@
+@import '../../styles/vars.scss';
+
+.reg {
+    height: 100vh;
+    overflow: auto;
+    padding-top: 70px;
+
+    .reg__title {
+        font-size: 36px;
+    }
+
+    .reg__container {
+        width: 70vw;
+        margin: 0 auto;
+    }
+
+    .reg__desc {
+        padding-top: 10px;
+    }
+
+    .reg__form {
+        padding-top: 45px;
+        padding-bottom: 60px;
+    }
+
+    .reg__input {
+        width: 100%;
+        margin-bottom: 34px;
+    }
+    
+    .reg_start {
+        background-color: $accentColor;
+        border: none;
+        width: 160px;
+        text-align: center;
+        padding: 13px;
+        border-radius: 45px;
+        position: fixed;
+        bottom: 15px;
+        left: 0;
+        right: 0;
+        margin: 0 auto;
+    }
+}
