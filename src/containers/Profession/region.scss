@@ -1,0 +1,29 @@
+.profession-page {
+    
+    > div {
+        display: flex;
+        flex-direction: column;
+        padding: 5px 10px;
+    }
+
+    .region-page__title {
+        font-size: 24px;
+        font-weight: 500;
+        margin-bottom: 30px;
+    }
+
+    .region-page__btns {
+        display: flex;
+        margin: 15px 0;
+        margin-top: auto;
+
+        > button {
+            max-width: 160px;
+            flex-grow: 1;
+        }
+
+        > button:first-child {
+            margin-right: 25px;
+        }
+    }
+}

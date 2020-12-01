@@ -8,6 +8,8 @@ import { makeStyles, useTheme } from '@material-ui/core/styles';
 
 import './reg.scss';
 
+import { AppButton } from '../../components/UI/AppButton';
+
 type RegProps = {
 
 }
@@ -68,9 +70,9 @@ export const Reg: React.FC<RegProps> = (props) => {
                             }}
                         />
                     </RadioGroup>
-                    <button type="submit" className="reg_start">
+                    <AppButton type="submit" className="reg_start">
                         Начать
-                    </button>
+                    </AppButton>
                 </form>
 
 
