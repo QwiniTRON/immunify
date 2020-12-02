@@ -9,6 +9,7 @@ import { BackButton } from '../../BackButton';
 
 type PageLayoutProps = {
     [p: string]: any
+    ButtonBackto?: string
 }
 
 const useStyle = makeStyles({
@@ -17,14 +18,18 @@ const useStyle = makeStyles({
     }
 });
 
-export const PageLayout: React.FC<PageLayoutProps> = (props) => {
+export const PageLayout: React.FC<PageLayoutProps> = ({
+    ButtonBackto,
+    children,
+    ...props
+}) => {
     const classes = useStyle(props);
 
     return (
         <div className={s("page-layout", props.className)}>
-            <BackButton />
+            <BackButton to={ButtonBackto} />
             <Paper elevation={6} className={s(classes.root, 'page-layout__content')}>
-                {props.children}
+                {children}
             </Paper>
         </div>
     );

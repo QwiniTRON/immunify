@@ -5,7 +5,7 @@ import {makeStyles} from '@material-ui/core/styles';
 
 
 type BackButtonProps = {
-
+    to?: string
 }
 
 const useStyles = makeStyles({
@@ -22,7 +22,7 @@ const useStyles = makeStyles({
     }
 });
 
-export const BackButton: React.FC<BackButtonProps> = (props) => {
+export const BackButton: React.FC<BackButtonProps> = ({to}) => {
     const locationData = useLocation();
     const pathNames = locationData.pathname.split('/').slice(1);
     const pathToBack = '/' + pathNames.slice(0, -1).join('/');
@@ -31,7 +31,7 @@ export const BackButton: React.FC<BackButtonProps> = (props) => {
     if(pathToBack == '/') return null;
 
     return (
-        <Link to={pathToBack} className={classes.root}>
+        <Link to={to || pathToBack} className={classes.root}>
             <ChevronLeftIcon className={classes.icon} />
             <span className={classes.text}> назад</span>
         </Link>

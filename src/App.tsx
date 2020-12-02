@@ -13,6 +13,7 @@ import { Region } from './containers/Region';
 import { Profession } from './containers/Profession';
 import { Quiz } from './containers/Quiz';
 import { Diseas } from './containers/Diseas';
+import { ReadyPage } from './containers/ReadyPage/inedex';
 
 function App() {
   return (
@@ -63,6 +64,12 @@ function App() {
         <Route path="/profile/data" exact>
           <Layout title="ваши данные">
             <UserData />
+          </Layout>
+        </Route>
+        
+        <Route path="/passport/ready" exact>
+          <Layout title="Прошедшие вакцинации">
+            <ReadyPage />
           </Layout>
         </Route>
         

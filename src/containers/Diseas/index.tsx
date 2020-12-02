@@ -1,11 +1,18 @@
-import react, { useState } from 'react';
-import { PageLayout } from '../../components/UI/PageLayout';
+import react, { useEffect, useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Modal from '@material-ui/core/Modal';
 import Backdrop from '@material-ui/core/Backdrop';
 import Fade from '@material-ui/core/Fade';
 import ClearIcon from '@material-ui/icons/Clear';
 import ArrowRightAltIcon from '@material-ui/icons/ArrowRightAlt';
+import { Link } from 'react-router-dom';
+
+import './diseas.scss';
+
+import { PageLayout } from '../../components/UI/PageLayout';
+import { AppButton } from '../../components/UI/AppButton';
+import { Loader } from '../../components/UI/Loader';
+
 
 type DiseasProps = {
 
@@ -43,6 +50,12 @@ const useStyles = makeStyles((theme) => ({
         '& svg': {
             verticalAlign: 'middle'
         }
+    },
+    title: {
+        fontSize: 18,
+        fontWeight: 500,
+        textAlign: 'center',
+        margin: '10px 0'
     }
 }));
 
@@ -57,16 +70,29 @@ export const Diseas: React.FC<DiseasProps> = (props) => {
     const [openAbout, setOpenAbout] = useState(false);
     const [openVaccines, setOpenVaccines] = useState(false);
     const [openSigns, setOpenSigns] = useState(false);
+    const [loading, setLoading] = useState(true);
+
+    // тут могла быть ваша загрузка данных
+    useEffect(() => {
+        setTimeout(() => setLoading(false), 1000);
+    }, []);
+
+    if (loading) return (
+        <PageLayout className="diseas-page">
+            <h3 className={classes.title}>Идёт загрузка данных</h3>
+            <Loader />
+        </PageLayout>
+    );
 
     return (
-        <PageLayout>
-            <h3>{diseas.name}</h3>
+        <PageLayout className="diseas-page">
+            <h3 className={classes.title}>{diseas.name}</h3>
 
             <div>
                 <div className={classes.paper + ' ' + classes.card} onClick={() => setOpenAbout(true)}>
-                    <h2>Что это?</h2> 
+                    <h2>Что это?</h2>
                     <p>{diseas.about.slice(0, 100) + '...'}</p>
-                    <div className={classes.more}>подробнее <ArrowRightAltIcon/></div>
+                    <div className={classes.more}>подробнее <ArrowRightAltIcon /></div>
                 </div>
                 <Modal
                     className={classes.modal}
@@ -92,7 +118,7 @@ export const Diseas: React.FC<DiseasProps> = (props) => {
                 <div className={classes.paper + ' ' + classes.card} onClick={() => setOpenVaccines(true)}>
                     <h2>Какие есть вакцины?</h2>
                     <p>{diseas.vaccines.slice(0, 100) + '...'}</p>
-                    <div className={classes.more}>подробнее <ArrowRightAltIcon/></div>
+                    <div className={classes.more}>подробнее <ArrowRightAltIcon /></div>
                 </div>
                 <Modal
                     className={classes.modal}
@@ -118,7 +144,7 @@ export const Diseas: React.FC<DiseasProps> = (props) => {
                 <div className={classes.paper + ' ' + classes.card} onClick={() => setOpenSigns(true)}>
                     <h2 >Признаки</h2>
                     <p>{diseas.signs.slice(0, 100) + '...'}</p>
-                    <div className={classes.more}>подробнее <ArrowRightAltIcon/></div>
+                    <div className={classes.more}>подробнее <ArrowRightAltIcon /></div>
                 </div>
                 <Modal
                     className={classes.modal}
@@ -139,6 +165,8 @@ export const Diseas: React.FC<DiseasProps> = (props) => {
                     </Fade>
                 </Modal>
             </div>
+
+            <Link to="/passport/ready"><AppButton floated> Я привит </AppButton></Link> 
         </PageLayout>
     );
 };
