@@ -36,6 +36,10 @@ const useStyles = makeStyles((theme) => ({
             // fill: 'transparent',
             // stroke: theme.palette.primary.main,
         }
+    },
+    layout: {
+        maxWidth: 450,
+        margin: '0 auto'
     }
 }));
 
@@ -54,7 +58,7 @@ export const Layout: React.FC<LayoutProps> = ({
     const parentRoute = '/' + locationData.pathname.split('/')[1];
 
     return (
-        <div className="layout">
+        <div className={"layout " + classes.layout}>
             {!hideHeader && <header className="layout__header">
                 <Link to="/"><img src={Logo} alt="immunify logo" /></Link>
                 <Typography className={classes.title} variant="h3">{title}</Typography>
