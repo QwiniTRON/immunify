@@ -6,10 +6,14 @@ import { makeStyles } from '@material-ui/core/styles';
 import BottomNavigation from '@material-ui/core/BottomNavigation';
 import BottomNavigationAction from '@material-ui/core/BottomNavigationAction';
 import {useHistory, useLocation, Link} from 'react-router-dom';
+import InsertInvitationIcon from '@material-ui/icons/InsertInvitation';
+import PersonIcon from '@material-ui/icons/Person';
+import ListAltIcon from '@material-ui/icons/ListAlt';
+import PostAddIcon from '@material-ui/icons/PostAdd';
 
 import "./Layout.scss";
 
-import { CalendarIcon, PassportIcon, ProfileIcon, TakeIcon } from '../UI/Icons/Icons';
+// import { CalendarIcon, PassportIcon, ProfileIcon, TakeIcon } from '../UI/Icons/Icons';
 
 type LayoutProps = {
     title: string
@@ -29,8 +33,8 @@ const useStyles = makeStyles((theme) => ({
     },
     navIcon: {
         '& svg': {
-            fill: 'transparent',
-            stroke: theme.palette.primary.main,
+            // fill: 'transparent',
+            // stroke: theme.palette.primary.main,
         }
     }
 }));
@@ -74,7 +78,7 @@ export const Layout: React.FC<LayoutProps> = ({
                             root: classes.navIcon,
                         }}
                         label="календарь"
-                        icon={<CalendarIcon />}
+                        icon={<InsertInvitationIcon />}
                         value="/calendar"
                     />
 
@@ -82,7 +86,7 @@ export const Layout: React.FC<LayoutProps> = ({
                         root: classes.navIcon,
                     }}
                         label="профиль"
-                        icon={<ProfileIcon />}
+                        icon={<PersonIcon />}
                         value="/profile"
                     />
 
@@ -90,7 +94,7 @@ export const Layout: React.FC<LayoutProps> = ({
                         root: classes.navIcon,
                     }}
                         label="пасспорт"
-                        icon={<PassportIcon />}
+                        icon={<ListAltIcon />}
                         value="/passport"
                     />
 
@@ -98,7 +102,7 @@ export const Layout: React.FC<LayoutProps> = ({
                         root: classes.navIcon,
                     }}
                         label="запись"
-                        icon={<TakeIcon />}
+                        icon={<PostAddIcon />}
                         value="/take"
                     />
                 </BottomNavigation>

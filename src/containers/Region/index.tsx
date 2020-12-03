@@ -53,7 +53,7 @@ export const Region: React.FC<RegionProps> = (props) => {
             />
 
             <div  className="region-page__btns">
-                <AppButton className="region-page__save" color="secondary">отмена</AppButton>
+                <AppButton className="region-page__save" color="default">отмена</AppButton>
                 <AppButton className="region-page__save">сохранить</AppButton>
             </div>
         </PageLayout>
