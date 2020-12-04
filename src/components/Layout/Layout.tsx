@@ -32,14 +32,8 @@ const useStyles = makeStyles((theme) => ({
         textAlign: 'center'
     },
     navIcon: {
-        '& svg': {
-            // fill: 'transparent',
-            // stroke: theme.palette.primary.main,
-        }
     },
     layout: {
-        maxWidth: 450,
-        margin: '0 auto'
     }
 }));
 
