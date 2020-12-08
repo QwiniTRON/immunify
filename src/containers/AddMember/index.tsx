@@ -8,14 +8,12 @@ import { makeStyles, useTheme } from '@material-ui/core/styles';
 import { connect } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 
-import './reg.scss';
-
 import { AppButton } from '../../components/UI/AppButton';
 import { register } from '../../store/user/action';
 import { RootState } from '../../store';
 
 
-type RegProps = {
+type AddMemberProps = {
 
 
     register: Function
@@ -24,10 +22,13 @@ type RegProps = {
 const useStyle = makeStyles({
     sexLabel: {
         fontSize: 14
+    },
+    root: {
+        height: 'auto'
     }
 });
 
-const Reg: React.FC<RegProps> = ({
+const AddMember: React.FC<AddMemberProps> = ({
     register
 }) => {
     const [sex, setSex] = useState('');
@@ -83,20 +84,16 @@ const Reg: React.FC<RegProps> = ({
     }
 
     return (
-        <div className="reg">
+        <div className={"reg " + clasess.root}>
             <div className="reg__container">
                 <h1 className="reg__title">
-                    Добро пожаловать
-                    в Immunify
+                    Добавление члена семьи
                 </h1>
-                <p className="reg__desc">
-                    Узнайте каким рискам вы подвержены и устраните их
-                </p>
 
                 <form className="reg__form" onSubmit={handleSubmit}>
                     <Typography color="error">{errors.name}</Typography>
                     <TextField
-                        label="как вас зовут?"
+                        label="как зовут"
                         variant="outlined"
                         className="reg__input"
                         id="name-input"
@@ -105,7 +102,7 @@ const Reg: React.FC<RegProps> = ({
 
                     <Typography color="error">{errors.age}</Typography>
                     <TextField
-                        label="сколько вам лет?"
+                        label="возраст"
                         type="number"
                         variant="outlined"
                         className="reg__input"
@@ -114,7 +111,7 @@ const Reg: React.FC<RegProps> = ({
                         onChange={(e: React.ChangeEvent<HTMLInputElement>) => setAge(e.target.value)}
                     />
 
-                    <p>ваш пол?</p>
+                    <p>пол</p>
                     <Typography color="error">{errors.sex}</Typography>
                     <RadioGroup row name="position" onChange={(e) => setSex(e.target.value)} value={sex}>
                         <FormControlLabel
@@ -134,7 +131,7 @@ const Reg: React.FC<RegProps> = ({
                             }}
                         />
                     </RadioGroup>
-                    <AppButton disabled={loading} type="submit" className="reg_start">
+                    <AppButton floated disabled={loading} type="submit">
                         Начать
                     </AppButton>
                 </form>
@@ -148,5 +145,5 @@ const mapStateToProps = (state: RootState) => ({
 const mapDispatchToProps = {
     register
 }
-const connectedReg = connect(mapStateToProps, mapDispatchToProps)(Reg);
-export { connectedReg as Reg };
+const connectedAddMember = connect(mapStateToProps, mapDispatchToProps)(AddMember);
+export { connectedAddMember as AddMember };

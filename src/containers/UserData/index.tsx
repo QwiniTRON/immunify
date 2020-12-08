@@ -26,6 +26,12 @@ export const UserData: React.FC<UserDataProps> = (props) => {
                 subTitle="Укажите регион  проживания, чтобы узнатьэпидемиологическую обстановку"
                 to="/profile/data/region"
             />
+
+            <CardLink
+                title="Ник и ключ доступа"
+                subTitle="информация о вас"
+                to="/profile/data/region"
+            />
         </PageLayout>
     );
 };
