@@ -1,5 +1,6 @@
 import {
-    USER_SET_USER
+    USER_SET_USER,
+    USER_ADD_MEMBER
 } from './consts';
 
 
@@ -9,13 +10,18 @@ type userSetUser = {
     user: User
 }
 
-export type UserAction = userSetUser
+type userAddMember = {
+    type: typeof USER_ADD_MEMBER,
+    member: User
+}
+
+export type UserAction = userSetUser | userAddMember
 
 
 
 
 
-// Classes
+// CLASSES
 export enum Sex {
     man = 'man',
     woman = 'woman'

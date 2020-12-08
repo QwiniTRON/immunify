@@ -1,4 +1,4 @@
-import react, { useState } from 'react';
+import React, { useState } from 'react';
 import Typography from '@material-ui/core/Typography';
 import TextField from '@material-ui/core/TextField';
 import RadioGroup from '@material-ui/core/RadioGroup';
@@ -9,14 +9,14 @@ import { connect } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 
 import { AppButton } from '../../components/UI/AppButton';
-import { register } from '../../store/user/action';
+import { addMember } from '../../store/user/action';
 import { RootState } from '../../store';
 
 
 type AddMemberProps = {
 
 
-    register: Function
+    addMember: Function
 }
 
 const useStyle = makeStyles({
@@ -29,7 +29,7 @@ const useStyle = makeStyles({
 });
 
 const AddMember: React.FC<AddMemberProps> = ({
-    register
+    addMember
 }) => {
     const [sex, setSex] = useState('');
     const [name, setName] = useState('');
@@ -69,15 +69,8 @@ const AddMember: React.FC<AddMemberProps> = ({
         }
 
         if (valid) {
-            register(name, +age, sex)
-                .then((r: any) => {
-                    if (r) {
-                        history.push('/reg/success');
-                    }
-                })
-                .catch((e: any) => {
-                    console.log(e);
-                });
+            addMember(name, +age, sex)
+                .then((r: any) => history.push('/profile/family'));
         } else {
             setErrors(errors);
         }
@@ -143,7 +136,7 @@ const AddMember: React.FC<AddMemberProps> = ({
 const mapStateToProps = (state: RootState) => ({
 });
 const mapDispatchToProps = {
-    register
+    addMember
 }
 const connectedAddMember = connect(mapStateToProps, mapDispatchToProps)(AddMember);
 export { connectedAddMember as AddMember };

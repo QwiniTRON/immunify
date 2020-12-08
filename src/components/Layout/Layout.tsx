@@ -10,8 +10,11 @@ import InsertInvitationIcon from '@material-ui/icons/InsertInvitation';
 import PersonIcon from '@material-ui/icons/Person';
 import ListAltIcon from '@material-ui/icons/ListAlt';
 import PostAddIcon from '@material-ui/icons/PostAdd';
+import { useSelector } from 'react-redux';
 
 import "./Layout.scss";
+import { RootState } from '../../store';
+import { User } from '../../store/types';
 
 // import { CalendarIcon, PassportIcon, ProfileIcon, TakeIcon } from '../UI/Icons/Icons';
 
@@ -47,16 +50,19 @@ export const Layout: React.FC<LayoutProps> = ({
     const classes = useStyles();
     const history = useHistory();
     const locationData = useLocation();
+    const currentUser = useSelector((state: RootState) => state.user.currentUser);
 
     // определяем в какой мы находимся сущности(разделе)
     const parentRoute = '/' + locationData.pathname.split('/')[1];
-
+    
     return (
         <div className={"layout " + classes.layout}>
             {!hideHeader && <header className="layout__header">
                 <Link to="/"><img src={Logo} alt="immunify logo" /></Link>
                 <Typography className={classes.title} variant="h3">{title}</Typography>
-                <Avatar className={classes.avatar}>И</Avatar>
+                <Avatar className={classes.avatar}>
+                    {currentUser? currentUser.name[0] : "😎"}
+                </Avatar>
             </header>}
 
             <main className="layout__content">

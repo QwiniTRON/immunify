@@ -20,6 +20,7 @@ import { RegSuccess } from './containers/RegSuccess';
 import { AddMember } from './containers/AddMember';
 import { userInit } from './store/user/action';
 import { SplashScreen } from './components/SplashScreen';
+import { MemberInfo } from './containers/MemberInfo';
 
 
 type AppProps = {
@@ -123,6 +124,12 @@ const App: React.FC<AppProps> = function ({
         <Route path="/profile/family/add" exact>
           <Layout title="Данные семьи">
             <AddMember />
+          </Layout>
+        </Route>
+
+        <Route path="/profile/family/:id" exact>
+          <Layout title="Данные семьи">
+            <MemberInfo />
           </Layout>
         </Route>
 

@@ -1,1 +1,2 @@
 export const USER_SET_USER = 'USER_SET_USER';
+export const USER_ADD_MEMBER = 'USER_ADD_MEMBER';
