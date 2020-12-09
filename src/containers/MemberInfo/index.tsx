@@ -36,7 +36,7 @@ const MemberInfo: React.FC<MemberInfoProps> = ({
     updateMember
 }) => {
     // определяем пользователя
-    const id = useRouteMatch<MemberInfoParams>().params?.id;
+    const id = useRouteMatch<MemberInfoParams>()?.params?.id;
     let allUsers = [user, ...user?.family!];
     let selectedUser = allUsers.find((u) => u?.name == id);
     const isSelected = currentUser == selectedUser;
@@ -50,6 +50,8 @@ const MemberInfo: React.FC<MemberInfoProps> = ({
         age: '',
         sex: ''
     });
+
+    if(!id) return (<PageLayout className="member-page">Member page</PageLayout>);
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();

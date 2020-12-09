@@ -167,7 +167,7 @@ export const Diseas: React.FC<DiseasProps> = (props) => {
                 </Modal>
             </div>
 
-            <Link to="/passport/ready"><AppButton floated> Я привит </AppButton></Link> 
+            <Link to="/passport/ready"><AppButton floated> Я привит </AppButton></Link>
         </PageLayout>
     );
 };

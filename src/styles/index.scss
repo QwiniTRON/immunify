@@ -37,28 +37,14 @@ p {
 }
 
 // Page slide animation
-.page-anim {
-    width: 100%;
-    flex-grow: 1;
+.page-enter .page-anim{
+    opacity: 0;
+    transform: translateY(-40%);
 }
-
 .page-enter-active .page-anim{
-    display: none;
-}
-
-.page-enter-done .page-anim{
-    animation: enterPage 0.15s forwards;
-}
-
-@keyframes enterPage {
-    from {
-        opacity: 0;
-        transform: scale(1.1);
-    }
-    to {
-        opacity: 1;
-        transform: scale(1);
-    }
+    opacity: 1;
+    transform: translateY(0);
+    transition: opacity 150ms, transform 150ms;
 }
 
 .page-exit .page-anim{
