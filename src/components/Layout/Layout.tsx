@@ -61,7 +61,7 @@ export const Layout: React.FC<LayoutProps> = ({
                 <Link to="/"><img src={Logo} alt="immunify logo" /></Link>
                 <Typography className={classes.title} variant="h3">{title}</Typography>
                 <Avatar className={classes.avatar}>
-                    {currentUser? currentUser.name[0] : "😎"}
+                    {currentUser? currentUser.name[0] + currentUser.name.slice(-1) : "😎"}
                 </Avatar>
             </header>}
 

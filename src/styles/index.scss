@@ -1,11 +1,14 @@
 @import "./funcs.scss";
 @import "./vars.scss";
 
-*, *::after, *::before { 
+*,
+*::after,
+*::before {
     box-sizing: border-box;
 }
 
-html, body {
+html,
+body {
     padding: 0;
     margin: 0;
 }
@@ -15,13 +18,56 @@ body {
     font-family: $fontFamily;
     line-height: $lineHeigth;
     color: $textColor;
+    overflow: hidden;
 }
 
-h1, h2, h3, h4, h5, h6, p {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p {
     margin: 0;
 }
 
 .App {
     max-width: $widthBreak;
     margin: 0 auto;
+}
+
+// Page slide animation
+.page-anim {
+    width: 100%;
+    flex-grow: 1;
+}
+
+.page-enter-active .page-anim{
+    display: none;
+}
+
+.page-enter-done .page-anim{
+    animation: enterPage 0.15s forwards;
+}
+
+@keyframes enterPage {
+    from {
+        opacity: 0;
+        transform: scale(1.1);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.page-exit .page-anim{
+    opacity: 1;
+    transform: scale(1);
+}
+
+.page-exit-active .page-anim{
+    opacity: 0;
+    transform: scale(0.9);
+    transition: opacity 150ms, transform 150ms;
 }

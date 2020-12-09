@@ -1,13 +1,15 @@
-import react from 'react';
+import React from 'react';
+
+import { PageLayout } from '../../components/UI/PageLayout';
 
 type TakeProps = {
 
 }
 
 export const Take: React.FC<TakeProps> = (props) => {
- return (
-  <div>
-      take
-  </div>
- );
+    return (
+        <PageLayout>
+            take
+        </PageLayout>
+    );
 };

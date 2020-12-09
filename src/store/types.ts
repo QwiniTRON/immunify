@@ -1,6 +1,8 @@
 import {
     USER_SET_USER,
-    USER_ADD_MEMBER
+    USER_ADD_MEMBER,
+    USER_SET_CURRENT_USER,
+    USER_UPDATE_BY_NAME
 } from './consts';
 
 
@@ -15,9 +17,21 @@ type userAddMember = {
     member: User
 }
 
-export type UserAction = userSetUser | userAddMember
+type userChangeCurrntUser = {
+    type: typeof USER_SET_CURRENT_USER,
+    member: User
+}
 
+type userUpdateByName = {
+    type: typeof USER_UPDATE_BY_NAME,
+    member: User,
+    memberName: string
+}
 
+export type UserAction = userSetUser |
+    userChangeCurrntUser |
+    userUpdateByName |
+    userAddMember
 
 
 

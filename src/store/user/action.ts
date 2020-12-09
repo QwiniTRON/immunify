@@ -1,7 +1,9 @@
 import { RootState } from '..';
 import {
     USER_SET_USER,
-    USER_ADD_MEMBER
+    USER_ADD_MEMBER,
+    USER_SET_CURRENT_USER,
+    USER_UPDATE_BY_NAME
 } from '../consts';
 import { Sex, User, UserAction } from '../types';
 
@@ -13,6 +15,7 @@ export function setUser(user: User): UserAction {
     }
 }
 
+// addNewMember
 export function addNewMember(member: User): UserAction {
     return {
         type: USER_ADD_MEMBER,
@@ -20,9 +23,26 @@ export function addNewMember(member: User): UserAction {
     }
 }
 
+// updateByName
+export function updateByName(member: User, memberName: string): UserAction {
+    return {
+        type: USER_UPDATE_BY_NAME,
+        member,
+        memberName
+    }
+}
 
+// changeCurrentUser
+export function setCurrentUser(member: User): UserAction {
+    return {
+        type: USER_SET_CURRENT_USER,
+        member
+    }
+}
+
+//  ***************************
 //? ********** ASYNC **********
-
+//  ***************************
 
 // LOGIN
 /*
@@ -85,19 +105,72 @@ export function addMember(name: string, age: number, sex: Sex) {
 }
 
 
+// updateMember
+/*
+    
+*/
+export function updateMember(name: string, age: number, sex: Sex, memberName: string) {
+    return async function (dispatch: Function, getState: Function) {
+        // добавляем в store нового члена семьи
+        const newMember = {
+            age,
+            name,
+            sex
+        }
+        dispatch(updateByName(newMember as User, memberName));
+
+        // обновляем localeStorage пользователя
+        const state: RootState = getState();
+        try {
+            const stateForSave = JSON.stringify(state.user.user);
+            localStorage.setItem('appUser', stateForSave);
+
+        } catch (err) {
+            console.log(err);
+        }
+
+    }
+}
+
+
+// chaneCurrentUser
+/*
+   
+*/
+export function changeCurrentUser(userName: string) {
+    return async function (dispatch: Function, getState: Function) {
+        try {
+            const store: RootState = getState();
+            const userState = store.user.user;
+            const allUsers = [userState, ...userState?.family!];
+            const newCurrentUser: User = allUsers.find((u) => u?.name == userName)!;
+            
+            if(newCurrentUser) {
+                dispatch(setCurrentUser(newCurrentUser));
+            }
+        } catch (err) {
+            console.log('changeCurrentUser', err);
+        }
+    }
+}
+
 // userInit
 /*
    
 */
 export function userInit() {
     return async function (dispatch: Function, getState: Function) {
-        const localStorageData = localStorage.getItem('appUser');
-        
-        if (localStorageData) {
-            dispatch(setUser(JSON.parse(localStorageData)));
-            return true;
-        } else {
-            return false;
+        try {
+            const localStorageData = localStorage.getItem('appUser');
+
+            if (localStorageData) {
+                dispatch(setUser(JSON.parse(localStorageData)));
+                return true;
+            } else {
+                return false;
+            }
+        } catch (err) {
+
         }
     }
 }

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Switch, Route, Redirect } from 'react-router-dom';
+import { CSSTransition } from 'react-transition-group';
 import { connect } from 'react-redux';
 
 import { Layout } from './components/Layout/Layout';
@@ -21,6 +22,7 @@ import { AddMember } from './containers/AddMember';
 import { userInit } from './store/user/action';
 import { SplashScreen } from './components/SplashScreen';
 import { MemberInfo } from './containers/MemberInfo';
+import { MainPage } from './containers/MainPage';
 
 
 type AppProps = {
@@ -52,107 +54,120 @@ const App: React.FC<AppProps> = function ({
 
   return (
     <div className="App">
-      <Switch>
+      {/* <Switch> */}
 
+      {!isAuth && <Route path="/reg" exact>
+        <Reg />
+      </Route>}
+      {/* если пользователь не зарегистрировался, то ему доступен только роут reg - страница входа */}
+      {!isAuth && <Redirect to="/reg" />}
 
-        {!isAuth && <Route path="/reg" exact>
-          <Reg />
-        </Route>}
-        {/* если пользователь не зарегистрировался, то ему доступен только роут reg - страница входа */}
-        {!isAuth && <Redirect to="/reg" />}
+      <Route path="/" exact>
+        <Layout title="главная">
+          <MainPage />
+        </Layout>
+      </Route>
 
-        <Route path="/" exact>
-          <Layout title="пока главная">
-            main immunify
-          </Layout>
-        </Route>
+      <Route path="/reg/success" exact>
+        <RegSuccess />
+      </Route>
 
-        <Route path="/reg/success" exact>
-          <RegSuccess />
-        </Route>
+      <Route path="/calendar" exact>
+        {(some) => (
+          <CSSTransition in={some.match != null} timeout={150} classNames="page" unmountOnExit>
 
-        <Route path="/calendar" exact>
-          <Layout title="Календарь">
-            <Calendar />
-          </Layout>
-        </Route>
+            <Layout title="Календарь">
+              <div className="page-anim">
+                <Calendar />
+              </div>
+            </Layout>
+          </CSSTransition>
+        )}
+      </Route>
 
-        <Route path="/profile" exact>
-          <Layout title="Профиль">
-            <Profile />
-          </Layout>
-        </Route>
+      <Route path="/profile" exact>
+        {(some) => (
+          <CSSTransition in={some.match != null} timeout={150} classNames="page" unmountOnExit>
+            <Layout title="Профиль">
+              <div className="page-anim">
+                <Profile />
+              </div>
+            </Layout>
+          </CSSTransition>
+        )}
+      </Route>
 
-        <Route path="/passport" exact>
-          <Layout title="Иммунный пасспорт">
-            <Passport />
-          </Layout>
-        </Route>
+      <Route path="/passport" exact>
+        <Layout title="Иммунный пасспорт">
+          <Passport />
+        </Layout>
+      </Route>
 
-        <Route path="/take" exact>
-          <Layout title="Запись">
-            <Take />
-          </Layout>
-        </Route>
+      <Route path="/take" exact>
+        <Layout title="Запись">
+          <Take />
+        </Layout>
+      </Route>
 
-        {/* двух шаговые роуты */}
-        <Route path="/profile/family" exact>
-          <Layout title="Данные семьи">
-            <Family />
-          </Layout>
-        </Route>
+      {/* двух шаговые роуты */}
+      <Route path="/profile/family" exact>
+        <Layout title="Данные семьи">
+          <Family />
+        </Layout>
+      </Route>
 
-        <Route path="/profile/data" exact>
-          <Layout title="ваши данные">
-            <UserData />
-          </Layout>
-        </Route>
+      <Route path="/profile/data" exact>
+        <Layout title="ваши данные">
+          <UserData />
+        </Layout>
+      </Route>
 
-        <Route path="/passport/ready" exact>
-          <Layout title="Прошедшие вакцинации">
-            <ReadyPage />
-          </Layout>
-        </Route>
+      <Route path="/passport/ready" exact>
+        <Layout title="Прошедшие вакцинации">
+          <ReadyPage />
+        </Layout>
+      </Route>
 
-        <Route path="/passport/:id" exact>
-          <Layout title="Болезнь">
-            <Diseas />
-          </Layout>
-        </Route>
+      <Route path="/passport/:id" exact>
+        <Layout title="Болезнь">
+          <Diseas />
+        </Layout>
+      </Route>
 
-        {/* трёх уровневые роуты */}
-        <Route path="/profile/family/add" exact>
-          <Layout title="Данные семьи">
-            <AddMember />
-          </Layout>
-        </Route>
+      {/* трёх уровневые роуты */}
+      <Route path="/profile/family/add" exact>
+        <Layout title="Данные семьи">
+          <AddMember />
+        </Layout>
+      </Route>
 
-        <Route path="/profile/family/:id" exact>
-          <Layout title="Данные семьи">
-            <MemberInfo />
-          </Layout>
-        </Route>
+      <Route path="/profile/family/:id" exact>
+        <Layout title="Данные семьи">
+          <MemberInfo />
+        </Layout>
+      </Route>
 
-        <Route path="/profile/data/quiz" exact>
-          <Layout title="опросник">
-            <Quiz />
-          </Layout>
-        </Route>
+      <Route path="/profile/data/quiz" exact>
+        <Layout title="опросник">
+          <Quiz />
+        </Layout>
+      </Route>
 
-        <Route path="/profile/data/profession" exact>
-          <Layout title="выбор профессии">
-            <Profession />
-          </Layout>
-        </Route>
+      <Route path="/profile/data/profession" exact>
+        <Layout title="выбор профессии">
+          <Profession />
+        </Layout>
+      </Route>
 
-        <Route path="/profile/data/region" exact>
-          <Layout title="выбор регоина">
-            <Region />
-          </Layout>
-        </Route>
+      <Route path="/profile/data/region" exact>
+        <Layout title="выбор регоина">
+          <Region />
+        </Layout>
+      </Route>
 
-        <Redirect to="/" />
-      </Switch>
+      <Redirect to="/" />
+
+      {/* </Switch> */}
     </div>
   );
 }

@@ -50,11 +50,11 @@ const RegSuccess: React.FC<RegSuccessProps> = ({
                 <Typography>ваши данные для входа. Эти данные можно будет найти в профиле</Typography>
             </Box>
             <Box mt={1} p={1}>
-                <Typography>ваш ключ защиты: <Typography className={classes.accentet}>
+                <Typography component="div">ваш ключ защиты: <Typography component="div" className={classes.accentet}>
                     <VpnKeyIcon classes={{root: classes.textIcon}} color="primary" /> baa af adsf asd sdfsdf</Typography>
                 </Typography>
 
-                <Typography>ваш ник для вохода: <Typography className={classes.accentet}>
+                <Typography component="div">ваш ник для вохода: <Typography component="div" className={classes.accentet}>
                     <AssignmentIndIcon classes={{root: classes.textIcon}} color="primary" />{user?.name}</Typography>
                 </Typography>
             </Box>

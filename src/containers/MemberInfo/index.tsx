@@ -1,15 +1,21 @@
-import React from 'react';
-import { useRouteMatch} from 'react-router-dom';
+import React, { useState } from 'react';
+import { useRouteMatch } from 'react-router-dom';
 import { connect } from 'react-redux';
 import Typography from '@material-ui/core/Typography';
+import TextField from '@material-ui/core/TextField';
+import RadioGroup from '@material-ui/core/RadioGroup';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import Box from '@material-ui/core/Box';
+import Radio from '@material-ui/core/Radio';
 
 import './memberinfo.scss';
 
 import { PageLayout } from '../../components/UI/PageLayout';
 import { RootState } from '../../store';
-import { User } from '../../store/types';
-import {AppButtonGroup} from '../../components/UI/ButtonGroup';
+import { Sex, User } from '../../store/types';
+import { AppButtonGroup } from '../../components/UI/ButtonGroup';
 import { AppButton } from '../../components/UI/AppButton';
+import { changeCurrentUser, updateMember } from '../../store/user/action';
 
 type MemberInfoParams = {
     id: string
@@ -17,32 +23,140 @@ type MemberInfoParams = {
 
 interface MemberInfoProps {
     user: User | null
+    currentUser: User | null
+
+    changeCurrentUser: typeof changeCurrentUser
+    updateMember: typeof updateMember
 };
 
 const MemberInfo: React.FC<MemberInfoProps> = ({
-    user
+    user,
+    changeCurrentUser,
+    currentUser,
+    updateMember
 }) => {
+    // определяем пользователя
     const id = useRouteMatch<MemberInfoParams>().params?.id;
     let allUsers = [user, ...user?.family!];
     let selectedUser = allUsers.find((u) => u?.name == id);
-    
+    const isSelected = currentUser == selectedUser;
+    const isRootUser = currentUser == user;
+
+    const [sex, setSex] = useState<string>(String(selectedUser?.sex));
+    const [name, setName] = useState<string>(String(selectedUser?.name));
+    const [age, setAge] = useState<string>(String(selectedUser?.age));
+    const [errors, setErrors] = useState({
+        name: '',
+        age: '',
+        sex: ''
+    });
+
+    const handleSubmit = (e: React.FormEvent) => {
+        e.preventDefault();
+
+        if (!isRootUser) return;
+
+        let valid = true;
+        const errors = {
+            name: '',
+            age: '',
+            sex: ''
+        }
+
+        // валидация
+        if (name.length < 2) {
+            errors.name = 'имя должно быть не короче 2 символов';
+            valid = false;
+        }
+        if (+age < 1 || +age > 150) {
+            errors.age = 'возраст обязателен';
+            valid = false;
+        }
+        if (!sex) {
+            errors.sex = 'пол обязателен';
+            valid = false;
+        }
+
+        if (valid) {
+            (updateMember(name, Number(age), sex as Sex, id) as any)
+                .then(() => {
+
+                });
+        } else {
+            setErrors(errors);
+        }
+    }
+
     return (
         <PageLayout className="member-page">
-           <Typography>{selectedUser?.name}</Typography>
-           <Typography>{selectedUser?.age}</Typography>
+            <form className="reg__form" onSubmit={handleSubmit}>
+                <Box marginY={2}>
+                    <Typography color="error">{errors.name}</Typography>
+                    <TextField
+                        label="как вас зовут?"
+                        variant="outlined"
+                        className="reg__input"
+                        fullWidth
+                        id="name-input"
+                        value={name}
+                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => setName(e.target.value)} />
+                </Box>
 
-           <AppButtonGroup floated>
-               <AppButton>сохранить</AppButton>
-               <AppButton color="secondary">выбрать</AppButton>
-               <AppButton color="default">удалить</AppButton>
-           </AppButtonGroup>
+                <Box marginY={2}>
+                    <Typography color="error">{errors.age}</Typography>
+                    <TextField
+                        label="сколько вам лет?"
+                        type="number"
+                        variant="outlined"
+                        className="reg__input"
+                        fullWidth
+                        id="age-input"
+                        value={age}
+                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => setAge(e.target.value)}
+                    />
+                </Box>
+
+                <p>ваш пол?</p>
+                <Typography color="error">{errors.sex}</Typography>
+                <RadioGroup row name="position" onChange={(e) => setSex(e.target.value)} value={sex}>
+                    <FormControlLabel
+                        control={<Radio color="primary" />}
+                        value="man"
+                        label="мужчина"
+                    />
+                    <FormControlLabel
+                        control={<Radio color="primary" />}
+                        value="woman"
+                        label="женщина"
+                    />
+                </RadioGroup>
+
+                <Box display="none"><button type="submit"></button></Box>
+            </form>
+
+
+            <AppButtonGroup floated>
+                {isRootUser &&
+                    <AppButton onClick={handleSubmit}>сохранить</AppButton>
+                }
+                {!isSelected &&
+                    <AppButton onClick={(e: React.MouseEvent) => changeCurrentUser(id)} color="secondary">выбрать</AppButton>
+                }
+                {isRootUser &&
+                    <AppButton color="default">удалить</AppButton>
+                }
+            </AppButtonGroup>
         </PageLayout>
     );
 };
 
 const mapStatetoProps = (state: RootState) => ({
-    user: state.user.user
+    user: state.user.user,
+    currentUser: state.user.currentUser
 });
-const mapDispatchToProps = {};
-const connectedMemberInfo = connect(mapStatetoProps, mapDispatchToProps)(MemberInfo);
+const mapDispatchToProps = {
+    changeCurrentUser,
+    updateMember
+};
+const connectedMemberInfo = connect(mapStatetoProps, mapDispatchToProps)(MemberInfo as any);
 export { connectedMemberInfo as MemberInfo };
