@@ -13,6 +13,7 @@ import './reg.scss';
 import { AppButton } from '../../components/UI/AppButton';
 import { register } from '../../store/user/action';
 import { RootState } from '../../store';
+import { AppLink } from '../../components/UI/AppLink';
 
 
 type RegProps = {
@@ -33,11 +34,15 @@ const Reg: React.FC<RegProps> = ({
     const [sex, setSex] = useState('');
     const [name, setName] = useState('');
     const [age, setAge] = useState('');
+    const [login, setLogin] = useState('');
+    const [password, setPassword] = useState('');
     const [loading, setLoading] = useState(false);
     const [errors, setErrors] = useState({
         name: '',
         age: '',
-        sex: ''
+        sex: '',
+        email: '',
+        password: ''
     });
     const clasess = useStyle();
     const history = useHistory();
@@ -47,22 +52,31 @@ const Reg: React.FC<RegProps> = ({
         if (loading) return;
 
         let valid = true;
+
+        // sanitize
+        const sexText = sex.trim();
+        const nameText = name.trim();
+        const ageText = age.trim();
+        const loginText = login.trim();
+        const passwordText = password.trim();
         const errors = {
             name: '',
             age: '',
-            sex: ''
+            sex: '',
+            email: '',
+            password: ''
         }
 
         // валидация
-        if (name.length < 2) {
+        if (nameText.length < 2) {
             errors.name = 'имя должно быть не короче 2 символов';
             valid = false;
         }
-        if (+age < 1 || +age > 150) {
+        if (+ageText < 1 || +age > 150) {
             errors.age = 'возраст обязателен';
             valid = false;
         }
-        if (!sex) {
+        if (!sexText) {
             errors.sex = 'пол обязателен';
             valid = false;
         }
@@ -94,22 +108,39 @@ const Reg: React.FC<RegProps> = ({
                 </p>
 
                 <form className="reg__form" onSubmit={handleSubmit}>
+                    <TextField
+                        label="email"
+                        variant="outlined"
+                        className="reg__input"
+                        value={login}
+                        id="email-field"
+                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => setLogin(e.target.value)} />
+
+                    <TextField
+                        label="пароль"
+                        variant="outlined"
+                        id="password-field"
+                        type="password"
+                        className="reg__input"
+                        value={password}
+                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => setPassword(e.target.value)} />
+
                     <Typography color="error">{errors.name}</Typography>
                     <TextField
                         label="как вас зовут?"
+                        id="name-field"
                         variant="outlined"
                         className="reg__input"
-                        id="name-input"
                         value={name}
                         onChange={(e: React.ChangeEvent<HTMLInputElement>) => setName(e.target.value)} />
 
                     <Typography color="error">{errors.age}</Typography>
                     <TextField
+                        id="age-field"
                         label="сколько вам лет?"
                         type="number"
                         variant="outlined"
                         className="reg__input"
-                        id="age-input"
                         value={age}
                         onChange={(e: React.ChangeEvent<HTMLInputElement>) => setAge(e.target.value)}
                     />
@@ -134,6 +165,9 @@ const Reg: React.FC<RegProps> = ({
                             }}
                         />
                     </RadioGroup>
+
+                    <AppLink to="/login">войти</AppLink>
+
                     <AppButton disabled={loading} type="submit" className="reg_start">
                         Начать
                     </AppButton>

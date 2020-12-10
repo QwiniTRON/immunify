@@ -6,21 +6,11 @@ import { BrowserRouter } from 'react-router-dom';
 import { ThemeProvider } from '@material-ui/core/styles';
 import * as serviceWorkerRegistration from './serviceWorkerRegistration';
 import { Provider } from 'react-redux';
-import { createStore, applyMiddleware, compose } from 'redux';
-import thunk from 'redux-thunk';
 
 import './styles/index.scss';
 
 import { mainTheme } from './styles/Theme';
-import { rootReducer } from "./store";
-
-const composeEnhancers =
-  typeof window === 'object' &&
-    (window as any).__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ ?
-    (window as any).__REDUX_DEVTOOLS_EXTENSION_COMPOSE__({
-    }) :
-    compose;
-const store = createStore(rootReducer, composeEnhancers(applyMiddleware(thunk)));
+import {  store } from "./store";
 
 ReactDOM.render(
   <React.StrictMode>

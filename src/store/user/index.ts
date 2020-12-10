@@ -2,17 +2,18 @@ import {
     USER_SET_USER,
     USER_ADD_MEMBER,
     USER_SET_CURRENT_USER,
-    USER_UPDATE_BY_NAME
+    USER_UPDATE_BY_NAME,
+    USER_SET_DATA
 } from '../consts';
-import { UserAction, User } from '../types';
+import { UserAction, User, UserData } from '../types';
 
-type UserStore = {
+export type UserStore = {
     user: User | null
     currentUser: User | null
     loading: boolean
 }
 
-export const initialState: UserStore = {
+const initialState: UserStore = {
     user: null,
     currentUser: null,
     loading: false
@@ -64,6 +65,44 @@ export const userReducer = function (state: UserStore = initialState, action: Us
             oldUser?.family.push(action.member);
             const newUser: User = { ...oldUser };
             return { ...state, user: newUser, currentUser: newUser };
+
+        case USER_SET_DATA:
+            let remarkedUser: User;
+            let isCurrentUser: boolean = false;
+            let newCurrentUser: User | null;
+            let userData: UserData;
+
+            if (action.userName == state.user?.name) {
+                if (state.currentUser === state.user) isCurrentUser = true;
+
+                userData = { ...state.user.data, ...action.data } as UserData;
+                remarkedUser = { ...state.user, data: userData };
+
+                if (isCurrentUser) newCurrentUser = remarkedUser;
+            } else {
+                const userFamily = state.user?.family.map((u) => {
+                    if (u.name == action.userName) {
+
+                        if (u.name == action.userName) isCurrentUser = true;
+
+                        userData = { ...u.data, ...action.data } as UserData;
+                        let remarkedMember = { ...u, data: userData };
+
+                        if(isCurrentUser) newCurrentUser = remarkedMember;
+
+                        return remarkedMember;
+                    }
+                    return u;
+                })!;
+
+                remarkedUser = ({ ...state.user, family: userFamily } as User);
+            }
+
+            return {
+                ...state,
+                user: remarkedUser,
+                currentUser: isCurrentUser? newCurrentUser! : state.currentUser
+            };
 
         default:
             return state;

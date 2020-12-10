@@ -2,7 +2,8 @@ import {
     USER_SET_USER,
     USER_ADD_MEMBER,
     USER_SET_CURRENT_USER,
-    USER_UPDATE_BY_NAME
+    USER_UPDATE_BY_NAME,
+    USER_SET_DATA
 } from './consts';
 
 
@@ -10,6 +11,12 @@ import {
 type userSetUser = {
     type: typeof USER_SET_USER,
     user: User
+}
+
+type userSetData = {
+    type: typeof USER_SET_DATA,
+    data: Partial<UserData>,
+    userName: string
 }
 
 type userAddMember = {
@@ -31,7 +38,8 @@ type userUpdateByName = {
 export type UserAction = userSetUser |
     userChangeCurrntUser |
     userUpdateByName |
-    userAddMember
+    userAddMember |
+    userSetData
 
 
 
@@ -40,9 +48,20 @@ export enum Sex {
     man = 'man',
     woman = 'woman'
 }
+
+export type QuizAnswer = {
+    questionId: string,
+    answerId: string
+}
+export type UserData = {
+    profession: string,
+    region: string,
+    quiz: QuizAnswer[]
+}
 export type User = {
     name: string
     age: number
     sex: Sex
     family: User[]
+    data?: UserData
 }

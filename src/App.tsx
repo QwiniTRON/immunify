@@ -23,6 +23,7 @@ import { userInit } from './store/user/action';
 import { SplashScreen } from './components/SplashScreen';
 import { MemberInfo } from './containers/MemberInfo';
 import { MainPage } from './containers/MainPage';
+import { LoginPage } from './containers/LoginPage';
 
 
 type AppProps = {
@@ -63,6 +64,11 @@ const App: React.FC<AppProps> = function ({
               {!isAuth && <Route path="/reg" exact>
                 <Reg />
               </Route>}
+
+              <Route path="/login" exact>
+                <LoginPage />
+              </Route>
+
               {/* если пользователь не зарегистрировался, то ему доступен только роут reg - страница входа */}
               {!isAuth && <Redirect to="/reg" />}
 
@@ -89,7 +95,7 @@ const App: React.FC<AppProps> = function ({
               </Route>
 
               <Route path="/passport" exact>
-                <Layout title="Иммунный пасспорт">
+                <Layout title="Иммунный пасспорт" titleCurrentName>
                   <Passport />
                 </Layout>
               </Route>
@@ -101,11 +107,11 @@ const App: React.FC<AppProps> = function ({
               </Route>
 
               {/* двух шаговые роуты */}
-              <Route path="/profile/family" exact>
+              {/* <Route path="/profile/family" exact>
                 <Layout title="Данные семьи">
                   <Family />
                 </Layout>
-              </Route>
+              </Route> */}
 
               <Route path="/profile/data" exact>
                 <Layout title="ваши данные">

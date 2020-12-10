@@ -7,7 +7,8 @@ import RadioGroup from '@material-ui/core/RadioGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Box from '@material-ui/core/Box';
 import Radio from '@material-ui/core/Radio';
-
+import Snackbar from '@material-ui/core/Snackbar';
+import MuiAlert from '@material-ui/lab/Alert';
 import './memberinfo.scss';
 
 import { PageLayout } from '../../components/UI/PageLayout';
@@ -42,6 +43,7 @@ const MemberInfo: React.FC<MemberInfoProps> = ({
     const isSelected = currentUser == selectedUser;
     const isRootUser = currentUser == user;
 
+    const [open, setOpen] = useState(false);
     const [sex, setSex] = useState<string>(String(selectedUser?.sex));
     const [name, setName] = useState<string>(String(selectedUser?.name));
     const [age, setAge] = useState<string>(String(selectedUser?.age));
@@ -51,7 +53,7 @@ const MemberInfo: React.FC<MemberInfoProps> = ({
         sex: ''
     });
 
-    if(!id) return (<PageLayout className="member-page">Member page</PageLayout>);
+    if (!id) return (<PageLayout className="member-page">Member page</PageLayout>);
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
@@ -82,7 +84,7 @@ const MemberInfo: React.FC<MemberInfoProps> = ({
         if (valid) {
             (updateMember(name, Number(age), sex as Sex, id) as any)
                 .then(() => {
-
+                    setOpen(true);
                 });
         } else {
             setErrors(errors);
@@ -90,7 +92,7 @@ const MemberInfo: React.FC<MemberInfoProps> = ({
     }
 
     return (
-        <PageLayout className="member-page">
+        <PageLayout className="member-page" ButtonBackto="/profile">
             <form className="reg__form" onSubmit={handleSubmit}>
                 <Box marginY={2}>
                     <Typography color="error">{errors.name}</Typography>
@@ -136,7 +138,6 @@ const MemberInfo: React.FC<MemberInfoProps> = ({
                 <Box display="none"><button type="submit"></button></Box>
             </form>
 
-
             <AppButtonGroup floated>
                 {isRootUser &&
                     <AppButton onClick={handleSubmit}>сохранить</AppButton>
@@ -148,6 +149,12 @@ const MemberInfo: React.FC<MemberInfoProps> = ({
                     <AppButton color="default">удалить</AppButton>
                 }
             </AppButtonGroup>
+
+            <Snackbar open={open} autoHideDuration={3000} onClose={() => setOpen(false)}>
+                <MuiAlert elevation={6} variant="filled">
+                    данные изменены.
+                </MuiAlert>
+            </Snackbar>
         </PageLayout>
     );
 };

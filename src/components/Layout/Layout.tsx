@@ -5,7 +5,7 @@ import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import BottomNavigation from '@material-ui/core/BottomNavigation';
 import BottomNavigationAction from '@material-ui/core/BottomNavigationAction';
-import {useHistory, useLocation, Link} from 'react-router-dom';
+import { useHistory, useLocation, Link } from 'react-router-dom';
 import InsertInvitationIcon from '@material-ui/icons/InsertInvitation';
 import PersonIcon from '@material-ui/icons/Person';
 import ListAltIcon from '@material-ui/icons/ListAlt';
@@ -22,6 +22,7 @@ type LayoutProps = {
     title: string
     hideNav?: boolean
     hideHeader?: boolean
+    titleCurrentName?: boolean
 }
 
 const useStyles = makeStyles((theme) => ({
@@ -45,7 +46,8 @@ export const Layout: React.FC<LayoutProps> = ({
     children,
     title,
     hideNav,
-    hideHeader
+    hideHeader,
+    titleCurrentName
 }) => {
     const classes = useStyles();
     const history = useHistory();
@@ -54,14 +56,18 @@ export const Layout: React.FC<LayoutProps> = ({
 
     // определяем в какой мы находимся сущности(разделе)
     const parentRoute = '/' + locationData.pathname.split('/')[1];
-    
+
     return (
         <div className={"layout " + classes.layout}>
             {!hideHeader && <header className="layout__header">
                 <Link to="/"><img src={Logo} alt="immunify logo" /></Link>
-                <Typography className={classes.title} variant="h3">{title}</Typography>
+
+                <Typography className={classes.title} variant="h3">
+                    {titleCurrentName? currentUser?.name : title}
+                </Typography>
+
                 <Avatar className={classes.avatar}>
-                    {currentUser? currentUser.name[0] + currentUser.name.slice(-1) : "😎"}
+                    {currentUser ? currentUser.name[0] + currentUser.name.slice(-1) : "😎"}
                 </Avatar>
             </header>}
 
@@ -81,30 +87,33 @@ export const Layout: React.FC<LayoutProps> = ({
                         classes={{
                             root: classes.navIcon,
                         }}
-                        label="календарь"
-                        icon={<InsertInvitationIcon />}
-                        value="/calendar"
-                    />
-
-                    <BottomNavigationAction classes={{
-                        root: classes.navIcon,
-                    }}
                         label="профиль"
                         icon={<PersonIcon />}
                         value="/profile"
                     />
 
-                    <BottomNavigationAction classes={{
-                        root: classes.navIcon,
-                    }}
+                    <BottomNavigationAction
+                        classes={{
+                            root: classes.navIcon,
+                        }}
                         label="пасспорт"
                         icon={<ListAltIcon />}
                         value="/passport"
                     />
 
-                    <BottomNavigationAction classes={{
-                        root: classes.navIcon,
-                    }}
+                    <BottomNavigationAction
+                        classes={{
+                            root: classes.navIcon,
+                        }}
+                        label="календарь"
+                        icon={<InsertInvitationIcon />}
+                        value="/calendar"
+                    />
+
+                    <BottomNavigationAction
+                        classes={{
+                            root: classes.navIcon,
+                        }}
                         label="запись"
                         icon={<PostAddIcon />}
                         value="/take"

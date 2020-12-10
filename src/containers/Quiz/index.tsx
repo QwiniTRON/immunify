@@ -1,4 +1,4 @@
-import react, { useState } from 'react';
+import React, { useState } from 'react';
 import Radio from '@material-ui/core/Radio';
 import RadioGroup from '@material-ui/core/RadioGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
@@ -6,11 +6,17 @@ import FormControl from '@material-ui/core/FormControl';
 import FormLabel from '@material-ui/core/FormLabel';
 import LinearProgress from '@material-ui/core/LinearProgress';
 import { makeStyles } from '@material-ui/core/styles';
+import { useSelector, useDispatch } from 'react-redux';
+import Snackbar from '@material-ui/core/Snackbar';
+import MuiAlert from '@material-ui/lab/Alert';
 
 import './quiz.scss';
 
 import { PageLayout } from '../../components/UI/PageLayout';
 import { AppButton } from '../../components/UI/AppButton';
+import { RootState } from '../../store';
+import { updateCurrentUserData } from '../../store/user/action';
+import { QuizAnswer } from '../../store/types';
 
 type QuizProps = {
 
@@ -25,46 +31,46 @@ const useStyles = makeStyles((theme) => ({
 const quizData = [
     {
         question: 'Что Вы думаете о войне во Вьетнаме?',
-        answers: [{ text: 'да', id: 1 }, { text: 'нет', id: 2 }, { text: 'смотря кто спрашивает', id: 3 }],
-        id: 1
+        answers: [{ text: 'да', id: '1' }, { text: 'нет', id: '2' }, { text: 'смотря кто спрашивает', id: '3' }],
+        id: '1'
     },
     {
         question: 'Сколько пальцев на ноге?',
-        answers: [{ text: 'сложно', id: 4 }, { text: '10', id: 5 }, { text: '5', id: 6 }],
-        id: 2
+        answers: [{ text: 'сложно', id: '4' }, { text: '10', id: '5' }, { text: '5', id: '6' }],
+        id: '2'
     },
     {
         question: 'Небо какого цвета?',
-        answers: [{ text: 'красное', id: 7 }, { text: 'зелёное', id: 8 }, { text: 'голубое', id: 9 }],
-        id: 3
+        answers: [{ text: 'красное', id: '7' }, { text: 'зелёное', id: '8' }, { text: 'голубое', id: '9' }],
+        id: '3'
     },
     {
         question: 'Какой год сегодня?',
-        answers: [{ text: '2019', id: 10 }, { text: '2020', id: 11 }, { text: '2021', id: 12 }],
-        id: 4
+        answers: [{ text: '2019', id: '10' }, { text: '2020', id: '11' }, { text: '2021', id: '12' }],
+        id: '4'
     },
     {
         question: 'Солнце это звезда?',
-        answers: [{ text: 'нет', id: 13 }, { text: 'да', id: 14 }, { text: 'планета', id: 15 }],
-        id: 5
+        answers: [{ text: 'нет', id: '13' }, { text: 'да', id: '14' }, { text: 'планета', id: '15' }],
+        id: '5'
     }
 ]
 
 type QuizState = {
     currentStep: number
-    userAnswers: UserAnswer[]
-}
-type UserAnswer = {
-    questionId: number
-    answerId: number
+    userAnswers: QuizAnswer[]
 }
 export const Quiz: React.FC<QuizProps> = (props) => {
+    const currentUser = useSelector((state: RootState) => state.user.currentUser);
+    const dispatch = useDispatch();
     const classes = useStyles();
+
+    const [open, setOpen] = useState(false);
     const [quiz, setQuiz] = useState<QuizState>({
-        userAnswers: [],
+        userAnswers: currentUser?.data?.quiz || [],
         currentStep: 0
     });
-    const [selectedAnswer, setSelectedAnswer] = useState(0);
+    const [selectedAnswer, setSelectedAnswer] = useState(currentUser?.data?.quiz?.[0]?.answerId);
     const quizQuestions = quizData;
     const quizProgress = quiz.userAnswers.length / quizQuestions.length * 100;
     const isNotCurrentAnswer = !Boolean(quiz.userAnswers[quiz.currentStep]) && !selectedAnswer;
@@ -73,7 +79,7 @@ export const Quiz: React.FC<QuizProps> = (props) => {
 
     const setAnswer = (e: React.ChangeEvent<HTMLInputElement>) => {
         const value = e.target.value;
-        setSelectedAnswer(window.parseInt(value));
+        setSelectedAnswer(value);
     }
 
     const nextQuestion = () => {
@@ -81,14 +87,14 @@ export const Quiz: React.FC<QuizProps> = (props) => {
         const lastUserAnswers = quiz.userAnswers;
         const prevAnswer = quiz.userAnswers[quiz.currentStep + 1];
         lastUserAnswers[quiz.currentStep] = {
-            questionId: currentQuestion.id,
-            answerId: selectedAnswer
+            questionId: String(currentQuestion.id),
+            answerId: String(selectedAnswer)
         };
 
         if (prevAnswer) {
             setSelectedAnswer(prevAnswer.answerId);
         } else {
-            setSelectedAnswer(0);
+            setSelectedAnswer(String(0));
         }
 
         setQuiz({
@@ -98,14 +104,14 @@ export const Quiz: React.FC<QuizProps> = (props) => {
     }
 
     const backQuestion = () => {
-        if (quiz.currentStep == 0) return;
+        if (quiz.currentStep === 0) return;
 
         const prevAnswer = quiz.userAnswers[quiz.currentStep - 1];
 
         if (prevAnswer) {
-            setSelectedAnswer(prevAnswer.answerId);
+            setSelectedAnswer(String(prevAnswer.answerId));
         } else {
-            setSelectedAnswer(0);
+            setSelectedAnswer(String(0));
         }
 
         setQuiz({
@@ -118,15 +124,19 @@ export const Quiz: React.FC<QuizProps> = (props) => {
         if (quiz.currentStep >= quizQuestions.length) return;
         const lastUserAnswers = quiz.userAnswers;
         lastUserAnswers[quiz.currentStep] = {
-            questionId: currentQuestion.id,
-            answerId: selectedAnswer
+            questionId: currentQuestion.id?.toString(),
+            answerId: selectedAnswer?.toString()!
         };
 
         setQuiz({
             ...quiz,
             userAnswers: [...lastUserAnswers]
         });
-        console.log(quiz);
+
+        (dispatch(updateCurrentUserData({ quiz: quiz.userAnswers })) as any)
+            .then((r: any) => {
+                setOpen(true);
+            });
     }
 
     return (
@@ -153,21 +163,27 @@ export const Quiz: React.FC<QuizProps> = (props) => {
                 <AppButton
                     onClick={backQuestion}
                     className="region-page__save"
-                    disabled={quiz.currentStep == 0}
+                    disabled={quiz.currentStep === 0}
                     color="default">назад</AppButton>
 
-                {!(quiz.currentStep + 1 == quizQuestions.length) && <AppButton
+                {!(quiz.currentStep + 1 === quizQuestions.length) && <AppButton
                     onClick={nextQuestion}
                     className="region-page__save"
-                    disabled={isNotCurrentAnswer || quiz.currentStep + 1 == quizQuestions.length}
+                    disabled={isNotCurrentAnswer || quiz.currentStep + 1 === quizQuestions.length}
                     color="primary">далее</AppButton>}
 
-                {quiz.currentStep + 1 == quizQuestions.length && <AppButton
+                {quiz.currentStep + 1 === quizQuestions.length && <AppButton
                     onClick={finishQuiz}
                     className="region-page__save"
                     disabled={isNotCurrentAnswer}
                     color="primary">завершить</AppButton>}
             </div>
+
+            <Snackbar open={open} autoHideDuration={3000} onClose={() => setOpen(false)}>
+                <MuiAlert onClose={() => setOpen(false)} elevation={6} variant="filled">
+                    данные сохранены.
+                </MuiAlert>
+            </Snackbar>
         </PageLayout>
     );
 };

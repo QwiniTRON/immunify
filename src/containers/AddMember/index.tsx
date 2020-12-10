@@ -11,6 +11,7 @@ import { useHistory } from 'react-router-dom';
 import { AppButton } from '../../components/UI/AppButton';
 import { addMember } from '../../store/user/action';
 import { RootState } from '../../store';
+import { BackButton } from '../../components/BackButton';
 
 
 type AddMemberProps = {
@@ -48,6 +49,10 @@ const AddMember: React.FC<AddMemberProps> = ({
         if (loading) return;
 
         let valid = true;
+        // sanitize
+        const sexText = sex.trim();
+        const nameText = name.trim();
+        const ageText = age.trim();
         const errors = {
             name: '',
             age: '',
@@ -55,22 +60,22 @@ const AddMember: React.FC<AddMemberProps> = ({
         }
 
         // валидация
-        if (name.length < 2) {
+        if (nameText.length < 2) {
             errors.name = 'имя должно быть не короче 2 символов';
             valid = false;
         }
-        if (+age < 1 || +age > 150) {
+        if (+ageText < 1 || +age > 150) {
             errors.age = 'возраст обязателен';
             valid = false;
         }
-        if (!sex) {
+        if (!sexText) {
             errors.sex = 'пол обязателен';
             valid = false;
         }
 
         if (valid) {
             addMember(name, +age, sex)
-                .then((r: any) => history.push('/profile/family'));
+                .then((r: any) => history.push('/profile'));
         } else {
             setErrors(errors);
         }
@@ -78,6 +83,7 @@ const AddMember: React.FC<AddMemberProps> = ({
 
     return (
         <div className={"reg " + clasess.root}>
+            <BackButton to="/profile" />
             <div className="reg__container">
                 <h1 className="reg__title">
                     Добавление члена семьи

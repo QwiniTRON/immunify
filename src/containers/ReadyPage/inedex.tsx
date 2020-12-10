@@ -35,6 +35,7 @@ export const ReadyPage: React.FC<ReadyPageProps> = (props) => {
                         name: 'region',
                         id: 'filled-age-native-simple',
                     }}
+                    label="вакцина"
                 >
                     <option aria-label="None" value="" />
                     <option value={10}>БСЖ</option>
@@ -46,6 +47,7 @@ export const ReadyPage: React.FC<ReadyPageProps> = (props) => {
                 <InputLabel htmlFor="filled-age-native-simple">какая по счёту</InputLabel>
                 <Select
                     native
+                    label="какая по счёту"
                     value={count}
                     onChange={(e) => setCount(Number(e.target.value))}
                     inputProps={{

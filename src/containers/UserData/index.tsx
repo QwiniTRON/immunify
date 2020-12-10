@@ -23,7 +23,7 @@ export const UserData: React.FC<UserDataProps> = (props) => {
 
             <CardLink
                 title="Указать регион"
-                subTitle="Укажите регион  проживания, чтобы узнатьэпидемиологическую обстановку"
+                subTitle="Укажите регион  проживания, чтобы узнать эпидемиологическую обстановку"
                 to="/profile/data/region"
             />
 
