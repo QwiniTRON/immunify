@@ -65,10 +65,6 @@ const App: React.FC<AppProps> = function ({
                 <Reg />
               </Route>}
 
-              <Route path="/login" exact>
-                <LoginPage />
-              </Route>
-
               {/* если пользователь не зарегистрировался, то ему доступен только роут reg - страница входа */}
               {!isAuth && <Redirect to="/reg" />}
 

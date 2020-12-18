@@ -24,13 +24,11 @@ const useStyles = makeStyles({
 
 export const SplashScreen: React.FC<SplashScreenProps> = (props) => {
     const classes = useStyles();
-    const text = "идёт загрузка :)";
 
     return (
         <div>
             <div className={classes.content}>
                 <img className={classes.img} src={logo} alt="app logo" />
-                <Typography>{text}</Typography>
             </div>
         </div>
     );

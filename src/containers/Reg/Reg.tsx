@@ -14,6 +14,8 @@ import { AppButton } from '../../components/UI/AppButton';
 import { register } from '../../store/user/action';
 import { RootState } from '../../store';
 import { AppLink } from '../../components/UI/AppLink';
+import { AppRadioGroup } from '../../components/UI/AppRadioGroup';
+import { AppRadioButton } from '../../components/UI/AppRadioButton';
 
 
 type RegProps = {
@@ -34,15 +36,11 @@ const Reg: React.FC<RegProps> = ({
     const [sex, setSex] = useState('');
     const [name, setName] = useState('');
     const [age, setAge] = useState('');
-    const [login, setLogin] = useState('');
-    const [password, setPassword] = useState('');
     const [loading, setLoading] = useState(false);
     const [errors, setErrors] = useState({
         name: '',
         age: '',
         sex: '',
-        email: '',
-        password: ''
     });
     const clasess = useStyle();
     const history = useHistory();
@@ -57,14 +55,10 @@ const Reg: React.FC<RegProps> = ({
         const sexText = sex.trim();
         const nameText = name.trim();
         const ageText = age.trim();
-        const loginText = login.trim();
-        const passwordText = password.trim();
         const errors = {
             name: '',
             age: '',
             sex: '',
-            email: '',
-            password: ''
         }
 
         // валидация
@@ -100,30 +94,14 @@ const Reg: React.FC<RegProps> = ({
         <div className="reg">
             <div className="reg__container">
                 <h1 className="reg__title">
-                    Добро пожаловать
-                    в Immunify
+                    Ваши данные
                 </h1>
                 <p className="reg__desc">
-                    Узнайте каким рискам вы подвержены и устраните их
+                    Узнайте каким рискам
+                    вы подвержены и устраните их
                 </p>
 
                 <form className="reg__form" onSubmit={handleSubmit}>
-                    <TextField
-                        label="email"
-                        variant="outlined"
-                        className="reg__input"
-                        value={login}
-                        id="email-field"
-                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => setLogin(e.target.value)} />
-
-                    <TextField
-                        label="пароль"
-                        variant="outlined"
-                        id="password-field"
-                        type="password"
-                        className="reg__input"
-                        value={password}
-                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => setPassword(e.target.value)} />
 
                     <Typography color="error">{errors.name}</Typography>
                     <TextField
@@ -147,26 +125,15 @@ const Reg: React.FC<RegProps> = ({
 
                     <p>ваш пол?</p>
                     <Typography color="error">{errors.sex}</Typography>
-                    <RadioGroup row name="position" onChange={(e) => setSex(e.target.value)} value={sex}>
-                        <FormControlLabel
-                            control={<Radio color="primary" />}
-                            value="man"
-                            label="мужчина"
-                            classes={{
-                                label: clasess.sexLabel
-                            }}
-                        />
-                        <FormControlLabel
-                            control={<Radio color="primary" />}
-                            value="woman"
-                            label="женщина"
-                            classes={{
-                                label: clasess.sexLabel
-                            }}
-                        />
-                    </RadioGroup>
 
-                    <AppLink to="/login">войти</AppLink>
+                    <AppRadioGroup onChange={(value: string) => {
+                        setSex(value);
+                    }}
+                        value={sex}
+                    >
+                        <AppRadioButton value="man" text="М" />
+                        <AppRadioButton value="woman" text="Ж" />
+                    </AppRadioGroup>
 
                     <AppButton disabled={loading} type="submit" className="reg_start">
                         Начать

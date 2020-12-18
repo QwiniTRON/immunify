@@ -20,7 +20,7 @@ type ProfileProps = {
 const useStyle = makeStyles({
   root: {
     padding: 5
-  }
+  } 
 });
 
 export const Profile: React.FC<ProfileProps> = (props) => {

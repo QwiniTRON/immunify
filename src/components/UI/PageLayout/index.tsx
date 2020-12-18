@@ -28,10 +28,9 @@ export const PageLayout: React.FC<PageLayoutProps> = ({
 
     return (
         <div className={s("page-layout", props.className, 'page-anim')}>
-            <Box zIndex={10} position="sticky" top={0}><BackButton to={ButtonBackto} /></Box>
-            <Paper elevation={6} className={s(classes.root, 'page-layout__content')}>
+            <div className={s(classes.root, 'page-layout__content')}>
                 {children}
-            </Paper>
+            </div>
         </div>
     );
 };

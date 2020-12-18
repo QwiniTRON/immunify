@@ -7,14 +7,15 @@ import BottomNavigation from '@material-ui/core/BottomNavigation';
 import BottomNavigationAction from '@material-ui/core/BottomNavigationAction';
 import { useHistory, useLocation, Link } from 'react-router-dom';
 import InsertInvitationIcon from '@material-ui/icons/InsertInvitation';
-import PersonIcon from '@material-ui/icons/Person';
 import ListAltIcon from '@material-ui/icons/ListAlt';
 import PostAddIcon from '@material-ui/icons/PostAdd';
+import SupervisorAccountIcon from '@material-ui/icons/SupervisorAccount';
 import { useSelector } from 'react-redux';
 
 import "./Layout.scss";
 import { RootState } from '../../store';
 import { User } from '../../store/types';
+import { BackButton } from '../BackButton';
 
 // import { CalendarIcon, PassportIcon, ProfileIcon, TakeIcon } from '../UI/Icons/Icons';
 
@@ -60,7 +61,7 @@ export const Layout: React.FC<LayoutProps> = ({
     return (
         <div className={"layout " + classes.layout}>
             {!hideHeader && <header className="layout__header">
-                <Link to="/"><img src={Logo} alt="immunify logo" /></Link>
+                <BackButton />
 
                 <Typography className={classes.title} variant="h3">
                     {titleCurrentName? currentUser?.name : title}
@@ -88,7 +89,7 @@ export const Layout: React.FC<LayoutProps> = ({
                             root: classes.navIcon,
                         }}
                         label="профиль"
-                        icon={<PersonIcon />}
+                        icon={<SupervisorAccountIcon />}
                         value="/profile"
                     />
 
