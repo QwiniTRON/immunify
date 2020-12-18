@@ -1,10 +1,8 @@
-import react, { useState } from 'react';
+import React, { useState } from 'react';
 import Typography from '@material-ui/core/Typography';
 import TextField from '@material-ui/core/TextField';
-import RadioGroup from '@material-ui/core/RadioGroup';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import Radio from '@material-ui/core/Radio';
-import { makeStyles, useTheme } from '@material-ui/core/styles';
+import Box from '@material-ui/core/Box';
+import { makeStyles } from '@material-ui/core/styles';
 import { connect } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 
@@ -13,9 +11,9 @@ import './reg.scss';
 import { AppButton } from '../../components/UI/AppButton';
 import { register } from '../../store/user/action';
 import { RootState } from '../../store';
-import { AppLink } from '../../components/UI/AppLink';
 import { AppRadioGroup } from '../../components/UI/AppRadioGroup';
 import { AppRadioButton } from '../../components/UI/AppRadioButton';
+import { s } from '../../utils/Styels';
 
 
 type RegProps = {
@@ -27,6 +25,13 @@ type RegProps = {
 const useStyle = makeStyles({
     sexLabel: {
         fontSize: 14
+    },
+    sexInput: {
+        fontSize: 36,
+        flexGrow: 1
+    },
+    _sexInputMarginRight: {
+        marginRight: 15
     }
 });
 
@@ -103,39 +108,44 @@ const Reg: React.FC<RegProps> = ({
 
                 <form className="reg__form" onSubmit={handleSubmit}>
 
-                    <Typography color="error">{errors.name}</Typography>
                     <TextField
                         label="как вас зовут?"
                         id="name-field"
                         variant="outlined"
                         className="reg__input"
                         value={name}
-                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => setName(e.target.value)} />
+                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => setName(e.target.value)}
+                        error={Boolean(errors.name)}
+                        helperText={errors.name} />
 
-                    <Typography color="error">{errors.age}</Typography>
                     <TextField
                         id="age-field"
                         label="сколько вам лет?"
                         type="number"
                         variant="outlined"
                         className="reg__input"
-                        value={age}
+                        value={+age}
                         onChange={(e: React.ChangeEvent<HTMLInputElement>) => setAge(e.target.value)}
+                        error={Boolean(errors.age)}
+                        helperText={errors.age}
                     />
 
-                    <p>ваш пол?</p>
+                    <Box color="#acacac" marginBottom={1}>Выберите свой пол:</Box>
+
                     <Typography color="error">{errors.sex}</Typography>
 
-                    <AppRadioGroup onChange={(value: string) => {
-                        setSex(value);
-                    }}
-                        value={sex}
-                    >
-                        <AppRadioButton value="man" text="М" />
-                        <AppRadioButton value="woman" text="Ж" />
-                    </AppRadioGroup>
+                    <Box display="flex" justifyContent="space-between">
+                        <AppRadioGroup onChange={(value: string) => {
+                            setSex(value);
+                        }}
+                            value={sex}
+                        >
+                            <AppRadioButton value="man" text="М" classes={{ root: s(clasess.sexInput, clasess._sexInputMarginRight) }} />
+                            <AppRadioButton value="woman" text="Ж" classes={{ root: clasess.sexInput }} />
+                        </AppRadioGroup>
+                    </Box>
 
-                    <AppButton disabled={loading} type="submit" className="reg_start">
+                    <AppButton disabled={loading} type="submit" className="reg_start" appColor="linear">
                         Начать
                     </AppButton>
                 </form>
