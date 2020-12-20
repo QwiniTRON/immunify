@@ -74,9 +74,9 @@ const App: React.FC<AppProps> = function ({
                 </Layout>
               </Route>
 
-              <Route path="/reg/success" exact>
+              {/* <Route path="/reg/success" exact>
                 <RegSuccess />
-              </Route>
+              </Route> */}
 
               <Route path="/calendar" exact>
                 <Layout title="Календарь">
@@ -109,11 +109,11 @@ const App: React.FC<AppProps> = function ({
                 </Layout>
               </Route> */}
 
-              <Route path="/profile/data" exact>
+              {/* <Route path="/profile/data" exact>
                 <Layout title="ваши данные">
                   <UserData />
                 </Layout>
-              </Route>
+              </Route> */}
 
               <Route path="/passport/ready" exact>
                 <Layout title="Прошедшие вакцинации">

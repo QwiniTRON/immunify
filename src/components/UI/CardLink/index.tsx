@@ -14,6 +14,7 @@ type CardLinkProps = {
     status?: "success" | "error"
     statusLabel?: string
     to: string
+    Icon?: any
 }
 
 const useStyle = makeStyles((theme) => ({
@@ -33,11 +34,10 @@ const useStyle = makeStyles((theme) => ({
         margin: 'auto 0',
         right: '15px',
         width: 24,
-        height: 24,
-
-        '& svg': {
-            color: '#ACACAC'
-        }
+        height: 24
+    },
+    arrowSvg: {
+        color: '#ACACAC'
     },
     title: {
         fontSize: 24
@@ -64,7 +64,8 @@ export const CardLink: React.FC<CardLinkProps> = ({
     subTitle,
     to,
     status,
-    statusLabel
+    statusLabel,
+    Icon
 }) => {
     const classes = useStyle();
     let StatusIcon = (<ClearIcon className={classes.statusIcon} />);
@@ -79,7 +80,7 @@ export const CardLink: React.FC<CardLinkProps> = ({
                 <p className={classes.title}>{title}</p>
                 <p>{subTitle}</p>
                 <div className={classes.arrow}>
-                    <ArrowForwardIosIcon />
+                    {Icon ? Icon : <ArrowForwardIosIcon className={classes.arrowSvg} />}
                 </div>
 
                 {isStatus &&

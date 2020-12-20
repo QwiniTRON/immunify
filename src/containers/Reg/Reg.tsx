@@ -84,7 +84,7 @@ const Reg: React.FC<RegProps> = ({
             register(name, +age, sex)
                 .then((r: any) => {
                     if (r) {
-                        history.push('/reg/success');
+                        history.push('/profile');
                     }
                 })
                 .catch((e: any) => {
@@ -124,7 +124,7 @@ const Reg: React.FC<RegProps> = ({
                         type="number"
                         variant="outlined"
                         className="reg__input"
-                        value={+age}
+                        value={age}
                         onChange={(e: React.ChangeEvent<HTMLInputElement>) => setAge(e.target.value)}
                         error={Boolean(errors.age)}
                         helperText={errors.age}

@@ -1,18 +1,31 @@
 import react from 'react';
 import { CardLink } from '../../components/UI/CardLink';
-import { PageLayout } from '../../components/UI/PageLayout';
+import ListAltIcon from '@material-ui/icons/ListAlt';
+import { makeStyles } from '@material-ui/core/styles';
 
 type UserDataProps = {
 
 }
 
+
+const useStyle = makeStyles((theme) => ({
+    svgIcon: {
+        fontSize: 60,
+        color: 'linear-gradient(91.68deg, #9BC83F -3.91%, #67CDFD 46.87%, #9BC83F 112.32%)'
+    }
+}));
+
+
 export const UserData: React.FC<UserDataProps> = (props) => {
+    const classes = useStyle();
+
     return (
-        <PageLayout>
+        <>
             <CardLink
                 title="Пройти опрос"
                 subTitle="Ответьте на несколько вопросов, чтобы узнать о возможных рисках"
                 to="/profile/data/quiz"
+                Icon={<ListAltIcon color="primary" fontSize="large" className={classes.svgIcon} />}
             />
 
             <CardLink
@@ -27,11 +40,11 @@ export const UserData: React.FC<UserDataProps> = (props) => {
                 to="/profile/data/region"
             />
 
-            <CardLink
+            {/* <CardLink
                 title="Ник и ключ доступа"
                 subTitle="информация о вас"
                 to="/profile/data/region"
-            />
-        </PageLayout>
+            /> */}
+        </>
     );
 };
