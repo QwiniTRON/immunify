@@ -6,6 +6,7 @@ import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos';
 import CheckIcon from '@material-ui/icons/Check';
 import ClearIcon from '@material-ui/icons/Clear';
 
+
 import { sif } from '../../../utils/Styels';
 
 type CardLinkProps = {
@@ -20,21 +21,15 @@ type CardLinkProps = {
 const useStyle = makeStyles((theme) => ({
     root: {
         padding: 15,
-        paddingRight: 60,
         margin: '5px 0',
-        position: 'relative'
+        position: 'relative',
+        display: 'flex',
+        alignItems: 'center'
     },
     rootLink: {
         textDecoration: 'none'
     },
     arrow: {
-        position: 'absolute',
-        top: '0',
-        bottom: '0',
-        margin: 'auto 0',
-        right: '15px',
-        width: 24,
-        height: 24
     },
     arrowSvg: {
         color: '#ACACAC'
@@ -77,8 +72,10 @@ export const CardLink: React.FC<CardLinkProps> = ({
             <Paper classes={{
                 root: classes.root
             }}>
-                <p className={classes.title}>{title}</p>
-                <p>{subTitle}</p>
+                <div>
+                    <p className={classes.title}>{title}</p>
+                    <p>{subTitle}</p>
+                </div>
                 <div className={classes.arrow}>
                     {Icon ? Icon : <ArrowForwardIosIcon className={classes.arrowSvg} />}
                 </div>

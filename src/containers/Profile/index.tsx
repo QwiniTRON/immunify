@@ -11,6 +11,8 @@ import { Link } from 'react-router-dom';
 import { AppButton } from '../../components/UI/AppButton';
 import { UserCard } from '../../components/UI/UserCard';
 import { UserData } from '../UserData';
+import { Layout } from '../../components/Layout/Layout';
+import { BackButton } from '../../components/BackButton';
 
 type ProfileProps = {
 
@@ -35,39 +37,41 @@ export const Profile: React.FC<ProfileProps> = (props) => {
   };
 
   return (
-    <PageLayout className="profile-page">
+    <Layout title="Профиль" BackButtonCustom={<BackButton text={'test'} to='/' />}>
+      <PageLayout className="profile-page">
 
-      {user?.family.length == 0 ?
-        <UserData /> :
-        (
-          <>
-            <p className="family-page__description">Введите данные о членах вашей семьи, чтобы застраховать их от возможных осложнений</p>
+        {user?.family.length == 0 ?
+          <UserData /> :
+          (
+            <>
+              <p className="family-page__description">Введите данные о членах вашей семьи, чтобы застраховать их от возможных осложнений</p>
 
-            <UserCard
-              active={user == currentUser}
-              progress={10}
-              title={String(user?.name)}
-              subtitle={String(user?.age)}
-              to={`/family/${user?.name}`}
-              avatarLetters={String(user?.name)[0]} />
-
-            {user?.family.map((u) => (
               <UserCard
-                key={u.name}
-                active={u == currentUser}
+                active={user == currentUser}
                 progress={10}
-                title={String(u?.name)}
-                subtitle={String(u?.age)}
-                to={`/family/${u?.name}`}
-                avatarLetters={String(u?.name)[0]} />
-            ))}
-          </>
-        )
-      }
+                title={String(user?.name)}
+                subtitle={String(user?.age)}
+                to={`/family/${user?.name}`}
+                avatarLetters={String(user?.name)[0]} />
+
+              {user?.family.map((u) => (
+                <UserCard
+                  key={u.name}
+                  active={u == currentUser}
+                  progress={10}
+                  title={String(u?.name)}
+                  subtitle={String(u?.age)}
+                  to={`/family/${u?.name}`}
+                  avatarLetters={String(u?.name)[0]} />
+              ))}
+            </>
+          )
+        }
 
 
-      <Link to="/family/add"><AppButton floated className="family-page__add">добавить</AppButton></Link>
+        <Link to="/family/add"><AppButton floated className="family-page__add">добавить</AppButton></Link>
 
-    </PageLayout>
+      </PageLayout>
+    </Layout>
   );
 };

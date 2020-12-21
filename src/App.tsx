@@ -24,6 +24,7 @@ import { SplashScreen } from './components/SplashScreen';
 import { MemberInfo } from './containers/MemberInfo';
 import { MainPage } from './containers/MainPage';
 import { LoginPage } from './containers/LoginPage';
+import { BackButton } from './components/BackButton';
 
 
 type AppProps = {
@@ -85,9 +86,7 @@ const App: React.FC<AppProps> = function ({
               </Route>
 
               <Route path="/" exact>
-                <Layout title="Профиль">
-                  <Profile />
-                </Layout>
+                <Profile />
               </Route>
 
               <Route path="/passport" exact>

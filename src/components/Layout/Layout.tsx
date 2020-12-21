@@ -24,6 +24,7 @@ type LayoutProps = {
     hideNav?: boolean
     hideHeader?: boolean
     titleCurrentName?: boolean
+    BackButtonCustom?: any | React.ReactElement
 }
 
 const useStyles = makeStyles((theme) => ({
@@ -48,7 +49,8 @@ export const Layout: React.FC<LayoutProps> = ({
     title,
     hideNav,
     hideHeader,
-    titleCurrentName
+    titleCurrentName,
+    BackButtonCustom
 }) => {
     const classes = useStyles();
     const history = useHistory();
@@ -57,14 +59,15 @@ export const Layout: React.FC<LayoutProps> = ({
 
     // определяем в какой мы находимся сущности(разделе)
     const parentRoute = '/' + locationData.pathname.split('/')[1];
+    
 
     return (
         <div className={"layout " + classes.layout}>
             {!hideHeader && <header className="layout__header">
-                <BackButton />
+                {BackButtonCustom? BackButtonCustom : <BackButton />}
 
                 <Typography className={classes.title} variant="h3">
-                    {titleCurrentName? currentUser?.name : title}
+                    {titleCurrentName ? currentUser?.name : title}
                 </Typography>
 
                 <Avatar className={classes.avatar}>
@@ -72,9 +75,13 @@ export const Layout: React.FC<LayoutProps> = ({
                 </Avatar>
             </header>}
 
+
+
             <main className="layout__content">
                 {children}
             </main>
+
+
 
             {!hideNav && <div className="layout__navigation">
                 <BottomNavigation

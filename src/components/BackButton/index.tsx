@@ -1,11 +1,13 @@
 import react from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
-import {makeStyles} from '@material-ui/core/styles';
+import { makeStyles } from '@material-ui/core/styles';
 
 
 type BackButtonProps = {
     to?: string
+    text?: string
+    SubstituteComponent?: any
 }
 
 const useStyles = makeStyles({
@@ -22,18 +24,18 @@ const useStyles = makeStyles({
     }
 });
 
-export const BackButton: React.FC<BackButtonProps> = ({to}) => {
+export const BackButton: React.FC<BackButtonProps> = ({ to, text, SubstituteComponent = 'div' }) => {
     const locationData = useLocation();
     const pathNames = locationData.pathname.split('/').slice(1);
     const pathToBack = '/' + pathNames.slice(0, -1).join('/');
     const classes = useStyles();
 
-    if(pathToBack == '/') return (<div></div>);
+    if (pathToBack == '/' && !Boolean(to)) return (<SubstituteComponent></SubstituteComponent>);
 
     return (
         <Link to={to || pathToBack} className={classes.root}>
             <ChevronLeftIcon className={classes.icon} />
-            <span className={classes.text}> назад</span>
+            <span className={classes.text}> {text || 'назад'}</span>
         </Link>
     );
 };
