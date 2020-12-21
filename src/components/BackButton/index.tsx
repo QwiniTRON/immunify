@@ -28,7 +28,7 @@ export const BackButton: React.FC<BackButtonProps> = ({to}) => {
     const pathToBack = '/' + pathNames.slice(0, -1).join('/');
     const classes = useStyles();
 
-    if(pathToBack == '/') return null;
+    if(pathToBack == '/') return (<div></div>);
 
     return (
         <Link to={to || pathToBack} className={classes.root}>

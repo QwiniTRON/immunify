@@ -24,20 +24,20 @@ export const UserData: React.FC<UserDataProps> = (props) => {
             <CardLink
                 title="Пройти опрос"
                 subTitle="Ответьте на несколько вопросов, чтобы узнать о возможных рисках"
-                to="/profile/data/quiz"
+                to="/data/quiz"
                 Icon={<ListAltIcon color="primary" fontSize="large" className={classes.svgIcon} />}
             />
 
             <CardLink
                 title="Выбрать профессию"
                 subTitle="Укажите род деятельности, чтобы узнать возможный профессиональный риск"
-                to="/profile/data/profession"
+                to="/data/profession"
             />
 
             <CardLink
                 title="Указать регион"
                 subTitle="Укажите регион  проживания, чтобы узнать эпидемиологическую обстановку"
-                to="/profile/data/region"
+                to="/data/region"
             />
 
             {/* <CardLink

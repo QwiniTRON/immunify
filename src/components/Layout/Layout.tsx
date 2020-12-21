@@ -90,7 +90,7 @@ export const Layout: React.FC<LayoutProps> = ({
                         }}
                         label="профиль"
                         icon={<SupervisorAccountIcon />}
-                        value="/profile"
+                        value="/"
                     />
 
                     <BottomNavigationAction

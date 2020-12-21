@@ -48,7 +48,7 @@ export const Profile: React.FC<ProfileProps> = (props) => {
               progress={10}
               title={String(user?.name)}
               subtitle={String(user?.age)}
-              to={`/profile/family/${user?.name}`}
+              to={`/family/${user?.name}`}
               avatarLetters={String(user?.name)[0]} />
 
             {user?.family.map((u) => (
@@ -58,7 +58,7 @@ export const Profile: React.FC<ProfileProps> = (props) => {
                 progress={10}
                 title={String(u?.name)}
                 subtitle={String(u?.age)}
-                to={`/profile/family/${u?.name}`}
+                to={`/family/${u?.name}`}
                 avatarLetters={String(u?.name)[0]} />
             ))}
           </>
@@ -66,7 +66,7 @@ export const Profile: React.FC<ProfileProps> = (props) => {
       }
 
 
-      <Link to="/profile/family/add"><AppButton floated className="family-page__add">добавить</AppButton></Link>
+      <Link to="/family/add"><AppButton floated className="family-page__add">добавить</AppButton></Link>
 
     </PageLayout>
   );

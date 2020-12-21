@@ -68,11 +68,11 @@ const App: React.FC<AppProps> = function ({
               {/* если пользователь не зарегистрировался, то ему доступен только роут reg - страница входа */}
               {!isAuth && <Redirect to="/reg" />}
 
-              <Route path="/" exact>
+              {/* <Route path="/" exact>
                 <Layout title="пока главная">
                   <MainPage />
                 </Layout>
-              </Route>
+              </Route> */}
 
               {/* <Route path="/reg/success" exact>
                 <RegSuccess />
@@ -84,7 +84,7 @@ const App: React.FC<AppProps> = function ({
                 </Layout>
               </Route>
 
-              <Route path="/profile" exact>
+              <Route path="/" exact>
                 <Layout title="Профиль">
                   <Profile />
                 </Layout>
@@ -127,36 +127,38 @@ const App: React.FC<AppProps> = function ({
                 </Layout>
               </Route>
 
-              {/* трёх уровневые роуты */}
-              <Route path="/profile/family/add" exact>
+              <Route path="/family/add" exact>
                 <Layout title="Данные семьи">
                   <AddMember />
                 </Layout>
               </Route>
 
-              <Route path="/profile/family/:id" exact>
+              <Route path="/family/:id" exact>
                 <Layout title="Данные семьи">
                   <MemberInfo />
                 </Layout>
               </Route>
 
-              <Route path="/profile/data/quiz" exact>
+              <Route path="/data/quiz" exact>
                 <Layout title="опросник">
                   <Quiz />
                 </Layout>
               </Route>
 
-              <Route path="/profile/data/profession" exact>
+              <Route path="/data/profession" exact>
                 <Layout title="выбор профессии">
                   <Profession />
                 </Layout>
               </Route>
 
-              <Route path="/profile/data/region" exact>
+              <Route path="/data/region" exact>
                 <Layout title="выбор регоина">
                   <Region />
                 </Layout>
               </Route>
+
+              {/* трёх уровневые роуты */}
+
 
               <Redirect to="/" />
 
