@@ -16,6 +16,8 @@ import { AppButton } from '../../components/UI/AppButton';
 import { updateCurrentUserData } from '../../store/user/action';
 import { RootState } from '../../store';
 import { Layout } from '../../components/Layout/Layout';
+import { usePathByMainUser } from '../../hooks';
+import { BackButton } from '../../components/BackButton';
 
 
 type RegionProps = {
@@ -24,6 +26,7 @@ type RegionProps = {
 
 export const Region: React.FC<RegionProps> = (props) => {
     const currentUser = useSelector((state: RootState) => state.user.currentUser);
+    const pathToBack = usePathByMainUser('/profile', '/profile/data');
     const dispatch = useDispatch();
 
     const [open, setOpen] = useState(false);
@@ -42,7 +45,7 @@ export const Region: React.FC<RegionProps> = (props) => {
     }
 
     return (
-        <Layout title="выбор регоина">
+        <Layout title="выбор регоина" BackButtonCustom={<BackButton to={pathToBack} />} >
             <PageLayout className="region-page">
                 <h4 className="region-page__title">В каком регионе Вы проживаете?</h4>
 
@@ -88,6 +91,6 @@ export const Region: React.FC<RegionProps> = (props) => {
                 </MuiAlert>
                 </Snackbar>
             </PageLayout>
-        </Layout>
+        </Layout >
     );
 };

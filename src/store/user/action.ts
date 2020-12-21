@@ -205,7 +205,7 @@ export function userInit() {
                 dispatch(setUser(userFromStore));
 
                 if (currentUserName && userFromStore.name !== currentUserName) {
-                    const newCurrentUser = UserModel.getUserByName_u(userFromStore, currentUserName);
+                    const newCurrentUser = UserModel.getUserByName$u(userFromStore, currentUserName);
                     dispatch(setCurrentUser(newCurrentUser!));
                 }
 

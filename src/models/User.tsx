@@ -1,9 +1,9 @@
 import { User } from "../store/types";
 import { UserStore } from '../store/user';
-import { store } from '../store';
+import { RootState, store } from '../store';
 
 ///////////////////////////////////////////////////////////////////////////////
-// * methodName_suffix - Это тот же метод только с перегрузкой параметров  *///
+// * methodName$suffix - Это тот же метод только с перегрузкой параметров  *///
 ///////////////////////////////////////////////////////////////////////////////
 
 export class UserModel {
@@ -14,10 +14,12 @@ export class UserModel {
         return localStorage.getItem(UserModel.currentUserStoreKey);
     }
 
+
     static saveUser(user: User) {
         const stateForSave = JSON.stringify(user);
         localStorage.setItem(UserModel.userDataStoreKey, stateForSave);
     }
+
 
     static getUserData(): User | null {
         const localStorageData = localStorage.getItem(UserModel.userDataStoreKey);
@@ -26,9 +28,11 @@ export class UserModel {
         return JSON.parse(localStorageData);
     }
 
+
     static changeCurrentUser(userName: string) {
         localStorage.setItem(UserModel.currentUserStoreKey, userName);
     }
+
 
     static getUserByName(userStore: UserStore, userName: string): User | null {
         const allUsers = [userStore.user, ...userStore.user?.family!];
@@ -37,11 +41,22 @@ export class UserModel {
         if (!newCurrentUser) return null;
         return newCurrentUser;
     }
-    static getUserByName_u(user: User, userName: string): User | null {
+    static getUserByName$u(user: User, userName: string): User | null {
         const allUsers = [user, ...user?.family!];
         const newCurrentUser: User = allUsers.find((u) => u?.name == userName)!;
 
         if (!newCurrentUser) return null;
         return newCurrentUser;
+    }
+
+
+    static getCurrentUserDataStatus() {
+        const user: RootState = store.getState();
+        let userDataStatus = false;
+        if (user.user.currentUser?.data?.quiz?.length == 5) {
+            userDataStatus = true;
+        }
+
+        return userDataStatus;
     }
 }

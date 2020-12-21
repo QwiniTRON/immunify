@@ -25,6 +25,7 @@ import { MemberInfo } from './containers/MemberInfo';
 import { MainPage } from './containers/MainPage';
 import { LoginPage } from './containers/LoginPage';
 import { BackButton } from './components/BackButton';
+import { Patient } from './containers/Patient';
 
 
 type AppProps = {
@@ -62,7 +63,6 @@ const App: React.FC<AppProps> = function ({
 
             <Switch location={location}>
 
-
               {!isAuth && <Route path="/reg" exact>
                 <Reg />
               </Route>}
@@ -70,12 +70,16 @@ const App: React.FC<AppProps> = function ({
               {/* если пользователь не зарегистрировался, то ему доступен только роут reg - страница входа */}
               {!isAuth && <Redirect to="/reg" />}
 
-              <Route path="/calendar" exact>
-                <Calendar />
+              <Route path="/" exact>
+                <MainPage />
               </Route>
 
-              <Route path="/" exact>
+              <Route path="/profile" exact>
                 <Profile />
+              </Route>
+
+              <Route path="/calendar" exact>
+                <Calendar />
               </Route>
 
               <Route path="/passport" exact>
@@ -86,10 +90,14 @@ const App: React.FC<AppProps> = function ({
                 <Take />
               </Route>
 
-              {/* двух шаговые роуты */}
 
+              {/* двух шаговые роуты */}
               <Route path="/passport/ready" exact>
                 <ReadyPage />
+              </Route>
+
+              <Route path="/profile/data" exact>
+                <Patient />
               </Route>
 
               <Route path="/passport/:id" exact>
@@ -115,6 +123,7 @@ const App: React.FC<AppProps> = function ({
               <Route path="/data/region" exact>
                 <Region />
               </Route>
+
 
               {/* трёх уровневые роуты */}
 

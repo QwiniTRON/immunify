@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useRouteMatch } from 'react-router-dom';
+import { useHistory, useRouteMatch } from 'react-router-dom';
 import { connect } from 'react-redux';
 import Typography from '@material-ui/core/Typography';
 import TextField from '@material-ui/core/TextField';
@@ -18,6 +18,7 @@ import { AppButtonGroup } from '../../components/UI/ButtonGroup';
 import { AppButton } from '../../components/UI/AppButton';
 import { changeCurrentUser, updateMember } from '../../store/user/action';
 import { Layout } from '../../components/Layout/Layout';
+import { BackButton } from '../../components/BackButton';
 
 type MemberInfoParams = {
     id: string
@@ -37,6 +38,8 @@ const MemberInfo: React.FC<MemberInfoProps> = ({
     currentUser,
     updateMember
 }) => {
+    const history = useHistory();
+
     // определяем пользователя
     const id = useRouteMatch<MemberInfoParams>()?.params?.id;
     let allUsers = [user, ...user?.family!];
@@ -93,7 +96,7 @@ const MemberInfo: React.FC<MemberInfoProps> = ({
     }
 
     return (
-        <Layout title="Данные семьи">
+        <Layout title="Данные семьи" BackButtonCustom={<BackButton to="/profile" />}>
             <PageLayout className="member-page" ButtonBackto="/profile">
                 <form className="reg__form" onSubmit={handleSubmit}>
                     <Box marginY={2}>
@@ -145,7 +148,9 @@ const MemberInfo: React.FC<MemberInfoProps> = ({
                         <AppButton onClick={handleSubmit}>сохранить</AppButton>
                     }
                     {!isSelected &&
-                        <AppButton onClick={(e: React.MouseEvent) => changeCurrentUser(id)} color="secondary">выбрать</AppButton>
+                        <AppButton onClick={(e: React.MouseEvent) => (changeCurrentUser as Function)(id).then(() => { 
+                            history.push('/profile');
+                        })} color="secondary">выбрать</AppButton>
                     }
                     {isRootUser &&
                         <AppButton color="default">удалить</AppButton>

@@ -10,8 +10,12 @@ type ButtonGroupProps = {
 const useStyles = makeStyles({
     body: {
         display: 'flex',
-        justifyContent: 'space-between',
-        padding: 5
+        justifyContent: 'center',
+        padding: 5,
+
+        '& > *': {
+            margin: '0 10px'
+        }
     },
     floated: {
         position: 'fixed',

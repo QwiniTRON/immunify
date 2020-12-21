@@ -14,6 +14,8 @@ import { AppButton } from '../../components/UI/AppButton';
 import { RootState } from '../../store';
 import { updateCurrentUserData } from '../../store/user/action';
 import { Layout } from '../../components/Layout/Layout';
+import { BackButton } from '../../components/BackButton';
+import { usePathByMainUser } from '../../hooks';
 
 
 type ProfessionProps = {
@@ -22,6 +24,7 @@ type ProfessionProps = {
 
 export const Profession: React.FC<ProfessionProps> = (props) => {
     const currentUser = useSelector((state: RootState) => state.user.currentUser);
+    const pathToBack = usePathByMainUser('/profile', '/profile/data');
     const dispatch = useDispatch();
 
     const [open, setOpen] = useState(false);
@@ -39,7 +42,7 @@ export const Profession: React.FC<ProfessionProps> = (props) => {
     }
 
     return (
-        <Layout title="выбор профессии">
+        <Layout title="выбор профессии" BackButtonCustom={<BackButton to={pathToBack} />} >
             <PageLayout className="profession-page">
                 <h4 className="region-page__title">Чем вы занимаетесь?</h4>
 

@@ -18,6 +18,8 @@ import { RootState } from '../../store';
 import { updateCurrentUserData } from '../../store/user/action';
 import { QuizAnswer } from '../../store/types';
 import { Layout } from '../../components/Layout/Layout';
+import { BackButton } from '../../components/BackButton';
+import { usePathByMainUser } from '../../hooks';
 
 type QuizProps = {
 
@@ -63,6 +65,8 @@ type QuizState = {
 }
 export const Quiz: React.FC<QuizProps> = (props) => {
     const currentUser = useSelector((state: RootState) => state.user.currentUser);
+    const pathToBack = usePathByMainUser('/profile', '/profile/data');
+
     const dispatch = useDispatch();
     const classes = useStyles();
 
@@ -141,7 +145,7 @@ export const Quiz: React.FC<QuizProps> = (props) => {
     }
 
     return (
-        <Layout title="опросник">
+        <Layout title="опросник" BackButtonCustom={<BackButton to={pathToBack} />} >
             <PageLayout className="quiz-page">
                 <LinearProgress variant="determinate" value={quizProgress} />
                 <p>вопрос {`${quiz.currentStep + 1}/${quizQuestions.length}`}</p>
