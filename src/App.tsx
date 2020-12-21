@@ -62,6 +62,7 @@ const App: React.FC<AppProps> = function ({
 
             <Switch location={location}>
 
+
               {!isAuth && <Route path="/reg" exact>
                 <Reg />
               </Route>}
@@ -69,20 +70,8 @@ const App: React.FC<AppProps> = function ({
               {/* если пользователь не зарегистрировался, то ему доступен только роут reg - страница входа */}
               {!isAuth && <Redirect to="/reg" />}
 
-              {/* <Route path="/" exact>
-                <Layout title="пока главная">
-                  <MainPage />
-                </Layout>
-              </Route> */}
-
-              {/* <Route path="/reg/success" exact>
-                <RegSuccess />
-              </Route> */}
-
               <Route path="/calendar" exact>
-                <Layout title="Календарь">
-                  <Calendar />
-                </Layout>
+                <Calendar />
               </Route>
 
               <Route path="/" exact>
@@ -90,74 +79,44 @@ const App: React.FC<AppProps> = function ({
               </Route>
 
               <Route path="/passport" exact>
-                <Layout title="Иммунный пасспорт" titleCurrentName>
-                  <Passport />
-                </Layout>
+                <Passport />
               </Route>
 
               <Route path="/take" exact>
-                <Layout title="Запись">
-                  <Take />
-                </Layout>
+                <Take />
               </Route>
 
               {/* двух шаговые роуты */}
-              {/* <Route path="/profile/family" exact>
-                <Layout title="Данные семьи">
-                  <Family />
-                </Layout>
-              </Route> */}
-
-              {/* <Route path="/profile/data" exact>
-                <Layout title="ваши данные">
-                  <UserData />
-                </Layout>
-              </Route> */}
 
               <Route path="/passport/ready" exact>
-                <Layout title="Прошедшие вакцинации">
-                  <ReadyPage />
-                </Layout>
+                <ReadyPage />
               </Route>
 
               <Route path="/passport/:id" exact>
-                <Layout title="Болезнь">
-                  <Diseas />
-                </Layout>
+                <Diseas />
               </Route>
 
               <Route path="/family/add" exact>
-                <Layout title="Данные семьи">
-                  <AddMember />
-                </Layout>
+                <AddMember />
               </Route>
 
               <Route path="/family/:id" exact>
-                <Layout title="Данные семьи">
-                  <MemberInfo />
-                </Layout>
+                <MemberInfo />
               </Route>
 
               <Route path="/data/quiz" exact>
-                <Layout title="опросник">
-                  <Quiz />
-                </Layout>
+                <Quiz />
               </Route>
 
               <Route path="/data/profession" exact>
-                <Layout title="выбор профессии">
-                  <Profession />
-                </Layout>
+                <Profession />
               </Route>
 
               <Route path="/data/region" exact>
-                <Layout title="выбор регоина">
-                  <Region />
-                </Layout>
+                <Region />
               </Route>
 
               {/* трёх уровневые роуты */}
-
 
               <Redirect to="/" />
 

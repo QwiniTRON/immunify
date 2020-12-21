@@ -131,9 +131,7 @@ const Reg: React.FC<RegProps> = ({
                     />
 
                     <Box color="#acacac" marginBottom={1}>Выберите свой пол:</Box>
-
                     <Typography color="error">{errors.sex}</Typography>
-
                     <Box display="flex" justifyContent="space-between">
                         <AppRadioGroup onChange={(value: string) => {
                             setSex(value);

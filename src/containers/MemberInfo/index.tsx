@@ -17,6 +17,7 @@ import { Sex, User } from '../../store/types';
 import { AppButtonGroup } from '../../components/UI/ButtonGroup';
 import { AppButton } from '../../components/UI/AppButton';
 import { changeCurrentUser, updateMember } from '../../store/user/action';
+import { Layout } from '../../components/Layout/Layout';
 
 type MemberInfoParams = {
     id: string
@@ -92,70 +93,72 @@ const MemberInfo: React.FC<MemberInfoProps> = ({
     }
 
     return (
-        <PageLayout className="member-page" ButtonBackto="/profile">
-            <form className="reg__form" onSubmit={handleSubmit}>
-                <Box marginY={2}>
-                    <Typography color="error">{errors.name}</Typography>
-                    <TextField
-                        label="как вас зовут?"
-                        variant="outlined"
-                        className="reg__input"
-                        fullWidth
-                        id="name-input"
-                        value={name}
-                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => setName(e.target.value)} />
-                </Box>
+        <Layout title="Данные семьи">
+            <PageLayout className="member-page" ButtonBackto="/profile">
+                <form className="reg__form" onSubmit={handleSubmit}>
+                    <Box marginY={2}>
+                        <Typography color="error">{errors.name}</Typography>
+                        <TextField
+                            label="как вас зовут?"
+                            variant="outlined"
+                            className="reg__input"
+                            fullWidth
+                            id="name-input"
+                            value={name}
+                            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setName(e.target.value)} />
+                    </Box>
 
-                <Box marginY={2}>
-                    <Typography color="error">{errors.age}</Typography>
-                    <TextField
-                        label="сколько вам лет?"
-                        type="number"
-                        variant="outlined"
-                        className="reg__input"
-                        fullWidth
-                        id="age-input"
-                        value={age}
-                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => setAge(e.target.value)}
-                    />
-                </Box>
+                    <Box marginY={2}>
+                        <Typography color="error">{errors.age}</Typography>
+                        <TextField
+                            label="сколько вам лет?"
+                            type="number"
+                            variant="outlined"
+                            className="reg__input"
+                            fullWidth
+                            id="age-input"
+                            value={age}
+                            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setAge(e.target.value)}
+                        />
+                    </Box>
 
-                <p>ваш пол?</p>
-                <Typography color="error">{errors.sex}</Typography>
-                <RadioGroup row name="position" onChange={(e) => setSex(e.target.value)} value={sex}>
-                    <FormControlLabel
-                        control={<Radio color="primary" />}
-                        value="man"
-                        label="мужчина"
-                    />
-                    <FormControlLabel
-                        control={<Radio color="primary" />}
-                        value="woman"
-                        label="женщина"
-                    />
-                </RadioGroup>
+                    <p>ваш пол?</p>
+                    <Typography color="error">{errors.sex}</Typography>
+                    <RadioGroup row name="position" onChange={(e) => setSex(e.target.value)} value={sex}>
+                        <FormControlLabel
+                            control={<Radio color="primary" />}
+                            value="man"
+                            label="мужчина"
+                        />
+                        <FormControlLabel
+                            control={<Radio color="primary" />}
+                            value="woman"
+                            label="женщина"
+                        />
+                    </RadioGroup>
 
-                <Box display="none"><button type="submit"></button></Box>
-            </form>
+                    <Box display="none"><button type="submit"></button></Box>
+                </form>
 
-            <AppButtonGroup floated>
-                {isRootUser &&
-                    <AppButton onClick={handleSubmit}>сохранить</AppButton>
-                }
-                {!isSelected &&
-                    <AppButton onClick={(e: React.MouseEvent) => changeCurrentUser(id)} color="secondary">выбрать</AppButton>
-                }
-                {isRootUser &&
-                    <AppButton color="default">удалить</AppButton>
-                }
-            </AppButtonGroup>
+                <AppButtonGroup floated>
+                    {isRootUser &&
+                        <AppButton onClick={handleSubmit}>сохранить</AppButton>
+                    }
+                    {!isSelected &&
+                        <AppButton onClick={(e: React.MouseEvent) => changeCurrentUser(id)} color="secondary">выбрать</AppButton>
+                    }
+                    {isRootUser &&
+                        <AppButton color="default">удалить</AppButton>
+                    }
+                </AppButtonGroup>
 
-            <Snackbar open={open} autoHideDuration={3000} onClose={() => setOpen(false)}>
-                <MuiAlert elevation={6} variant="filled">
-                    данные изменены.
+                <Snackbar open={open} autoHideDuration={3000} onClose={() => setOpen(false)}>
+                    <MuiAlert elevation={6} variant="filled">
+                        данные изменены.
                 </MuiAlert>
-            </Snackbar>
-        </PageLayout>
+                </Snackbar>
+            </PageLayout>
+        </Layout>
     );
 };
 

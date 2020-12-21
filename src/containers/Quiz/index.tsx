@@ -17,6 +17,7 @@ import { AppButton } from '../../components/UI/AppButton';
 import { RootState } from '../../store';
 import { updateCurrentUserData } from '../../store/user/action';
 import { QuizAnswer } from '../../store/types';
+import { Layout } from '../../components/Layout/Layout';
 
 type QuizProps = {
 
@@ -140,50 +141,52 @@ export const Quiz: React.FC<QuizProps> = (props) => {
     }
 
     return (
-        <PageLayout className="quiz-page">
-            <LinearProgress variant="determinate" value={quizProgress} />
-            <p>вопрос {`${quiz.currentStep + 1}/${quizQuestions.length}`}</p>
-            { isNotCurrentAnswer && (<p className={classes.notice}>ответьте на этот вопрос</p>)}
-            <h3 className="quiz-page__question">{currentQuestion.question}</h3>
+        <Layout title="опросник">
+            <PageLayout className="quiz-page">
+                <LinearProgress variant="determinate" value={quizProgress} />
+                <p>вопрос {`${quiz.currentStep + 1}/${quizQuestions.length}`}</p>
+                {isNotCurrentAnswer && (<p className={classes.notice}>ответьте на этот вопрос</p>)}
+                <h3 className="quiz-page__question">{currentQuestion.question}</h3>
 
-            <FormControl component="fieldset" color="primary">
-                <FormLabel component="legend">ответ</FormLabel>
-                <RadioGroup
-                    aria-label="answer"
-                    name="gender1"
-                    value={selectedAnswer}
-                    onChange={setAnswer}>
-                    {currentQuestion.answers.map((answer) => (
-                        <FormControlLabel key={answer.id} value={answer.id} control={<Radio color="primary" />} label={answer.text} />
-                    ))}
-                </RadioGroup>
-            </FormControl>
+                <FormControl component="fieldset" color="primary">
+                    <FormLabel component="legend">ответ</FormLabel>
+                    <RadioGroup
+                        aria-label="answer"
+                        name="gender1"
+                        value={selectedAnswer}
+                        onChange={setAnswer}>
+                        {currentQuestion.answers.map((answer) => (
+                            <FormControlLabel key={answer.id} value={answer.id} control={<Radio color="primary" />} label={answer.text} />
+                        ))}
+                    </RadioGroup>
+                </FormControl>
 
-            <div className="region-page__btns">
-                <AppButton
-                    onClick={backQuestion}
-                    className="region-page__save"
-                    disabled={quiz.currentStep === 0}
-                    color="default">назад</AppButton>
+                <div className="region-page__btns">
+                    <AppButton
+                        onClick={backQuestion}
+                        className="region-page__save"
+                        disabled={quiz.currentStep === 0}
+                        color="default">назад</AppButton>
 
-                {!(quiz.currentStep + 1 === quizQuestions.length) && <AppButton
-                    onClick={nextQuestion}
-                    className="region-page__save"
-                    disabled={isNotCurrentAnswer || quiz.currentStep + 1 === quizQuestions.length}
-                    color="primary">далее</AppButton>}
+                    {!(quiz.currentStep + 1 === quizQuestions.length) && <AppButton
+                        onClick={nextQuestion}
+                        className="region-page__save"
+                        disabled={isNotCurrentAnswer || quiz.currentStep + 1 === quizQuestions.length}
+                        color="primary">далее</AppButton>}
 
-                {quiz.currentStep + 1 === quizQuestions.length && <AppButton
-                    onClick={finishQuiz}
-                    className="region-page__save"
-                    disabled={isNotCurrentAnswer}
-                    color="primary">завершить</AppButton>}
-            </div>
+                    {quiz.currentStep + 1 === quizQuestions.length && <AppButton
+                        onClick={finishQuiz}
+                        className="region-page__save"
+                        disabled={isNotCurrentAnswer}
+                        color="primary">завершить</AppButton>}
+                </div>
 
-            <Snackbar open={open} autoHideDuration={3000} onClose={() => setOpen(false)}>
-                <MuiAlert onClose={() => setOpen(false)} elevation={6} variant="filled">
-                    данные сохранены.
+                <Snackbar open={open} autoHideDuration={3000} onClose={() => setOpen(false)}>
+                    <MuiAlert onClose={() => setOpen(false)} elevation={6} variant="filled">
+                        данные сохранены.
                 </MuiAlert>
-            </Snackbar>
-        </PageLayout>
+                </Snackbar>
+            </PageLayout>
+        </Layout>
     );
 };

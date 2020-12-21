@@ -19,7 +19,8 @@ const useStyles = makeStyles({
     boxShadow: '1px 0px 5px rgba(0, 0, 0, 0.2)',
     borderRadius: 10,
     position: 'relative',
-    textAlign: 'center'
+    textAlign: 'center',
+    cursor: 'pointer'
   },
   input: {
     opacity: 0,

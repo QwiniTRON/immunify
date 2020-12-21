@@ -1,17 +1,18 @@
 import React, { useState } from 'react';
 import Typography from '@material-ui/core/Typography';
 import TextField from '@material-ui/core/TextField';
-import RadioGroup from '@material-ui/core/RadioGroup';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import Radio from '@material-ui/core/Radio';
-import { makeStyles, useTheme } from '@material-ui/core/styles';
+import Box from '@material-ui/core/Box';
+import { makeStyles } from '@material-ui/core/styles';
 import { connect } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 
 import { AppButton } from '../../components/UI/AppButton';
 import { addMember } from '../../store/user/action';
 import { RootState } from '../../store';
-import { BackButton } from '../../components/BackButton';
+import { Layout } from '../../components/Layout/Layout';
+import { AppRadioGroup } from '../../components/UI/AppRadioGroup';
+import { AppRadioButton } from '../../components/UI/AppRadioButton';
+import { s } from '../../utils/Styels';
 
 
 type AddMemberProps = {
@@ -26,6 +27,13 @@ const useStyle = makeStyles({
     },
     root: {
         height: 'auto'
+    },
+    sexInput: {
+        fontSize: 36,
+        flexGrow: 1
+    },
+    _sexInputMarginRight: {
+        marginRight: 15
     }
 });
 
@@ -82,60 +90,54 @@ const AddMember: React.FC<AddMemberProps> = ({
     }
 
     return (
-        <div className={"reg " + clasess.root}>
-            <BackButton to="/profile" />
-            <div className="reg__container">
-                <h1 className="reg__title">
-                    Добавление члена семьи
-                </h1>
+        <Layout title="Данные семьи">
+            <div className={"reg " + clasess.root}>
+                <div className="reg__container">
+                    <h1 className="reg__title">
+                        Добавление члена семьи
+                    </h1>
 
-                <form className="reg__form" onSubmit={handleSubmit}>
-                    <Typography color="error">{errors.name}</Typography>
-                    <TextField
-                        label="как зовут"
-                        variant="outlined"
-                        className="reg__input"
-                        id="name-input"
-                        value={name}
-                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => setName(e.target.value)} />
+                    <form className="reg__form" onSubmit={handleSubmit}>
+                        <Typography color="error">{errors.name}</Typography>
+                        <TextField
+                            label="как зовут"
+                            variant="outlined"
+                            className="reg__input"
+                            id="name-input"
+                            value={name}
+                            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setName(e.target.value)} />
 
-                    <Typography color="error">{errors.age}</Typography>
-                    <TextField
-                        label="возраст"
-                        type="number"
-                        variant="outlined"
-                        className="reg__input"
-                        id="age-input"
-                        value={age}
-                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => setAge(e.target.value)}
-                    />
-
-                    <p>пол</p>
-                    <Typography color="error">{errors.sex}</Typography>
-                    <RadioGroup row name="position" onChange={(e) => setSex(e.target.value)} value={sex}>
-                        <FormControlLabel
-                            control={<Radio color="primary" />}
-                            value="man"
-                            label="мужчина"
-                            classes={{
-                                label: clasess.sexLabel
-                            }}
+                        <Typography color="error">{errors.age}</Typography>
+                        <TextField
+                            label="возраст"
+                            type="number"
+                            variant="outlined"
+                            className="reg__input"
+                            id="age-input"
+                            value={age}
+                            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setAge(e.target.value)}
                         />
-                        <FormControlLabel
-                            control={<Radio color="primary" />}
-                            value="woman"
-                            label="женщина"
-                            classes={{
-                                label: clasess.sexLabel
+
+                        <Box fontSize={16} fontWeight="bold" mb={1}>пол</Box>
+                        <Typography  color="error">{errors.sex}</Typography>
+                        <Box display="flex" justifyContent="space-between">
+                            <AppRadioGroup onChange={(value: string) => {
+                                setSex(value);
                             }}
-                        />
-                    </RadioGroup>
-                    <AppButton floated disabled={loading} type="submit">
-                        Начать
+                                value={sex}
+                            >
+                                <AppRadioButton value="man" text="М" classes={{ root: s(clasess.sexInput, clasess._sexInputMarginRight) }} />
+                                <AppRadioButton value="woman" text="Ж" classes={{ root: clasess.sexInput }} />
+                            </AppRadioGroup>
+                        </Box>
+
+                        <AppButton floated disabled={loading} type="submit">
+                            Начать
                     </AppButton>
-                </form>
+                    </form>
+                </div>
             </div>
-        </div>
+        </Layout>
     );
 };
 

@@ -12,6 +12,7 @@ import './diseas.scss';
 import { PageLayout } from '../../components/UI/PageLayout';
 import { AppButton } from '../../components/UI/AppButton';
 import { Loader } from '../../components/UI/Loader';
+import { Layout } from '../../components/Layout/Layout';
 
 
 type DiseasProps = {
@@ -79,95 +80,99 @@ export const Diseas: React.FC<DiseasProps> = (props) => {
     }, []);
 
     if (loading) return (
-        <PageLayout className="diseas-page">
-            <h3 className={classes.title}>Идёт загрузка данных</h3>
-            <Loader />
-        </PageLayout>
+        <Layout title="Болезнь">
+            <PageLayout className="diseas-page">
+                <h3 className={classes.title}>Идёт загрузка данных</h3>
+                <Loader />
+            </PageLayout>
+        </Layout>
     );
 
     return (
-        <PageLayout className="diseas-page">
-            <h3 className={classes.title}>{diseas.name}</h3>
+        <Layout title="Болезнь">
+            <PageLayout className="diseas-page">
+                <h3 className={classes.title}>{diseas.name}</h3>
 
-            <div>
-                <div className={classes.paper + ' ' + classes.card} onClick={() => setOpenAbout(true)}>
-                    <h2>Что это?</h2>
-                    <p>{diseas.about.slice(0, 100) + '...'}</p>
-                    <div className={classes.more}>подробнее <ArrowRightAltIcon /></div>
+                <div>
+                    <div className={classes.paper + ' ' + classes.card} onClick={() => setOpenAbout(true)}>
+                        <h2>Что это?</h2>
+                        <p>{diseas.about.slice(0, 100) + '...'}</p>
+                        <div className={classes.more}>подробнее <ArrowRightAltIcon /></div>
+                    </div>
+                    <Modal
+                        className={classes.modal}
+                        open={openAbout}
+                        onClose={() => setOpenAbout(false)}
+                        closeAfterTransition
+                        BackdropComponent={Backdrop}
+                        BackdropProps={{
+                            timeout: 500,
+                        }}
+                    >
+                        <Fade in={openAbout}>
+                            <div className={classes.paper}>
+                                <h2 id="transition-modal-title">Что это?</h2>
+                                <p id="transition-modal-description">{diseas.about}</p>
+                                <ClearIcon classes={{ root: classes.closer }} onClick={() => setOpenAbout(false)} />
+                            </div>
+                        </Fade>
+                    </Modal>
                 </div>
-                <Modal
-                    className={classes.modal}
-                    open={openAbout}
-                    onClose={() => setOpenAbout(false)}
-                    closeAfterTransition
-                    BackdropComponent={Backdrop}
-                    BackdropProps={{
-                        timeout: 500,
-                    }}
-                >
-                    <Fade in={openAbout}>
-                        <div className={classes.paper}>
-                            <h2 id="transition-modal-title">Что это?</h2>
-                            <p id="transition-modal-description">{diseas.about}</p>
-                            <ClearIcon classes={{ root: classes.closer }} onClick={() => setOpenAbout(false)} />
-                        </div>
-                    </Fade>
-                </Modal>
-            </div>
 
-            <div>
-                <div className={classes.paper + ' ' + classes.card} onClick={() => setOpenVaccines(true)}>
-                    <h2>Какие есть вакцины?</h2>
-                    <p>{diseas.vaccines.slice(0, 100) + '...'}</p>
-                    <div className={classes.more}>подробнее <ArrowRightAltIcon /></div>
+                <div>
+                    <div className={classes.paper + ' ' + classes.card} onClick={() => setOpenVaccines(true)}>
+                        <h2>Какие есть вакцины?</h2>
+                        <p>{diseas.vaccines.slice(0, 100) + '...'}</p>
+                        <div className={classes.more}>подробнее <ArrowRightAltIcon /></div>
+                    </div>
+                    <Modal
+                        className={classes.modal}
+                        open={openVaccines}
+                        onClose={() => setOpenVaccines(false)}
+                        closeAfterTransition
+                        BackdropComponent={Backdrop}
+                        BackdropProps={{
+                            timeout: 500,
+                        }}
+                    >
+                        <Fade in={openVaccines}>
+                            <div className={classes.paper}>
+                                <h2 id="transition-modal-title">Какие есть вакцины?</h2>
+                                <p id="transition-modal-description">{diseas.vaccines}</p>
+                                <ClearIcon classes={{ root: classes.closer }} onClick={() => setOpenVaccines(false)} />
+                            </div>
+                        </Fade>
+                    </Modal>
                 </div>
-                <Modal
-                    className={classes.modal}
-                    open={openVaccines}
-                    onClose={() => setOpenVaccines(false)}
-                    closeAfterTransition
-                    BackdropComponent={Backdrop}
-                    BackdropProps={{
-                        timeout: 500,
-                    }}
-                >
-                    <Fade in={openVaccines}>
-                        <div className={classes.paper}>
-                            <h2 id="transition-modal-title">Какие есть вакцины?</h2>
-                            <p id="transition-modal-description">{diseas.vaccines}</p>
-                            <ClearIcon classes={{ root: classes.closer }} onClick={() => setOpenVaccines(false)} />
-                        </div>
-                    </Fade>
-                </Modal>
-            </div>
 
-            <div>
-                <div className={classes.paper + ' ' + classes.card} onClick={() => setOpenSigns(true)}>
-                    <h2 >Признаки</h2>
-                    <p>{diseas.signs.slice(0, 100) + '...'}</p>
-                    <div className={classes.more}>подробнее <ArrowRightAltIcon /></div>
+                <div>
+                    <div className={classes.paper + ' ' + classes.card} onClick={() => setOpenSigns(true)}>
+                        <h2 >Признаки</h2>
+                        <p>{diseas.signs.slice(0, 100) + '...'}</p>
+                        <div className={classes.more}>подробнее <ArrowRightAltIcon /></div>
+                    </div>
+                    <Modal
+                        className={classes.modal}
+                        open={openSigns}
+                        onClose={() => setOpenSigns(false)}
+                        closeAfterTransition
+                        BackdropComponent={Backdrop}
+                        BackdropProps={{
+                            timeout: 500,
+                        }}
+                    >
+                        <Fade in={openSigns}>
+                            <div className={classes.paper}>
+                                <h2 id="transition-modal-title">Признаки</h2>
+                                <p id="transition-modal-description">{diseas.signs}</p>
+                                <ClearIcon classes={{ root: classes.closer }} onClick={() => setOpenSigns(false)} />
+                            </div>
+                        </Fade>
+                    </Modal>
                 </div>
-                <Modal
-                    className={classes.modal}
-                    open={openSigns}
-                    onClose={() => setOpenSigns(false)}
-                    closeAfterTransition
-                    BackdropComponent={Backdrop}
-                    BackdropProps={{
-                        timeout: 500,
-                    }}
-                >
-                    <Fade in={openSigns}>
-                        <div className={classes.paper}>
-                            <h2 id="transition-modal-title">Признаки</h2>
-                            <p id="transition-modal-description">{diseas.signs}</p>
-                            <ClearIcon classes={{ root: classes.closer }} onClick={() => setOpenSigns(false)} />
-                        </div>
-                    </Fade>
-                </Modal>
-            </div>
 
-            <Link to="/passport/ready"><AppButton floated> Я привит </AppButton></Link>
-        </PageLayout>
+                <Link to="/passport/ready"><AppButton floated> Я привит </AppButton></Link>
+            </PageLayout>
+        </Layout>
     );
 };

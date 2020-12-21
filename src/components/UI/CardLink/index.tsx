@@ -24,12 +24,14 @@ const useStyle = makeStyles((theme) => ({
         margin: '5px 0',
         position: 'relative',
         display: 'flex',
-        alignItems: 'center'
+        alignItems: 'center',
+        justifyContent: 'space-between'
     },
     rootLink: {
         textDecoration: 'none'
     },
     arrow: {
+        marginLeft: 10
     },
     arrowSvg: {
         color: '#ACACAC'
