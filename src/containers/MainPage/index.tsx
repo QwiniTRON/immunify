@@ -1,5 +1,6 @@
 import React from 'react';
 import { Layout } from '../../components/Layout/Layout';
+import { AppDatePicker } from '../../components/UI/appDatePicker';
 
 import { PageLayout } from '../../components/UI/PageLayout';
 
@@ -10,7 +11,9 @@ export const MainPage: React.FC<MainPageProps> = (props) => {
     <Layout title="Главная">
       <PageLayout>
         main page
-    </PageLayout>
+
+        <AppDatePicker changeHandle={() => {}} value={0} />
+      </PageLayout>
     </Layout>
   );
 };
