@@ -46,13 +46,15 @@ const unitDictionary: UnitDictionary = {
       return value + 1;
     },
     subtract(value: number) {
-      return value - 1;
+      value = value - 1
+      return value > 0 ? value : 0;
     },
     toSecond(value: number) {
-      return value;
+      return value * 30 * 24 * 60 * 60;
     },
     fromSecond(value: number) {
-      return value;
+      if (value < 0) return 0;
+      return Math.floor(value / 30 / 24 / 60 / 60);
     }
   },
   'year': {
@@ -61,13 +63,15 @@ const unitDictionary: UnitDictionary = {
       return value + 1;
     },
     subtract(value: number) {
-      return value - 1;
+      value = value - 1
+      return value > 0 ? value : 0;
     },
     toSecond(value: number) {
-      return value;
+      return value * 365 * 24 * 60 * 60;
     },
     fromSecond(value: number) {
-      return value;
+      if (value < 0) return 0;
+      return Math.floor(value / 365 / 24 / 60 / 60);
     }
   }
 }
