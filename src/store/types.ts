@@ -54,8 +54,11 @@ export type QuizAnswer = {
     answerId: string
 }
 export type UserData = {
-    profession: string,
-    region: string,
+    profession: string
+    region: {
+        main: string
+        work: string
+    }
     quiz: QuizAnswer[]
 }
 export type User = {

@@ -59,12 +59,12 @@ export const Layout: React.FC<LayoutProps> = ({
 
     // определяем в какой мы находимся сущности(разделе)
     const parentRoute = '/' + locationData.pathname.split('/')[1];
-    
+
 
     return (
         <div className={"layout " + classes.layout}>
             {!hideHeader && <header className="layout__header">
-                {BackButtonCustom? BackButtonCustom : <BackButton />}
+                {BackButtonCustom ? BackButtonCustom : <BackButton />}
 
                 <Typography className={classes.title} variant="h3">
                     {titleCurrentName ? currentUser?.name : title}
@@ -113,18 +113,18 @@ export const Layout: React.FC<LayoutProps> = ({
                         classes={{
                             root: classes.navIcon,
                         }}
-                        label="календарь"
-                        icon={<InsertInvitationIcon />}
-                        value="/calendar"
+                        label="запись"
+                        icon={<PostAddIcon />}
+                        value="/take"
                     />
 
                     <BottomNavigationAction
                         classes={{
                             root: classes.navIcon,
                         }}
-                        label="запись"
-                        icon={<PostAddIcon />}
-                        value="/take"
+                        label="календарь"
+                        icon={<InsertInvitationIcon />}
+                        value="/calendar"
                     />
                 </BottomNavigation>
             </div>}

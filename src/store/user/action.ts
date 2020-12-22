@@ -81,7 +81,10 @@ export function register(name: string, age: number, sex: Sex) {
             data: {
                 profession: '',
                 quiz: [],
-                region: ''
+                region: {
+                    main: '',
+                    work: ''
+                }
             }
         };
 
