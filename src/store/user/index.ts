@@ -1,3 +1,4 @@
+import { UserModel } from '../../models/User';
 import {
     USER_SET_USER,
     USER_ADD_MEMBER,
@@ -8,9 +9,9 @@ import {
 import {
     UserAction,
     User,
-    UserData,
-
 } from '../types';
+
+
 
 export type UserStore = {
     user: User | null
@@ -18,196 +19,52 @@ export type UserStore = {
     loading: boolean
 }
 
+
 const initialState: UserStore = {
     user: null,
     currentUser: null,
     loading: false
 }
 
-// export const userReducer = function (state: UserStore = initialState, action: UserAction): UserStore {
-//     switch (action.type) {
-//         case USER_SET_USER:
-//             return { ...state, user: action.user, currentUser: action.user };
-
-//         case USER_SET_CURRENT_USER:
-//             return { ...state, currentUser: action.member };
-
-//         case USER_UPDATE_BY_NAME:
-//             let userforSave: User;
-
-//             // если root user отредактирован
-//             if (state.user?.name === action.memberName) {
-//                 userforSave = { ...state.user, ...action.member };
-//                 return {
-//                     ...state,
-//                     user: userforSave,
-//                     currentUser: state.currentUser?.name == action.memberName ? userforSave : state.currentUser
-//                 };
-//             }
-
-//             // если отредактирован член семьи
-//             let userToSetCurrent: User | null = null;
-//             const newUsers: User[] = state.user?.family!.map((u) => {
-//                 if (u?.name === action.memberName) {
-//                     const updatedMember = { ...u, ...action.member };
-//                     if (state.currentUser?.name == action.memberName) {
-//                         userToSetCurrent = updatedMember;
-//                     }
-//                     return updatedMember;
-//                 }
-//                 return u;
-//             })!;
-
-//             userforSave = { ...state.user, family: newUsers } as User;
-//             return {
-//                 ...state,
-//                 user: userforSave,
-//                 currentUser: userToSetCurrent ?? userforSave
-//             };
-
-//         case USER_ADD_MEMBER:
-//             const oldUser: User = state.user!;
-//             oldUser?.family.push(action.member);
-//             const newUser: User = { ...oldUser };
-//             return { ...state, user: newUser, currentUser: newUser };
-
-//         case USER_SET_DATA:
-//             let remarkedUser: User;
-//             let isCurrentUser: boolean = false;
-//             let newCurrentUser: User | null;
-//             let userData: UserData;
-
-//             if (action.userName == state.user?.name) {
-//                 if (state.currentUser === state.user) isCurrentUser = true;
-
-//                 userData = { ...state.user.data, ...action.data } as UserData;
-//                 remarkedUser = { ...state.user, data: userData };
-
-//                 if (isCurrentUser) newCurrentUser = remarkedUser;
-//             } else {
-//                 const userFamily = state.user?.family.map((u) => {
-//                     if (u.name == action.userName) {
-
-//                         if (u.name == action.userName) isCurrentUser = true;
-
-//                         userData = { ...u.data, ...action.data } as UserData;
-//                         let remarkedMember = { ...u, data: userData };
-
-//                         if (isCurrentUser) newCurrentUser = remarkedMember;
-
-//                         return remarkedMember;
-//                     }
-//                     return u;
-//                 })!;
-
-//                 remarkedUser = ({ ...state.user, family: userFamily } as User);
-//             }
-
-//             return {
-//                 ...state,
-//                 user: remarkedUser,
-//                 currentUser: isCurrentUser ? newCurrentUser! : state.currentUser
-//             };
-
-//         default:
-//             return state;
-//     }
-// }
 
 const setUser = (state: UserStore = initialState, action: UserAction) => {
     if (action.type !== USER_SET_USER) return state;
     return { ...state, user: action.user, currentUser: action.user };
 }
 
+
 const setCurrentUser = (state: UserStore = initialState, action: UserAction) => {
     if (action.type !== USER_SET_CURRENT_USER) return state;
     return { ...state, currentUser: action.member };
 }
 
+
 const updateByName = (state: UserStore = initialState, action: UserAction) => {
     if (action.type !== USER_UPDATE_BY_NAME) return state;
 
-    let userforSave: User;
+    const user: User = UserModel.getUserByName(state, action.memberName)!;
+    Object.assign(user, action.member);
 
-    // если root user отредактирован
-    if (state.user?.name === action.memberName) {
-        userforSave = { ...state.user, ...action.member };
-        return {
-            ...state,
-            user: userforSave,
-            currentUser: state.currentUser?.name == action.memberName ? userforSave : state.currentUser
-        };
-    }
-
-    // если отредактирован член семьи
-    let userToSetCurrent: User | null = null;
-    const newUsers: User[] = state.user?.family!.map((u) => {
-        if (u?.name === action.memberName) {
-            const updatedMember = { ...u, ...action.member };
-            if (state.currentUser?.name == action.memberName) {
-                userToSetCurrent = updatedMember;
-            }
-            return updatedMember;
-        }
-        return u;
-    })!;
-
-    userforSave = { ...state.user, family: newUsers } as User;
-    return {
-        ...state,
-        user: userforSave,
-        currentUser: userToSetCurrent ?? userforSave
-    };
+    return Object.assign({}, state);
 }
+
 
 const addMember = (state: UserStore = initialState, action: UserAction) => {
     if (action.type !== USER_ADD_MEMBER) return state;
 
-    const oldUser: User = state.user!;
-    oldUser?.family.push(action.member);
-    const newUser: User = { ...oldUser };
-    return { ...state, user: newUser, currentUser: newUser };
+    const user: User = state.user!;
+    user?.family.push(action.member);
+    return Object.assign({}, state);
 }
+
 
 const setUserData = (state: UserStore = initialState, action: UserAction) => {
     if (action.type !== USER_SET_DATA) return state;
 
-    let remarkedUser: User;
-    let isCurrentUser: boolean = false;
-    let newCurrentUser: User | null;
-    let userData: UserData;
+    const currentUser = UserModel.getUserByName(state, action.userName);
+    Object.assign(currentUser?.data, action.data);
 
-    if (action.userName == state.user?.name) {
-        if (state.currentUser === state.user) isCurrentUser = true;
-
-        userData = { ...state.user.data, ...action.data } as UserData;
-        remarkedUser = { ...state.user, data: userData };
-
-        if (isCurrentUser) newCurrentUser = remarkedUser;
-    } else {
-        const userFamily = state.user?.family.map((u) => {
-            if (u.name == action.userName) {
-
-                if (u.name == action.userName) isCurrentUser = true;
-
-                userData = { ...u.data, ...action.data } as UserData;
-                let remarkedMember = { ...u, data: userData };
-
-                if (isCurrentUser) newCurrentUser = remarkedMember;
-
-                return remarkedMember;
-            }
-            return u;
-        })!;
-
-        remarkedUser = ({ ...state.user, family: userFamily } as User);
-    }
-
-    return {
-        ...state,
-        user: remarkedUser,
-        currentUser: isCurrentUser ? newCurrentUser! : state.currentUser
-    };
+    return Object.assign({}, state);
 }
 
 
