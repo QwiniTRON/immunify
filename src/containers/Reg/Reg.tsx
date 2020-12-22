@@ -14,6 +14,7 @@ import { RootState } from '../../store';
 import { AppRadioGroup } from '../../components/UI/AppRadioGroup';
 import { AppRadioButton } from '../../components/UI/AppRadioButton';
 import { s } from '../../utils/Styels';
+import { AppDatePicker } from '../../components/UI/appDatePicker';
 
 
 type RegProps = {
@@ -71,7 +72,7 @@ const Reg: React.FC<RegProps> = ({
             errors.name = 'имя должно быть не короче 2 символов';
             valid = false;
         }
-        if (+ageText < 1 || +age > 150) {
+        if (Number(ageText) <= 0) {
             errors.age = 'возраст обязателен';
             valid = false;
         }
@@ -118,17 +119,22 @@ const Reg: React.FC<RegProps> = ({
                         error={Boolean(errors.name)}
                         helperText={errors.name} />
 
-                    <TextField
-                        id="age-field"
-                        label="сколько вам лет?"
-                        type="number"
-                        variant="outlined"
-                        className="reg__input"
-                        value={age}
-                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => setAge(e.target.value)}
-                        error={Boolean(errors.age)}
-                        helperText={errors.age}
-                    />
+
+                    <Box mb={2}>
+                        <Box className="error">{errors.age}</Box>
+                        <AppDatePicker value={Number(age)} changeHandle={(value) => setAge(String(value))} />
+                        {/* <TextField
+                            id="age-field"
+                            label="сколько вам лет?"
+                            type="number"
+                            variant="outlined"
+                            className="reg__input"
+                            value={age}
+                            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setAge(e.target.value)}
+                            error={Boolean(errors.age)}
+                            helperText={errors.age}
+                        /> */}
+                    </Box>
 
                     <Box color="#acacac" marginBottom={1}>Выберите свой пол:</Box>
                     <Typography color="error">{errors.sex}</Typography>

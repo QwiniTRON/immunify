@@ -57,3 +57,7 @@ p {
     transform: scale(0.9);
     transition: opacity 150ms, transform 150ms;
 }
+
+.error {
+    color: $errorColor;
+}

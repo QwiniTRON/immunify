@@ -7,14 +7,34 @@ import { sif } from '../../../utils/Styels';
 type AppButtonProps = {
     [p: string]: any
     floated?: boolean
-    appColor?: 'linear'
+    appColor?: 'linear' | 'white'
 }
 
+const ButtonColors = {
+    'linear': {
+        background: '"linear-gradient(91.68deg, #9BC83F -3.91%, #67CDFD 46.87%, #9BC83F 112.32%)"',
+        color: '"#fff"'
+    },
+    'white': {
+        background: '#fff',
+        color: '#9BC83F',
+        border: '1px solid #9BC83F',
+
+        '&:hover': {
+            backgroundColor: 'rgba(155, 200, 63, 0.1)',
+            boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.6)'
+        },
+        '&:active': {
+            boxShadow: 'none',
+            backgroundColor: 'rgba(155, 200, 63, 0.1)',
+        }
+    },
+    'default': {}
+}
 const useStyles = makeStyles((theme) => ({
     root: (props: AppButtonProps) => ({
         borderRadius: 45,
-        background: props.appColor == 'linear' ? "linear-gradient(91.68deg, #9BC83F -3.91%, #67CDFD 46.87%, #9BC83F 112.32%)" : '',
-        color: props.appColor == 'linear' ? "#fff" : '',
+        ...ButtonColors[props.appColor ?? 'default']
     }),
     floated: {
         position: 'fixed',

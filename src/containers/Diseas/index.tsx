@@ -13,6 +13,7 @@ import { PageLayout } from '../../components/UI/PageLayout';
 import { AppButton } from '../../components/UI/AppButton';
 import { Loader } from '../../components/UI/Loader';
 import { Layout } from '../../components/Layout/Layout';
+import { AppButtonGroup } from '../../components/UI/ButtonGroup';
 
 
 type DiseasProps = {
@@ -58,6 +59,9 @@ const useStyles = makeStyles((theme) => ({
         fontWeight: 500,
         textAlign: 'center',
         margin: '10px 0'
+    },
+    linkButton: {
+        textDecoration: 'none'
     }
 }));
 
@@ -171,7 +175,10 @@ export const Diseas: React.FC<DiseasProps> = (props) => {
                     </Modal>
                 </div>
 
-                <Link to="/passport/ready"><AppButton floated> Я привит </AppButton></Link>
+                <AppButtonGroup floated>
+                    <Link to="/passport/ready" className={classes.linkButton}><AppButton appColor="white"> Я привит </AppButton></Link>
+                    <Link to="/take" className={classes.linkButton}><AppButton>Записаться</AppButton></Link>
+                </AppButtonGroup>
             </PageLayout>
         </Layout>
     );

@@ -26,6 +26,13 @@ const useStyles = makeStyles({
     color: '#646464',
     flexShrink: 1,
     flexBasis: 1
+  },
+  valueInput: {
+    width: '100%',
+    fontSize: 36,
+    textAlign: 'center',
+    border: 'none',
+    color: '#646464'
   }
 });
 
@@ -79,7 +86,7 @@ export const AppDatePicker: React.FC<AppDatePickerProps> = ({ changeHandle, valu
   const [unit, setUnit] = useState(defaultUnit ?? 'month');
   const clasess = useStyles();
   const units = Object.keys(unitDictionary);
-  const currentValue = unitDictionary[unit].fromSecond(value);
+  const currentValue = unitDictionary[unit].fromSecond(value) || 0;
 
   return (
     <Box className={clasess.root}>
@@ -90,7 +97,13 @@ export const AppDatePicker: React.FC<AppDatePickerProps> = ({ changeHandle, valu
           changeHandle(unitDictionaryOptions.toSecond(newValue));
         }} /></Box>
 
-        <Box fontSize={36} fontWeight={500}>{currentValue}</Box>
+        <Box fontSize={36} fontWeight={500}>
+          <input className={clasess.valueInput} value={currentValue} onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+            let value = parseInt(e.target.value);
+            if (value < 0 || value === NaN) value = 0;
+            changeHandle(unitDictionary[unit].toSecond(value));
+          }} />
+        </Box>
 
         <Box><ExpandMoreIcon onClick={() => {
           const unitDictionaryOptions = unitDictionary[unit];
