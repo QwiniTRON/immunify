@@ -36,6 +36,10 @@ export const ChooseClinic: React.FC<ChooseClinicProps> = (props) => {
     <Layout title="" clearScroll>
       <PageLayout className={clasess.root}>
 
+        <Box component="h2" fontSize={24} fontWeight={500}>
+          Выберите медцентр
+        </Box>
+
         <Box mb={1}>
           <Tabs variant="fullWidth" indicatorColor="primary" value={tabValue} onChange={handleTabChange} aria-label="simple tabs example">
             <Tab label="Календарь" textColor="#000" />

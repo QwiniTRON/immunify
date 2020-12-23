@@ -15,7 +15,7 @@ import { Region } from './containers/Region';
 import { Profession } from './containers/Profession';
 import { Quiz } from './containers/Quiz';
 import { Diseas } from './containers/Diseas';
-import { ReadyPage } from './containers/ReadyPage/inedex';
+import { ReadyPage } from './containers/ReadyPage';
 import { RootState } from './store';
 import { RegSuccess } from './containers/RegSuccess';
 import { AddMember } from './containers/AddMember';
@@ -29,6 +29,7 @@ import { Patient } from './containers/Patient';
 import { Vaccine } from './containers/Vaccine';
 import { ChooseClinic } from './containers/ChooseClinic';
 import { Vaccination } from './containers/Vaccination';
+import { Appointment } from './containers/Appointment';
 
 
 type AppProps = {
@@ -78,7 +79,7 @@ const App: React.FC<AppProps> = function ({
               </Route>
 
               <Route path="/test" exact>
-                <Vaccination />
+                <ChooseClinic />
               </Route>
 
               <Route path="/calendar" exact>

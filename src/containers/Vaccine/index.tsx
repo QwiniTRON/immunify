@@ -5,16 +5,12 @@ import { AppButtonGroup } from '../../components/UI/ButtonGroup';
 import { AppButton } from '../../components/UI/AppButton';
 import { Layout } from '../../components/Layout/Layout';
 import { PageLayout } from '../../components/UI/PageLayout';
+import { Divider } from '@material-ui/core';
 
 
 type VaccineProps = {}
 
 const useStyles = makeStyles({
-  divider: {
-    height: 1,
-    backgroundColor: '#E0F0BE',
-    margin: '10px 0'
-  }
 });
 
 export const Vaccine: React.FC<VaccineProps> = (props) => {
@@ -26,7 +22,7 @@ export const Vaccine: React.FC<VaccineProps> = (props) => {
         <Box fontSize={18}>
           <Box fontWeight={500} fontSize={24}><h2>Гардасил</h2></Box>
 
-          <div className={clasess.divider}></div>
+          <Divider />
 
           <Box>
             <Box fontWeight={500}>Что это:</Box>

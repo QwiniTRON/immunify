@@ -79,7 +79,7 @@ export const ReadyPage: React.FC<ReadyPageProps> = (props) => {
 
                 <AppButton floated>
                     Сохранить
-            </AppButton>
+                </AppButton>
             </PageLayout>
         </Layout>
     );

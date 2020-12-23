@@ -22,7 +22,8 @@ const useStyles = makeStyles({
     content: {
         flexGrow: 1,
         overflow: 'auto',
-        flexBasis: 1
+        flexBasis: 1,
+        paddingBottom: 60
     },
     root: {
         display: 'flex',
