@@ -15,7 +15,8 @@ type ChooseClinicProps = {}
 const useStyles = makeStyles({
   content: {
     flexGrow: 1,
-    overflow: 'auto'
+    overflow: 'auto',
+    flexBasis: 1
   },
   root: {
     display: 'flex',
