@@ -16,3 +16,8 @@ export function usePathByMainUser(isMainUserPath: string, patientPath: string) {
 export function useCheckUserDataCompoeated() {
   return UserModel.getCurrentUserDataStatus();
 }
+
+export function useIsEmptyFamily() {
+  const user = useSelector((state: RootState) => state.user.user);
+  return user?.family?.length == 0;
+}

@@ -54,7 +54,7 @@ export const Profile: React.FC<ProfileProps> = (props) => {
                 dataStatus == 'error' ? <CardLink
                   title="Заполнить данные"
                   subTitle="Для выбранного пациента введены не все данные"
-                  to="/profile/data"
+                  to={`/profile/${currentUser?.name}`}
                   Icon={<AccountBoxIcon color="primary" fontSize="large" />}
                 /> :
                   <Box>С данными всё в порядке</Box>
@@ -65,20 +65,25 @@ export const Profile: React.FC<ProfileProps> = (props) => {
                 active={user == currentUser}
                 progress={10}
                 title={String(user?.name)}
-                subtitle={String(user?.age)}
-                to={`/family/${user?.name}`}
+                subtitle={String(user?.age! / 60 / 60 / 24 / 365)}
+                to={`/profile/${user?.name}`}
                 avatarLetters={String(user?.name)[0]} />
 
-              {user?.family.map((u) => (
-                <UserCard
-                  key={u.name}
-                  active={u == currentUser}
-                  progress={10}
-                  title={String(u?.name)}
-                  subtitle={String(u?.age)}
-                  to={`/family/${u?.name}`}
-                  avatarLetters={String(u?.name)[0]} />
-              ))}
+              {user?.family.map((u) => {
+                let age = u.age;
+                // let age = u.age / 60 / 60 / 24 / 365;
+
+                return (
+                  <UserCard
+                    key={u.name}
+                    active={u == currentUser}
+                    progress={10}
+                    title={String(u?.name)}
+                    subtitle={String(age)}
+                    to={`/profile/${u?.name}`}
+                    avatarLetters={String(u?.name)[0]} />
+                )
+              })}
 
             </>
           )

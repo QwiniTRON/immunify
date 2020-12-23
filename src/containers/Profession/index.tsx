@@ -15,7 +15,7 @@ import { RootState } from '../../store';
 import { updateCurrentUserData } from '../../store/user/action';
 import { Layout } from '../../components/Layout/Layout';
 import { BackButton } from '../../components/BackButton';
-import { usePathByMainUser } from '../../hooks';
+import { useIsEmptyFamily } from '../../hooks';
 
 
 type ProfessionProps = {
@@ -24,7 +24,8 @@ type ProfessionProps = {
 
 export const Profession: React.FC<ProfessionProps> = (props) => {
     const currentUser = useSelector((state: RootState) => state.user.currentUser);
-    const pathToBack = usePathByMainUser('/profile', '/profile/data');
+    const isEmptyFamily = useIsEmptyFamily();
+    const pathToBack = isEmptyFamily ? '/profile' : `/profile/${currentUser?.name}`;
     const dispatch = useDispatch();
 
     const [open, setOpen] = useState(false);

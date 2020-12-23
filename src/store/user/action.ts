@@ -73,20 +73,7 @@ export function login() {
 export function register(name: string, age: number, sex: Sex) {
     return async function (dispatch: Function, getState: Function) {
         // сервер ...
-        const user: User = {
-            age,
-            name,
-            sex,
-            family: [],
-            data: {
-                profession: '',
-                quiz: [],
-                region: {
-                    main: '',
-                    work: ''
-                }
-            }
-        };
+        const user: User = new User(name, age, sex);
 
         UserModel.saveUser(user);
         dispatch(setUser(user));
@@ -103,12 +90,7 @@ export function register(name: string, age: number, sex: Sex) {
 export function addMember(name: string, age: number, sex: Sex) {
     return async function (dispatch: Function, getState: Function) {
         // добавляем в store нового члена семьи
-        const newMember = {
-            age,
-            name,
-            sex,
-            family: []
-        }
+        const newMember = new User(name, age, sex)
         dispatch(addNewMember(newMember));
 
         // обновляем localeStorage пользователя
@@ -138,9 +120,9 @@ export function updateMember(name: string, age: number, sex: Sex, memberName: st
             sex
         }
         dispatch(updateByName(updatedMember as User, memberName));
-        
+
         state = getState();
-        
+
         // обновляем localeStorage пользователя
         try {
             state.user.user && UserModel.saveUser(state.user.user);
@@ -184,7 +166,7 @@ export function updateCurrentUserData(userData: Partial<UserData>) {
             let state: RootState = getState();
 
             dispatch(setUserData(userData as UserData, state.user.currentUser?.name!));
-            
+
             state = getState();
             UserModel.saveUser(state.user.user!);
             UserModel.changeCurrentUser(state.user.currentUser?.name!);

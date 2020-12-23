@@ -19,7 +19,7 @@ import { updateCurrentUserData } from '../../store/user/action';
 import { QuizAnswer } from '../../store/types';
 import { Layout } from '../../components/Layout/Layout';
 import { BackButton } from '../../components/BackButton';
-import { usePathByMainUser } from '../../hooks';
+import { useIsEmptyFamily } from '../../hooks';
 
 type QuizProps = {
 
@@ -65,7 +65,8 @@ type QuizState = {
 }
 export const Quiz: React.FC<QuizProps> = (props) => {
     const currentUser = useSelector((state: RootState) => state.user.currentUser);
-    const pathToBack = usePathByMainUser('/profile', '/profile/data');
+    const isEmptyFamily = useIsEmptyFamily();
+    const pathToBack = isEmptyFamily? '/profile' : `/profile/${currentUser?.name}`;
 
     const dispatch = useDispatch();
     const classes = useStyles();

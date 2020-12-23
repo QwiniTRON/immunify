@@ -2,9 +2,11 @@ import react from 'react';
 import { CardLink } from '../../components/UI/CardLink';
 import ListAltIcon from '@material-ui/icons/ListAlt';
 import { makeStyles } from '@material-ui/core/styles';
-import {ReactComponent as CaseIcon} from '../../assets/case.svg';
-import {ReactComponent as ListIcon} from '../../assets/list.svg';
-import {ReactComponent as PlanetIcon} from '../../assets/planet.svg';
+import { ReactComponent as CaseIcon } from '../../assets/case.svg';
+import { ReactComponent as ListIcon } from '../../assets/list.svg';
+import { ReactComponent as PlanetIcon } from '../../assets/planet.svg';
+import { useSelector } from 'react-redux';
+import { RootState } from '../../store';
 
 
 type UserDataProps = {
@@ -21,6 +23,7 @@ const useStyle = makeStyles((theme) => ({
 
 
 export const UserData: React.FC<UserDataProps> = (props) => {
+    const currentUser = useSelector((state: RootState) => state.user.currentUser);
     const classes = useStyle();
 
     return (
@@ -28,21 +31,21 @@ export const UserData: React.FC<UserDataProps> = (props) => {
             <CardLink
                 title="Пройти опрос"
                 subTitle="Ответьте на несколько вопросов, чтобы узнать о возможных рисках"
-                to="/data/quiz"
+                to={`/profile/${currentUser?.name}/quiz`}
                 Icon={<CaseIcon color="primary" fontSize="large" className={classes.svgIcon} />}
             />
 
             <CardLink
                 title="Выбрать профессию"
                 subTitle="Укажите род деятельности, чтобы узнать возможный профессиональный риск"
-                to="/data/profession"
+                to={`/profile/${currentUser?.name}/profession`}
                 Icon={<ListIcon color="primary" fontSize="large" className={classes.svgIcon} />}
             />
 
             <CardLink
                 title="Указать регион"
                 subTitle="Укажите регион  проживания, чтобы узнать эпидемиологическую обстановку"
-                to="/data/region"
+                to={`/profile/${currentUser?.name}/region`}
                 Icon={<PlanetIcon color="primary" fontSize="large" className={classes.svgIcon} />}
             />
 

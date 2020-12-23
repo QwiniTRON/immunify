@@ -70,10 +70,6 @@ const App: React.FC<AppProps> = function ({
               {/* если пользователь не зарегистрировался, то ему доступен только роут reg - страница входа */}
               {!isAuth && <Redirect to="/reg" />}
 
-              <Route path="/" exact>
-                <MainPage />
-              </Route>
-
               <Route path="/profile" exact>
                 <Profile />
               </Route>
@@ -96,38 +92,34 @@ const App: React.FC<AppProps> = function ({
                 <ReadyPage />
               </Route>
 
-              <Route path="/profile/data" exact>
-                <Patient />
-              </Route>
-
               <Route path="/passport/:id" exact>
                 <Diseas />
               </Route>
 
-              <Route path="/family/add" exact>
+              <Route path="/profile/add" exact>
                 <AddMember />
               </Route>
 
-              <Route path="/family/:id" exact>
-                <MemberInfo />
+              <Route path="/profile/:id" exact>
+                <Patient />
               </Route>
 
-              <Route path="/data/quiz" exact>
+
+              {/* трёхуровневые роуты */}
+              <Route path="/profile/:id/quiz" exact>
                 <Quiz />
               </Route>
 
-              <Route path="/data/profession" exact>
+              <Route path="/profile/:id/profession" exact>
                 <Profession />
               </Route>
 
-              <Route path="/data/region" exact>
+              <Route path="/profile/:id/region" exact>
                 <Region />
               </Route>
 
 
-              {/* трёх уровневые роуты */}
-
-              <Redirect to="/" />
+              <Redirect to="/profile" />
 
             </Switch>
           </CSSTransition>

@@ -17,7 +17,7 @@ import { AppButton } from '../../components/UI/AppButton';
 import { updateCurrentUserData } from '../../store/user/action';
 import { RootState } from '../../store';
 import { Layout } from '../../components/Layout/Layout';
-import { usePathByMainUser } from '../../hooks';
+import { useIsEmptyFamily } from '../../hooks';
 import { BackButton } from '../../components/BackButton';
 
 
@@ -72,7 +72,8 @@ const RegionSelect: React.FC<RegionSelectProps> = ({
 
 export const Region: React.FC<RegionProps> = (props) => {
     const currentUser = useSelector((state: RootState) => state.user.currentUser);
-    const pathToBack = usePathByMainUser('/profile', '/profile/data');
+    const isEmptyFamily = useIsEmptyFamily();
+    const pathToBack = isEmptyFamily ? '/profile' : `/profile/${currentUser?.name}`;
     const dispatch = useDispatch();
 
     const [open, setOpen] = useState(false);

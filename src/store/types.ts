@@ -5,7 +5,7 @@ import {
     USER_UPDATE_BY_NAME,
     USER_SET_DATA
 } from './consts';
-
+import { User, QuizAnswer, RegionData, UserData } from '../models/User';
 
 // USER
 type userSetUser = {
@@ -48,23 +48,5 @@ export enum Sex {
     man = 'man',
     woman = 'woman'
 }
-
-export type QuizAnswer = {
-    questionId: string,
-    answerId: string
-}
-export type UserData = {
-    profession: string
-    region: {
-        main: string
-        work: string
-    }
-    quiz: QuizAnswer[]
-}
-export type User = {
-    name: string
-    age: number
-    sex: Sex
-    family: User[]
-    data?: UserData
-}
+export { User, RegionData, UserData};
+export type {QuizAnswer};
