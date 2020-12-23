@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { makeStyles } from '@material-ui/styles';
 import { useSelector } from 'react-redux';
 import Box from '@material-ui/core/Box';
@@ -14,9 +14,11 @@ import { AppButton } from '../../components/UI/AppButton';
 import { UserCard } from '../../components/UI/UserCard';
 import { UserData } from '../UserData';
 import { Layout } from '../../components/Layout/Layout';
-import { BackButton } from '../../components/BackButton';
 import { CardLink } from '../../components/UI/CardLink';
 import { useCheckUserDataCompoeated } from '../../hooks';
+import { User, UserModel } from '../../models/User';
+import {useServer} from '../../hooks/useServer';
+
 
 type ProfileProps = {
 
@@ -63,7 +65,7 @@ export const Profile: React.FC<ProfileProps> = (props) => {
               <Box fontSize={18} p={1}>Список пациентов:</Box>
               <UserCard
                 active={user == currentUser}
-                progress={10}
+                progress={UserModel.getCompleatedStatus(user as User)}
                 title={String(user?.name)}
                 subtitle={String(user?.age! / 60 / 60 / 24 / 365)}
                 to={`/profile/${user?.name}`}
@@ -77,7 +79,7 @@ export const Profile: React.FC<ProfileProps> = (props) => {
                   <UserCard
                     key={u.name}
                     active={u == currentUser}
-                    progress={10}
+                    progress={UserModel.getCompleatedStatus(u)}
                     title={String(u?.name)}
                     subtitle={String(age)}
                     to={`/profile/${u?.name}`}
@@ -90,7 +92,7 @@ export const Profile: React.FC<ProfileProps> = (props) => {
         }
 
 
-        <Link to="/family/add"><AppButton floated className="family-page__add">добавить</AppButton></Link>
+        <Link to="/profile/add"><AppButton floated className="family-page__add">добавить</AppButton></Link>
 
       </PageLayout>
     </Layout>

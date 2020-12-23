@@ -49,6 +49,7 @@ const useStyles = makeStyles((theme) => ({
         position: 'absolute',
         right: 5,
         bottom: 10,
+        cursor: 'pointer',
 
         '& svg': {
             verticalAlign: 'middle'

@@ -86,12 +86,22 @@ export class UserModel {
 
 
     static getCurrentUserDataStatus() {
-        const user: RootState = store.getState();
+        const user: User = store.getState().user.user!;
         let userDataStatus = false;
-        if (user.user.currentUser?.data?.quiz?.length == 5) {
+        if (UserModel.getCompleatedStatus(user) == 100) {
             userDataStatus = true;
         }
 
         return userDataStatus;
+    }
+
+    static getCompleatedStatus(user: User) {
+        let procent = 0;
+
+        if (user.data?.profession !== '') procent += 10;
+        if (user.data?.region.main !== '') procent += 10;
+        if (user.data?.quiz.length == 5) procent += 80;
+
+        return procent;
     }
 }

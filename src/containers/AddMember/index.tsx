@@ -83,7 +83,7 @@ const AddMember: React.FC<AddMemberProps> = ({
 
         if (valid) {
             addMember(name, +age, sex)
-                .then((r: any) => history.push('/profile'));
+                .then((r: any) => history.push(`/profile/${name}`));
         } else {
             setErrors(errors);
         }
