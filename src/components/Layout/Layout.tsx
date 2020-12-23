@@ -16,6 +16,7 @@ import "./Layout.scss";
 import { RootState } from '../../store';
 import { User } from '../../store/types';
 import { BackButton } from '../BackButton';
+import { sif } from '../../utils/Styels';
 
 // import { CalendarIcon, PassportIcon, ProfileIcon, TakeIcon } from '../UI/Icons/Icons';
 
@@ -25,6 +26,7 @@ type LayoutProps = {
     hideHeader?: boolean
     titleCurrentName?: boolean
     BackButtonCustom?: any | React.ReactElement
+    domainPage?: boolean
 }
 
 const useStyles = makeStyles((theme) => ({
@@ -40,6 +42,9 @@ const useStyles = makeStyles((theme) => ({
     navIcon: {
     },
     layout: {
+    },
+    header__Green: {
+        backgroundColor: '#E0F0BE'
     }
 }));
 
@@ -50,7 +55,8 @@ export const Layout: React.FC<LayoutProps> = ({
     hideNav,
     hideHeader,
     titleCurrentName,
-    BackButtonCustom
+    BackButtonCustom,
+    domainPage
 }) => {
     const classes = useStyles();
     const history = useHistory();
@@ -63,7 +69,7 @@ export const Layout: React.FC<LayoutProps> = ({
 
     return (
         <div className={"layout " + classes.layout}>
-            {!hideHeader && <header className="layout__header">
+            {!hideHeader && <header className={sif({ ["layout__header"]: true, [classes.header__Green]: Boolean(domainPage) })}>
                 {BackButtonCustom ? BackButtonCustom : <BackButton />}
 
                 <Typography className={classes.title} variant="h3">

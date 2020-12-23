@@ -26,6 +26,8 @@ import { MainPage } from './containers/MainPage';
 import { LoginPage } from './containers/LoginPage';
 import { BackButton } from './components/BackButton';
 import { Patient } from './containers/Patient';
+import { Vaccine } from './containers/Vaccine';
+import { ChooseClinic } from './containers/ChooseClinic';
 
 
 type AppProps = {
@@ -72,6 +74,10 @@ const App: React.FC<AppProps> = function ({
 
               <Route path="/profile" exact>
                 <Profile />
+              </Route>
+
+              <Route path="/test" exact>
+                <ChooseClinic />
               </Route>
 
               <Route path="/calendar" exact>

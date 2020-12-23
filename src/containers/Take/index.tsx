@@ -9,7 +9,7 @@ type TakeProps = {
 
 export const Take: React.FC<TakeProps> = (props) => {
     return (
-        <Layout title="Запись">
+        <Layout title="Запись" domainPage>
             <PageLayout>
                 take
             </PageLayout>

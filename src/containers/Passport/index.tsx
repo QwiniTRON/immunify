@@ -10,7 +10,7 @@ type PassportProps = {
 
 export const Passport: React.FC<PassportProps> = (props) => {
     return (
-        <Layout title="Иммунный пасспорт" titleCurrentName>
+        <Layout title="Иммунный пасспорт" titleCurrentName domainPage>
             <PageLayout>
                 <DiseasCard to={'/passport/:id'} name="Гепатит В" risks={['high', 'high', 'low']} />
                 <DiseasCard to={'/passport/:id'} name="Корь" risks={['low', 'high', 'low']} />

@@ -44,7 +44,7 @@ export const Profile: React.FC<ProfileProps> = (props) => {
   };
 
   return (
-    <Layout title="Профиль">
+    <Layout title="Профиль" domainPage>
       <PageLayout className="profile-page">
 
         {user?.family.length == 0 ?
