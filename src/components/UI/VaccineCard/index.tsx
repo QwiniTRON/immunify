@@ -2,9 +2,10 @@ import React, { useState, useRef, useEffect } from 'react';
 import Box from '@material-ui/core/Box';
 import { makeStyles } from '@material-ui/core/styles';
 import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
-import { sif } from '../../../utils/Styels';
+import { s, sif } from '../../../utils/Styels';
 import { useExpanded } from '../../../hooks/expand';
 import { AppButton } from '../AppButton';
+import DoneIcon from '@material-ui/icons/Done';
 
 type VaccineCardProps = {
   vaccine: {
@@ -16,6 +17,8 @@ type VaccineCardProps = {
       isVaccined: boolean
     }[]
   }
+
+  status: 'ok' | 'bad'
 }
 
 
@@ -52,15 +55,37 @@ const useStyles = makeStyles({
 
   cardButton: {
     fontSize: 14
+  },
+
+  statusIcon: {
+    position: 'absolute',
+    right: 15,
+    top: 15,
+    border: '1px solid',
+    borderRadius: 30,
+    fontSize: 30,
+    color: '#9BC83F'
+  },
+
+  badIcon: {
+    color: '#FF003D',
+    display: 'block',
+    width: 30,
+    height: 30,
+    lineHeight: '30px',
+    textAlign: 'center'
   }
 });
 
 
 export const VaccineCard: React.FC<VaccineCardProps> = ({
-  vaccine
+  vaccine,
+  status
 }) => {
   const clases = useStyles();
   const [componentRef, expandHandle, isOpen, height] = useExpanded(70);
+  let StatusIcon = <DoneIcon className={clases.statusIcon} />
+  if (status == 'bad') StatusIcon = <div className={s(clases.badIcon, clases.statusIcon)}>!</div>
 
   return (
     <div
@@ -102,6 +127,8 @@ export const VaccineCard: React.FC<VaccineCardProps> = ({
           </AppButton>
         </Box>
       </div>
+
+      {StatusIcon}
 
       <KeyboardArrowDownIcon
         classes={{ root: sif({ [clases.arrow]: true, [clases.arrow__rotate]: isOpen }) }}

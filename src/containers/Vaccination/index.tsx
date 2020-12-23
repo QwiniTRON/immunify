@@ -25,6 +25,7 @@ export const Vaccination: React.FC<VaccinationProps> = (props) => {
                 { name: 'v3', isVaccined: false }
               ]
             }}
+            status="bad"
           />
         </Box>
         <Box marginY={1}>
@@ -39,6 +40,7 @@ export const Vaccination: React.FC<VaccinationProps> = (props) => {
                 { name: 'v3', isVaccined: false }
               ]
             }}
+            status="ok"
           />
         </Box>
       </PageLayout>
