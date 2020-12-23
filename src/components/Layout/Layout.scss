@@ -15,4 +15,8 @@
         flex-grow: 1;
         overflow: auto;
     }
+
+    .layout__content--scrollcleared {
+        overflow: initial;
+    }
 }

@@ -27,6 +27,7 @@ type LayoutProps = {
     titleCurrentName?: boolean
     BackButtonCustom?: any | React.ReactElement
     domainPage?: boolean
+    clearScroll?: boolean
 }
 
 const useStyles = makeStyles((theme) => ({
@@ -56,7 +57,8 @@ export const Layout: React.FC<LayoutProps> = ({
     hideHeader,
     titleCurrentName,
     BackButtonCustom,
-    domainPage
+    domainPage,
+    clearScroll
 }) => {
     const classes = useStyles();
     const history = useHistory();
@@ -83,7 +85,7 @@ export const Layout: React.FC<LayoutProps> = ({
 
 
 
-            <main className="layout__content">
+            <main className={"layout__content" + ' ' + (clearScroll? 'layout__content--scrollcleared' : '')}>
                 {children}
             </main>
 

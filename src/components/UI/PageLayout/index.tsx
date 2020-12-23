@@ -28,9 +28,7 @@ export const PageLayout: React.FC<PageLayoutProps> = ({
 
     return (
         <div className={s("page-layout", props.className, 'page-anim')}>
-            <div className={s(classes.root, 'page-layout__content')}>
-                {children}
-            </div>
+            {children}
         </div>
     );
 };

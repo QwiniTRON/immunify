@@ -50,8 +50,8 @@ export const InfoCard: React.FC<InfoCardProps> = ({
   return (
     <Paper className={clasess.root} elevation={3}>
       {
-        data.map((item) => (
-          <Box fontSize={18} mb={2}>
+        data.map((item, idx) => (
+          <Box fontSize={18} mb={2} key={idx}>
             <Box fontWeight={500}>{item.title}</Box>
             <Box>{item.description}</Box>
           </Box>
