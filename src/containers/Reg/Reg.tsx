@@ -5,6 +5,9 @@ import Box from '@material-ui/core/Box';
 import { makeStyles } from '@material-ui/core/styles';
 import { connect } from 'react-redux';
 import { useHistory } from 'react-router-dom';
+import ruLocale from "date-fns/locale/ru";
+import { DatePicker, MuiPickersUtilsProvider } from '@material-ui/pickers';
+import DateFnsUtils from '@date-io/date-fns';
 
 import './reg.scss';
 
@@ -39,17 +42,18 @@ const useStyle = makeStyles({
 const Reg: React.FC<RegProps> = ({
     register
 }) => {
+    const clasess = useStyle();
+    const history = useHistory();
+
     const [sex, setSex] = useState('');
     const [name, setName] = useState('');
-    const [age, setAge] = useState('');
+    const [selectedDate, handleDateChange] = useState<Date | null>(null);
     const [loading, setLoading] = useState(false);
     const [errors, setErrors] = useState({
         name: '',
         age: '',
         sex: '',
     });
-    const clasess = useStyle();
-    const history = useHistory();
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
@@ -60,7 +64,6 @@ const Reg: React.FC<RegProps> = ({
         // sanitize
         const sexText = sex.trim();
         const nameText = name.trim();
-        const ageText = age.trim();
         const errors = {
             name: '',
             age: '',
@@ -72,7 +75,7 @@ const Reg: React.FC<RegProps> = ({
             errors.name = 'имя должно быть не короче 2 символов';
             valid = false;
         }
-        if (Number(ageText) <= 0) {
+        if (!Boolean(selectedDate)) {
             errors.age = 'возраст обязателен';
             valid = false;
         }
@@ -82,7 +85,7 @@ const Reg: React.FC<RegProps> = ({
         }
 
         if (valid) {
-            register(name, +age, sex)
+            register(name, selectedDate?.getTime(), sex)
                 .then((r: any) => {
                     if (r) {
                         history.push('/profile');
@@ -95,6 +98,7 @@ const Reg: React.FC<RegProps> = ({
             setErrors(errors);
         }
     }
+
 
     return (
         <div className="reg">
@@ -122,18 +126,20 @@ const Reg: React.FC<RegProps> = ({
 
                     <Box mb={2}>
                         <Box className="error">{errors.age}</Box>
-                        <AppDatePicker value={Number(age)} changeHandle={(value) => setAge(String(value))} />
-                        {/* <TextField
-                            id="age-field"
-                            label="сколько вам лет?"
-                            type="number"
-                            variant="outlined"
-                            className="reg__input"
-                            value={age}
-                            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setAge(e.target.value)}
-                            error={Boolean(errors.age)}
-                            helperText={errors.age}
-                        /> */}
+                        <MuiPickersUtilsProvider utils={DateFnsUtils} locale={ruLocale}>
+                            <DatePicker
+                                label="дата рождения"
+                                value={selectedDate}
+                                onChange={handleDateChange as any}
+                                fullWidth
+                                cancelLabel="отмена"
+                                format="d MMM yyyy"
+                                disableFuture
+                                inputVariant="outlined"
+                                clearable
+                            />
+                        </MuiPickersUtilsProvider>
+                        {/* <AppDatePicker value={Number(age)} changeHandle={(value) => setAge(String(value))} /> */}
                     </Box>
 
                     <Box color="#acacac" marginBottom={1}>Выберите свой пол:</Box>

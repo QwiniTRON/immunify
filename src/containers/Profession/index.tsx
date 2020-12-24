@@ -1,11 +1,10 @@
-import react, { useState } from 'react';
-import Select from '@material-ui/core/Select';
-import InputLabel from '@material-ui/core/InputLabel';
-import FormControl from '@material-ui/core/FormControl';
+import React, { useState } from 'react';
 import Typography from '@material-ui/core/Typography';
 import { useSelector, useDispatch } from 'react-redux';
 import Snackbar from '@material-ui/core/Snackbar';
 import MuiAlert from '@material-ui/lab/Alert';
+import Autocomplete from '@material-ui/lab/Autocomplete';
+import TextField from '@material-ui/core/TextField';
 
 import './region.scss';
 
@@ -35,38 +34,46 @@ export const Profession: React.FC<ProfessionProps> = (props) => {
     });
 
     const handleEdit = () => {
-        if (!profession) return setErrors({ profession: 'укажите профессию' });
+        if (!profession) return setErrors({ profession: '* укажите профессию' });
         (dispatch(updateCurrentUserData({ profession })) as any)
             .then((r: any) => {
                 setOpen(true);
             });
     }
 
+    const top100Films = [
+        'профессия 1',
+        'профессия 2',
+        'профессия 3',
+        'профессия 4',
+        'профессия 5',
+        'профессия 6',
+        'профессия 7',
+        'профессия 8',
+        'профессия 9',
+        'профессия 10',
+        'профессия 11',
+        'профессия 12',
+        'профессия 13'
+    ];
+
     return (
-        <Layout title="выбор профессии" BackButtonCustom={<BackButton to={pathToBack} />} >
+        <Layout title="" BackButtonCustom={<BackButton text="Вернуться в профиль" to={pathToBack} />} >
             <PageLayout className="profession-page">
                 <h4 className="region-page__title">Чем вы занимаетесь?</h4>
 
                 <Typography color="error">{errors.profession}</Typography>
-                <FormControl variant="outlined" fullWidth className={'region-page__region'}>
-                    <InputLabel htmlFor="filled-age-native-simple">выбирите деятельность</InputLabel>
-                    <Select
-                        native
-                        value={profession}
-                        label="выбирите деятельность"
-                        onChange={(e) => setProfession(String(e.target.value))}
-                        inputProps={{
-                            name: 'region',
-                            id: 'filled-age-native-simple',
-                        }}
-                    >
-                        <option aria-label="None" value="" />
-                        <option value={'10'}>Мясник 1</option>
-                        <option value={'20'}>Мясник 2</option>
-                        <option value={'30'}>Мясник 3</option>
-                        <option value={'40'}>Инжинер конструктор</option>
-                    </Select>
-                </FormControl>
+                <Autocomplete
+                    id="combo-profession"
+                    options={top100Films}
+                    getOptionLabel={(option) => option}
+                    value={profession}
+                    fullWidth
+                    renderInput={(params) => <TextField {...params} label="выбирите профессию" variant="outlined" />}
+                    onChange={(event, newValue) => {
+                        setProfession(newValue!);
+                    }}
+                />
 
                 <div className="region-page__btns">
                     <AppButton className="region-page__save" color="default">отмена</AppButton>

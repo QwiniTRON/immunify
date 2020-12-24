@@ -12,8 +12,12 @@ type AppButtonProps = {
 
 const ButtonColors = {
     'linear': {
-        background: '"linear-gradient(91.68deg, #9BC83F -3.91%, #67CDFD 46.87%, #9BC83F 112.32%)"',
-        color: '"#fff"'
+        background: "linear-gradient(91.68deg, #9BC83F -3.91%, #67CDFD 46.87%, #9BC83F 112.32%)",
+        color: "#fff",
+
+        '&:disabled': {
+            background: '#ccc'
+        }
     },
     'white': {
         background: '#fff',

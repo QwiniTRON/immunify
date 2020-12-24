@@ -85,12 +85,12 @@ export function register(name: string, age: number, sex: Sex) {
 
 // ADDMEMBER
 /*
-    
+    добавление нового пациента. 
 */
-export function addMember(name: string, age: number, sex: Sex) {
+export function addMember(name: string, age: number, sex: Sex, id: string) {
     return async function (dispatch: Function, getState: Function) {
         // добавляем в store нового члена семьи
-        const newMember = new User(name, age, sex)
+        const newMember = new User(name, age, sex, undefined, undefined, id)
         dispatch(addNewMember(newMember));
 
         // обновляем localeStorage пользователя
@@ -203,3 +203,9 @@ export function userInit() {
         }
     }
 }
+
+
+
+
+// ? TODO 
+// * add documentation(js doc)

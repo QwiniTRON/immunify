@@ -4,5 +4,5 @@ type Response = {
   id: number,
 };
 
-export const CreateFeedback: FetchFunc<undefined, Response> = (client) =>
+export const CreatePatient: FetchFunc<undefined, Response> = (client) =>
   client.post('/patient');

@@ -13,9 +13,9 @@ export function CreateHttpClient(): ReturnType {
   });
 
   const httpClient = axios.create({
-    baseURL: '/api/v1',
+    baseURL: process.env.REACT_APP_API_VERSION,
     cancelToken: cancellation,
-    withCredentials: true,
+    withCredentials: true
   });
 
   return {

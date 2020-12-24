@@ -9,7 +9,7 @@ import {sif} from '../../../utils/Styels';
 
 type UserCardProps = {
     title: string
-    subtitle: string
+    subtitle?: string
     avatarLetters: string
     to: string
     active?: boolean

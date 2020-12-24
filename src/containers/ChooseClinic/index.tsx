@@ -3,11 +3,13 @@ import { makeStyles } from '@material-ui/core/styles';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import Box from '@material-ui/core/Box';
+import MapIcon from '@material-ui/icons/Map';
 
 import { Layout } from '../../components/Layout/Layout';
 import { InfoCard } from '../../components/UI/InfoCard';
 import { AppTabPanel } from '../../components/UI/TabPanel';
 import { PageLayout } from '../../components/UI/PageLayout';
+import { BackButton } from '../../components/BackButton';
 
 
 type ChooseClinicProps = {}
@@ -25,15 +27,17 @@ const useStyles = makeStyles({
 });
 
 export const ChooseClinic: React.FC<ChooseClinicProps> = (props) => {
-  const [tabValue, setTabValue] = useState(0);
   const clasess = useStyles();
+
+  const [tabValue, setTabValue] = useState(0);
 
   const handleTabChange = (event: any, newValue: any) => {
     setTabValue(newValue);
   };
 
+  
   return (
-    <Layout title="" clearScroll>
+    <Layout title="" clearScroll BackButtonCustom={<BackButton text="Вернуться к списку центров" />} >
       <PageLayout className={clasess.root}>
 
         <Box component="h2" fontSize={24} fontWeight={500}>
@@ -48,7 +52,9 @@ export const ChooseClinic: React.FC<ChooseClinicProps> = (props) => {
         </Box>
 
         <AppTabPanel value={tabValue} index={0}>
-          Item One
+          <Box textAlign="center">
+            <MapIcon />
+          </Box>
         </AppTabPanel>
         <AppTabPanel value={tabValue} index={1} className={clasess.content} >
           <Box marginY={1}>
