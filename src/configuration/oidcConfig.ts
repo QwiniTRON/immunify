@@ -4,7 +4,7 @@ export const config: UserManagerSettings = {
   authority: 'https://app.immunify.co/',
   client_id: 'react-client',
   client_secret: 'react-secret',
-  scope: 'openid profile offline.access role',
+  scope: 'openid profile offline_access',
   response_type: 'code',
 
   redirect_uri: 'http://localhost:3000/authentication/callback',

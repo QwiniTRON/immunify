@@ -21,7 +21,6 @@ import { useServer } from '../../hooks/useServer';
 import { CreatePatient } from '../../server';
 import { Loader } from '../../components/UI/Loader';
 
-
 type AddMemberProps = {
 
 

@@ -8,8 +8,8 @@ export class AxiosFetcher<TRequest, TData> {
 
   private canceller: Canceler | undefined;
 
-  constructor(fetchFunc: FetchFunc<TRequest, TData>) {
-    const client = CreateHttpClient();
+  constructor(fetchFunc: FetchFunc<TRequest, TData>, auth: string) {
+    const client = CreateHttpClient(auth);
 
     this.httpClient = client.httpClient;
     this.canceller = client.canceler;

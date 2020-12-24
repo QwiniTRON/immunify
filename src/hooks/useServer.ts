@@ -1,4 +1,5 @@
 import { useState, useRef } from 'react';
+import { useReactOidc } from '@axa-fr/react-oidc-context';
 
 import { StorageReturnType, StorageAnswer, FetchFunc } from '../server/types';
 
@@ -52,8 +53,9 @@ export const useServer = <TRequest, TData>(
   const [fetching, setFetching] = useState(false);
   const [answer, setAnswer] = useState<StorageAnswer<TData>>(initialState);
 
-  let { current } = useRef(new AxiosFetcher(fetchFunction));
-
+  const { oidcUser } = useReactOidc();
+  let { current } = useRef(new AxiosFetcher(fetchFunction, oidcUser.access_token));
+  
   const fetch = (request: TRequest) => {
     reload();
     setFetching(true);
@@ -76,7 +78,7 @@ export const useServer = <TRequest, TData>(
 
   const reload = () => {
     setAnswer(initialState);
-    current = new AxiosFetcher(fetchFunction);
+    current = new AxiosFetcher(fetchFunction, oidcUser.access_token);
   };
 
   return {

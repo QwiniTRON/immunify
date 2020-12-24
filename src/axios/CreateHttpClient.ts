@@ -5,7 +5,7 @@ type ReturnType = {
   canceler: Canceler | undefined;
 };
 
-export function CreateHttpClient(): ReturnType {
+export function CreateHttpClient(auth: string): ReturnType {
   let canceler: Canceler | undefined;
 
   const cancellation = new axios.CancelToken((c: any) => {
@@ -15,7 +15,10 @@ export function CreateHttpClient(): ReturnType {
   const httpClient = axios.create({
     baseURL: process.env.REACT_APP_API_VERSION,
     cancelToken: cancellation,
-    withCredentials: true
+    withCredentials: true,
+    headers: {
+      'Authorization': `Bearer ${auth}`,
+    }
   });
 
   return {
