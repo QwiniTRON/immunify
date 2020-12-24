@@ -3,6 +3,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import Box from '@material-ui/core/Box';
+import MapIcon from '@material-ui/icons/Map';
 
 import { Layout } from '../../components/Layout/Layout';
 import { InfoCard } from '../../components/UI/InfoCard';
@@ -48,7 +49,9 @@ export const ChooseClinic: React.FC<ChooseClinicProps> = (props) => {
         </Box>
 
         <AppTabPanel value={tabValue} index={0}>
-          Item One
+          <Box textAlign="center">
+            <MapIcon />
+          </Box>
         </AppTabPanel>
         <AppTabPanel value={tabValue} index={1} className={clasess.content} >
           <Box marginY={1}>

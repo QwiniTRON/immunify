@@ -9,7 +9,7 @@ import './profile.scss';
 import { RootState } from '../../store';
 import { s } from '../../utils/Styels';
 import { PageLayout } from '../../components/UI/PageLayout';
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import { AppButton } from '../../components/UI/AppButton';
 import { UserCard } from '../../components/UI/UserCard';
 import { UserData } from '../UserData';
@@ -17,7 +17,8 @@ import { Layout } from '../../components/Layout/Layout';
 import { CardLink } from '../../components/UI/CardLink';
 import { useCheckUserDataCompoeated } from '../../hooks';
 import { User, UserModel } from '../../models/User';
-import {useServer} from '../../hooks/useServer';
+import { useServer } from '../../hooks/useServer';
+import { AppButtonGroup } from '../../components/UI/ButtonGroup';
 
 
 type ProfileProps = {
@@ -32,6 +33,8 @@ const useStyle = makeStyles({
 
 export const Profile: React.FC<ProfileProps> = (props) => {
   const classes = useStyle();
+  const history = useHistory();
+
   const currentUser = useSelector((state: RootState) => state.user.currentUser);
   const user = useSelector((state: RootState) => state.user.user);
   const idUserDataCompleate = useCheckUserDataCompoeated();
@@ -48,7 +51,8 @@ export const Profile: React.FC<ProfileProps> = (props) => {
       <PageLayout className="profile-page">
 
         {user?.family.length == 0 ?
-          <UserData /> :
+          <UserData />
+          :
           (
             <>
               <p className="family-page__description">Введите данные о членах вашей семьи, чтобы застраховать их от возможных осложнений</p>
@@ -67,21 +71,16 @@ export const Profile: React.FC<ProfileProps> = (props) => {
                 active={user == currentUser}
                 progress={UserModel.getCompleatedStatus(user as User)}
                 title={String(user?.name)}
-                subtitle={String(user?.age! / 60 / 60 / 24 / 365)}
                 to={`/profile/${user?.name}`}
                 avatarLetters={String(user?.name)[0]} />
 
               {user?.family.map((u) => {
-                let age = u.age;
-                // let age = u.age / 60 / 60 / 24 / 365;
-
                 return (
                   <UserCard
                     key={u.name}
                     active={u == currentUser}
                     progress={UserModel.getCompleatedStatus(u)}
                     title={String(u?.name)}
-                    subtitle={String(age)}
                     to={`/profile/${u?.name}`}
                     avatarLetters={String(u?.name)[0]} />
                 )
@@ -91,10 +90,18 @@ export const Profile: React.FC<ProfileProps> = (props) => {
           )
         }
 
-
-        <Link to="/profile/add"><AppButton floated className="family-page__add">добавить</AppButton></Link>
+        <AppButtonGroup floated>
+          <AppButton className="family-page__add" onClick={() => history.push('/profile/add')} >добавить</AppButton>
+          {user?.family.length == 0 ?
+            <AppButton appColor="linear" onClick={() => history.push('/passport')} disabled={!idUserDataCompleate}>
+              Иммунный паспорт
+            </AppButton>
+            :
+            null
+          }
+        </AppButtonGroup>
 
       </PageLayout>
-    </Layout>
+    </Layout >
   );
 };

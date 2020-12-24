@@ -4,6 +4,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import Box from '@material-ui/core/Box';
+import EventAvailableIcon from '@material-ui/icons/EventAvailable';
 
 import { PageLayout } from '../../components/UI/PageLayout';
 import { InfoCard } from '../../components/UI/InfoCard';
@@ -51,7 +52,9 @@ export const Calendar: React.FC<CalendarProps> = (props) => {
                 </Box>
 
                 <AppTabPanel value={tabValue} index={0}>
-                    Item One
+                    <Box textAlign="center">
+                        <EventAvailableIcon />
+                    </Box>
                 </AppTabPanel>
                 <AppTabPanel value={tabValue} index={1} className={clasess.content}>
                     <Box component="h2" fontSize={24}>Вы записаны на прием</Box>

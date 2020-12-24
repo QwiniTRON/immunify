@@ -40,7 +40,8 @@ const PassportPlaceholder: React.FC<any> = (props) => {
 export const Passport: React.FC<PassportProps> = (props) => {
     const currentUser = useSelector((state: RootState) => state.user.currentUser);
     const compleatedStatus = UserModel.getCurrentUserDataStatus();
-
+    console.log(currentUser, compleatedStatus);
+    
 
     return (
         <Layout title="Иммунный пасспорт" titleCurrentName domainPage>
@@ -54,8 +55,6 @@ export const Passport: React.FC<PassportProps> = (props) => {
                     :
                     <PassportPlaceholder />
                 }
-
-
             </PageLayout>
         </Layout>
     );

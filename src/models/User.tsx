@@ -86,7 +86,7 @@ export class UserModel {
 
 
     static getCurrentUserDataStatus() {
-        const user: User = store.getState().user.user!;
+        const user: User = store.getState().user.currentUser!;
         let userDataStatus = false;
         if (UserModel.getCompleatedStatus(user) == 100) {
             userDataStatus = true;
