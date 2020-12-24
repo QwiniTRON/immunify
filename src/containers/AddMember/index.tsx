@@ -16,6 +16,7 @@ import { Layout } from '../../components/Layout/Layout';
 import { AppRadioGroup } from '../../components/UI/AppRadioGroup';
 import { AppRadioButton } from '../../components/UI/AppRadioButton';
 import { s } from '../../utils/Styels';
+import { BackButton } from '../../components/BackButton';
 
 
 type AddMemberProps = {
@@ -43,6 +44,9 @@ const useStyle = makeStyles({
 const AddMember: React.FC<AddMemberProps> = ({
     addMember
 }) => {
+    const clasess = useStyle();
+    const history = useHistory();
+
     const [sex, setSex] = useState('');
     const [name, setName] = useState('');
     const [selectedDate, handleDateChange] = useState<Date | null>(null);
@@ -52,8 +56,6 @@ const AddMember: React.FC<AddMemberProps> = ({
         age: '',
         sex: ''
     });
-    const clasess = useStyle();
-    const history = useHistory();
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
@@ -92,7 +94,7 @@ const AddMember: React.FC<AddMemberProps> = ({
     }
 
     return (
-        <Layout title="Данные семьи">
+        <Layout title="" BackButtonCustom={<BackButton text="вернуться в профиль" />}>
             <div className={"reg " + clasess.root}>
                 <div className="reg__container">
                     <h1 className="reg__title">

@@ -146,7 +146,7 @@ export const Quiz: React.FC<QuizProps> = (props) => {
     }
 
     return (
-        <Layout title="опросник" BackButtonCustom={<BackButton to={pathToBack} />} >
+        <Layout title="" BackButtonCustom={<BackButton to={pathToBack} text="Вернуться в профиль" />} >
             <PageLayout className="quiz-page">
                 <LinearProgress variant="determinate" value={quizProgress} />
                 <p>вопрос {`${quiz.currentStep + 1}/${quizQuestions.length}`}</p>

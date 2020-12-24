@@ -1,11 +1,13 @@
 import React from 'react';
 import Box from '@material-ui/core/Box';
 import { makeStyles } from '@material-ui/core/styles';
+
 import { AppButtonGroup } from '../../components/UI/ButtonGroup';
 import { AppButton } from '../../components/UI/AppButton';
 import { Layout } from '../../components/Layout/Layout';
 import { PageLayout } from '../../components/UI/PageLayout';
 import { Divider } from '@material-ui/core';
+import { BackButton } from '../../components/BackButton';
 
 
 type VaccineProps = {}
@@ -17,7 +19,7 @@ export const Vaccine: React.FC<VaccineProps> = (props) => {
   const clasess = useStyles();
 
   return (
-    <Layout title="">
+    <Layout title="" BackButtonCustom={<BackButton text="Вернуться к заболеванию"/>}>
       <PageLayout>
         <Box fontSize={18}>
           <Box fontWeight={500} fontSize={24}><h2>Гардасил</h2></Box>

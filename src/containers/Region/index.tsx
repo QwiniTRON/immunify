@@ -33,7 +33,7 @@ export const Region: React.FC<RegionProps> = (props) => {
 
     const [open, setOpen] = useState(false);
     const [region, setRegion] = useState(currentUser?.data?.region!);
-    const [otherWork, setOtherWork] = useState(Boolean(region.work));
+    const [otherWork, setOtherWork] = useState(Boolean(region?.work));
     const [errors, setErrors] = useState({
         region: '',
         workRegion: ''
@@ -72,7 +72,7 @@ export const Region: React.FC<RegionProps> = (props) => {
 
 
     return (
-        <Layout title="выбор регоина" BackButtonCustom={<BackButton to={pathToBack} />} >
+        <Layout title="" BackButtonCustom={<BackButton text="Вернуться в профиль" to={pathToBack} />} >
             <PageLayout className="region-page">
                 <h4 className="region-page__title">В каком регионе Вы проживаете?</h4>
 
@@ -81,11 +81,13 @@ export const Region: React.FC<RegionProps> = (props) => {
                     id="combo-region-main"
                     options={top100Films}
                     getOptionLabel={(option) => option}
-                    value={region.main}
+                    value={region?.main}
                     fullWidth
                     renderInput={(params) => <TextField {...params} label="выбирите регион" variant="outlined" />}
                     onChange={(event, newValue) => {
-                        setRegion(Object.assign(region, { main: newValue }));
+                        console.log(newValue);
+                        
+                        setRegion(Object.assign({}, region, { main: newValue }));
                     }}
                 />
 
@@ -97,11 +99,11 @@ export const Region: React.FC<RegionProps> = (props) => {
                             id="combo-region-work"
                             options={top100Films}
                             getOptionLabel={(option) => option}
-                            value={region.work}
+                            value={region?.work}
                             fullWidth
                             renderInput={(params) => <TextField {...params} label="выбирите регион" variant="outlined" />}
                             onChange={(event, newValue) => {
-                                setRegion(Object.assign(region, { work: newValue }));
+                                setRegion(Object.assign({}, region, { work: newValue }));
                             }}
                         />
                     </Box>

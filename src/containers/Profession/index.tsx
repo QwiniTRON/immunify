@@ -58,7 +58,7 @@ export const Profession: React.FC<ProfessionProps> = (props) => {
     ];
 
     return (
-        <Layout title="выбор профессии" BackButtonCustom={<BackButton to={pathToBack} />} >
+        <Layout title="" BackButtonCustom={<BackButton text="Вернуться в профиль" to={pathToBack} />} >
             <PageLayout className="profession-page">
                 <h4 className="region-page__title">Чем вы занимаетесь?</h4>
 

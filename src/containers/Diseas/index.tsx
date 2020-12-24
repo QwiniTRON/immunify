@@ -14,6 +14,8 @@ import { AppButton } from '../../components/UI/AppButton';
 import { Loader } from '../../components/UI/Loader';
 import { Layout } from '../../components/Layout/Layout';
 import { AppButtonGroup } from '../../components/UI/ButtonGroup';
+import { BackButton } from '../../components/BackButton';
+
 
 
 type DiseasProps = {
@@ -74,6 +76,7 @@ const diseas = {
 }
 export const Diseas: React.FC<DiseasProps> = (props) => {
     const classes = useStyles();
+
     const [openAbout, setOpenAbout] = useState(false);
     const [openVaccines, setOpenVaccines] = useState(false);
     const [openSigns, setOpenSigns] = useState(false);
@@ -84,8 +87,9 @@ export const Diseas: React.FC<DiseasProps> = (props) => {
         setTimeout(() => setLoading(false), 1000);
     }, []);
 
+
     if (loading) return (
-        <Layout title="Болезнь">
+        <Layout title="" BackButtonCustom={<BackButton text="Вернуться к иммунному паспорту" />}>
             <PageLayout className="diseas-page">
                 <h3 className={classes.title}>Идёт загрузка данных</h3>
                 <Loader />
@@ -93,8 +97,9 @@ export const Diseas: React.FC<DiseasProps> = (props) => {
         </Layout>
     );
 
+
     return (
-        <Layout title="Болезнь">
+        <Layout title="" BackButtonCustom={<BackButton text="Вернуться к иммунному паспорту" />} >
             <PageLayout className="diseas-page">
                 <h3 className={classes.title}>{diseas.name}</h3>
 

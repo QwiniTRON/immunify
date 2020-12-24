@@ -9,6 +9,7 @@ import { PageLayout } from '../../components/UI/PageLayout';
 import { UserModel } from '../../models/User';
 import { changeCurrentUser } from '../../store/user/action';
 import { UserData } from '../UserData';
+import { BackButton } from '../../components/BackButton';
 
 type MemberInfoParams = {
   id: string
@@ -26,7 +27,7 @@ export const Patient: React.FC<PatientProps> = (props) => {
 
 
   return (
-    <Layout titleCurrentName title="данные пациента">
+    <Layout title="" BackButtonCustom={<BackButton text="Вернуться к пациентам" />}>
       <PageLayout>
         <Box pb={8}>
           <UserData />

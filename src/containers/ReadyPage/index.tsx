@@ -11,6 +11,7 @@ import './readypage.scss';
 import { PageLayout } from '../../components/UI/PageLayout';
 import { AppButton } from '../../components/UI/AppButton';
 import { Layout } from '../../components/Layout/Layout';
+import { BackButton } from '../../components/BackButton';
 
 type ReadyPageProps = {
 
@@ -24,7 +25,7 @@ export const ReadyPage: React.FC<ReadyPageProps> = (props) => {
 
     // после ввода просто делаем переадресация на риски
     return (
-        <Layout title="Прошедшие вакцинации">
+        <Layout title="" BackButtonCustom={<BackButton text="Вернуться к заболеванию" />}>
             <PageLayout className="ready-page">
                 <p className="ready-page__text">Добавьте даные о вакцинах</p>
                 <FormControl variant="outlined" fullWidth className={'ready-page__input'}>

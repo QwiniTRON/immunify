@@ -33,8 +33,9 @@ const useStyles = makeStyles({
 });
 
 export const Calendar: React.FC<CalendarProps> = (props) => {
-    const [tabValue, setTabValue] = useState(0);
     const clasess = useStyles();
+    
+    const [tabValue, setTabValue] = useState(0);
 
     const handleTabChange = (event: any, newValue: any) => {
         setTabValue(newValue);
