@@ -1,7 +1,5 @@
 import axios, { AxiosInstance, Canceler } from 'axios';
 
-const isQa = false;
-
 type ReturnType = {
   httpClient: AxiosInstance;
   canceler: Canceler | undefined;
@@ -16,7 +14,8 @@ export function CreateHttpClient(): ReturnType {
 
   const httpClient = axios.create({
     baseURL: '/api/v1',
-    cancelToken: cancellation
+    cancelToken: cancellation,
+    withCredentials: true,
   });
 
   return {
