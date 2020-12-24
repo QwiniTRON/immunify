@@ -30,13 +30,15 @@ export class User {
     public sex: 'man' | 'woman';
     public family: User[];
     public data?: UserData;
+    public id?: string
 
-    public constructor(name: string = '', age: number = 0, sex: 'man' | 'woman' = 'man', family: User[] = [], data: UserData = new UserData()) {
+    public constructor(name: string = '', age: number = 0, sex: 'man' | 'woman' = 'man', family: User[] = [], data: UserData = new UserData(), id?: string) {
         this.name = name;
         this.age = age;
         this.sex = sex;
         this.family = family;
         this.data = data;
+        this.id = id;
     }
 }
 

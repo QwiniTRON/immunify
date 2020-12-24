@@ -42,6 +42,9 @@ const useStyle = makeStyles({
 const Reg: React.FC<RegProps> = ({
     register
 }) => {
+    const clasess = useStyle();
+    const history = useHistory();
+
     const [sex, setSex] = useState('');
     const [name, setName] = useState('');
     const [selectedDate, handleDateChange] = useState<Date | null>(null);
@@ -51,8 +54,6 @@ const Reg: React.FC<RegProps> = ({
         age: '',
         sex: '',
     });
-    const clasess = useStyle();
-    const history = useHistory();
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
@@ -97,6 +98,7 @@ const Reg: React.FC<RegProps> = ({
             setErrors(errors);
         }
     }
+
 
     return (
         <div className="reg">

@@ -21,6 +21,8 @@ import { Layout } from '../../components/Layout/Layout';
 import { BackButton } from '../../components/BackButton';
 import { useIsEmptyFamily } from '../../hooks';
 
+
+
 type QuizProps = {
 
 }
@@ -64,24 +66,24 @@ type QuizState = {
     userAnswers: QuizAnswer[]
 }
 export const Quiz: React.FC<QuizProps> = (props) => {
-    const currentUser = useSelector((state: RootState) => state.user.currentUser);
-    const isEmptyFamily = useIsEmptyFamily();
-    const pathToBack = isEmptyFamily? '/profile' : `/profile/${currentUser?.name}`;
-
-    const dispatch = useDispatch();
     const classes = useStyles();
+    const dispatch = useDispatch();
+    const isEmptyFamily = useIsEmptyFamily();
 
     const [open, setOpen] = useState(false);
+    const currentUser = useSelector((state: RootState) => state.user.currentUser);
+    const pathToBack = isEmptyFamily ? '/profile' : `/profile/${currentUser?.name}`;
+
     const [quiz, setQuiz] = useState<QuizState>({
         userAnswers: currentUser?.data?.quiz || [],
         currentStep: 0
     });
     const [selectedAnswer, setSelectedAnswer] = useState(currentUser?.data?.quiz?.[0]?.answerId);
+
     const quizQuestions = quizData;
     const quizProgress = quiz.userAnswers.length / quizQuestions.length * 100;
     const isNotCurrentAnswer = !Boolean(quiz.userAnswers[quiz.currentStep]) && !selectedAnswer;
     const currentQuestion = quizQuestions[quiz.currentStep];
-
 
     const setAnswer = (e: React.ChangeEvent<HTMLInputElement>) => {
         const value = e.target.value;
@@ -144,6 +146,7 @@ export const Quiz: React.FC<QuizProps> = (props) => {
                 setOpen(true);
             });
     }
+
 
     return (
         <Layout title="" BackButtonCustom={<BackButton to={pathToBack} text="Вернуться в профиль" />} >

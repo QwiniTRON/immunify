@@ -20,11 +20,27 @@ import { useIsEmptyFamily } from '../../hooks';
 import { BackButton } from '../../components/BackButton';
 
 
+
 type RegionProps = {
 
 }
 
 
+const top100Films = [
+    'Регион 1',
+    'Регион 2',
+    'Регион 3',
+    'Регион 4',
+    'Регион 5',
+    'Регион 6',
+    'Регион 7',
+    'Регион 8',
+    'Регион 9',
+    'Регион 10',
+    'Регион 11',
+    'Регион 12',
+    'Регион 13'
+];
 export const Region: React.FC<RegionProps> = (props) => {
     const currentUser = useSelector((state: RootState) => state.user.currentUser);
     const isEmptyFamily = useIsEmptyFamily();
@@ -39,7 +55,6 @@ export const Region: React.FC<RegionProps> = (props) => {
         workRegion: ''
     });
 
-
     const handleEdit = () => {
         if (!region.main) return setErrors(Object.assign({}, errors, { region: '* укажите регион' }));
         if (otherWork && !region.work) return setErrors(Object.assign({}, errors, { workRegion: '* укажите регоин' }));
@@ -53,22 +68,6 @@ export const Region: React.FC<RegionProps> = (props) => {
                 setOpen(true);
             });
     }
-
-    const top100Films = [
-        'Регион 1',
-        'Регион 2',
-        'Регион 3',
-        'Регион 4',
-        'Регион 5',
-        'Регион 6',
-        'Регион 7',
-        'Регион 8',
-        'Регион 9',
-        'Регион 10',
-        'Регион 11',
-        'Регион 12',
-        'Регион 13'
-    ];
 
 
     return (
@@ -86,7 +85,7 @@ export const Region: React.FC<RegionProps> = (props) => {
                     renderInput={(params) => <TextField {...params} label="выбирите регион" variant="outlined" />}
                     onChange={(event, newValue) => {
                         console.log(newValue);
-                        
+
                         setRegion(Object.assign({}, region, { main: newValue }));
                     }}
                 />

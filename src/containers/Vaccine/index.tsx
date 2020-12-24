@@ -10,6 +10,7 @@ import { Divider } from '@material-ui/core';
 import { BackButton } from '../../components/BackButton';
 
 
+
 type VaccineProps = {}
 
 const useStyles = makeStyles({
@@ -18,8 +19,9 @@ const useStyles = makeStyles({
 export const Vaccine: React.FC<VaccineProps> = (props) => {
   const clasess = useStyles();
 
+
   return (
-    <Layout title="" BackButtonCustom={<BackButton text="Вернуться к заболеванию"/>}>
+    <Layout title="" BackButtonCustom={<BackButton text="Вернуться к заболеванию" />}>
       <PageLayout>
         <Box fontSize={18}>
           <Box fontWeight={500} fontSize={24}><h2>Гардасил</h2></Box>

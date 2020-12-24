@@ -13,6 +13,8 @@ import { AppButton } from '../../components/UI/AppButton';
 import { Layout } from '../../components/Layout/Layout';
 import { BackButton } from '../../components/BackButton';
 
+
+
 type ReadyPageProps = {
 
 }

@@ -23,8 +23,10 @@ const useStyle = makeStyles((theme) => ({
 
 
 export const UserData: React.FC<UserDataProps> = (props) => {
-    const currentUser = useSelector((state: RootState) => state.user.currentUser);
     const classes = useStyle();
+
+    const currentUser = useSelector((state: RootState) => state.user.currentUser);
+
 
     return (
         <>

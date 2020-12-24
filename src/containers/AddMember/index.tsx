@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Typography from '@material-ui/core/Typography';
 import TextField from '@material-ui/core/TextField';
 import Box from '@material-ui/core/Box';
@@ -17,6 +17,9 @@ import { AppRadioGroup } from '../../components/UI/AppRadioGroup';
 import { AppRadioButton } from '../../components/UI/AppRadioButton';
 import { s } from '../../utils/Styels';
 import { BackButton } from '../../components/BackButton';
+import { useServer } from '../../hooks/useServer';
+import { CreatePatient } from '../../server';
+import { Loader } from '../../components/UI/Loader';
 
 
 type AddMemberProps = {
@@ -47,15 +50,34 @@ const AddMember: React.FC<AddMemberProps> = ({
     const clasess = useStyle();
     const history = useHistory();
 
+    const addReq = useServer(CreatePatient);
+    const loading = addReq.state.fetching;
+    const success = !loading && addReq.state.answer.succeeded;
+
     const [sex, setSex] = useState('');
     const [name, setName] = useState('');
     const [selectedDate, handleDateChange] = useState<Date | null>(null);
-    const [loading, setLoading] = useState(false);
     const [errors, setErrors] = useState({
         name: '',
         age: '',
         sex: ''
     });
+
+    if (success) {
+        // do some stuff
+        addReq.reload();
+    }
+
+    useEffect(() => {
+        if (success) {
+            addMember(name, selectedDate?.getTime(), sex, addReq.state.answer.data)
+                .then((r: any) => {
+                    history.push(`/profile/${name}`);
+                });
+        } else if(addReq.state.answer.errorMessage) {
+            // handle error
+        }
+    }, [success]);
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
@@ -86,8 +108,7 @@ const AddMember: React.FC<AddMemberProps> = ({
         }
 
         if (valid) {
-            addMember(name, selectedDate?.getTime(), sex)
-                .then((r: any) => history.push(`/profile/${name}`));
+            addReq.fetch(undefined);
         } else {
             setErrors(errors);
         }
@@ -101,48 +122,52 @@ const AddMember: React.FC<AddMemberProps> = ({
                         Добавление члена семьи
                     </h1>
 
-                    <form className="reg__form" onSubmit={handleSubmit}>
-                        <Typography color="error">{errors.name}</Typography>
-                        <TextField
-                            label="как зовут"
-                            variant="outlined"
-                            className="reg__input"
-                            id="name-input"
-                            value={name}
-                            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setName(e.target.value)} />
+                    {loading ? <Loader /> :
 
-                        <Typography color="error">{errors.age}</Typography>
-                        <MuiPickersUtilsProvider utils={DateFnsUtils} locale={ruLocale}>
-                            <DatePicker
-                                label="дата рождения"
-                                value={selectedDate}
-                                onChange={handleDateChange as any}
-                                fullWidth
-                                cancelLabel="отмена"
-                                format="d MMM yyyy"
-                                disableFuture
-                                inputVariant="outlined"
-                                clearable
-                            />
-                        </MuiPickersUtilsProvider>
+                        <form className="reg__form" onSubmit={handleSubmit}>
+                            <Typography color="error">{errors.name}</Typography>
+                            <TextField
+                                label="как зовут"
+                                variant="outlined"
+                                className="reg__input"
+                                id="name-input"
+                                value={name}
+                                onChange={(e: React.ChangeEvent<HTMLInputElement>) => setName(e.target.value)} />
 
-                        <Box fontSize={16} fontWeight="bold" mb={1}>пол</Box>
-                        <Typography color="error">{errors.sex}</Typography>
-                        <Box display="flex" justifyContent="space-between">
-                            <AppRadioGroup onChange={(value: string) => {
-                                setSex(value);
-                            }}
-                                value={sex}
-                            >
-                                <AppRadioButton value="man" text="М" classes={{ root: s(clasess.sexInput, clasess._sexInputMarginRight) }} />
-                                <AppRadioButton value="woman" text="Ж" classes={{ root: clasess.sexInput }} />
-                            </AppRadioGroup>
-                        </Box>
+                            <Typography color="error">{errors.age}</Typography>
+                            <MuiPickersUtilsProvider utils={DateFnsUtils} locale={ruLocale}>
+                                <DatePicker
+                                    label="дата рождения"
+                                    value={selectedDate}
+                                    onChange={handleDateChange as any}
+                                    fullWidth
+                                    cancelLabel="отмена"
+                                    format="d MMM yyyy"
+                                    disableFuture
+                                    inputVariant="outlined"
+                                    clearable
+                                />
+                            </MuiPickersUtilsProvider>
 
-                        <AppButton floated disabled={loading} type="submit">
-                            Начать
-                    </AppButton>
-                    </form>
+                            <Box fontSize={16} fontWeight="bold" mb={1}>пол</Box>
+                            <Typography color="error">{errors.sex}</Typography>
+                            <Box display="flex" justifyContent="space-between">
+                                <AppRadioGroup onChange={(value: string) => {
+                                    setSex(value);
+                                }}
+                                    value={sex}
+                                >
+                                    <AppRadioButton value="man" text="М" classes={{ root: s(clasess.sexInput, clasess._sexInputMarginRight) }} />
+                                    <AppRadioButton value="woman" text="Ж" classes={{ root: clasess.sexInput }} />
+                                </AppRadioGroup>
+                            </Box>
+
+                            <AppButton floated disabled={loading} type="submit">
+                                Начать
+                            </AppButton>
+                        </form>
+                    }
+
                 </div>
             </div>
         </Layout>
