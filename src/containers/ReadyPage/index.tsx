@@ -1,4 +1,4 @@
-import react, { useState } from 'react';
+import React, { useState } from 'react';
 import { DatePicker, MuiPickersUtilsProvider } from '@material-ui/pickers';
 import ruLocale from "date-fns/locale/ru";
 import DateFnsUtils from '@date-io/date-fns';

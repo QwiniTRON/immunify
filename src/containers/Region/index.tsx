@@ -1,14 +1,13 @@
-import react, { useState } from 'react';
+import React, { useState } from 'react';
 import Checkbox from '@material-ui/core/Checkbox';
-import Select from '@material-ui/core/Select';
-import InputLabel from '@material-ui/core/InputLabel';
 import { useSelector, useDispatch } from 'react-redux';
-import FormControl from '@material-ui/core/FormControl';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Snackbar from '@material-ui/core/Snackbar';
-import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
 import MuiAlert from '@material-ui/lab/Alert';
+import Autocomplete from '@material-ui/lab/Autocomplete';
+import TextField from '@material-ui/core/TextField';
+import Typography from '@material-ui/core/Typography';
 
 import './region.scss';
 
@@ -24,50 +23,6 @@ import { BackButton } from '../../components/BackButton';
 type RegionProps = {
 
 }
-
-
-type RegionSelectProps = {
-    value: string
-    changeHandle: (e: React.ChangeEvent<any>) => void
-    name: string
-    id: string
-    label: string
-    error?: any
-    title: string
-}
-const RegionSelect: React.FC<RegionSelectProps> = ({
-    changeHandle,
-    id,
-    label,
-    name,
-    value,
-    children,
-    error,
-    title
-}) => {
-    return (
-        <>
-            <Box className="error" mb={'5px'}>{error}</Box>
-            <FormControl variant="outlined" fullWidth className={'region-page__region'}>
-                <InputLabel htmlFor="filled-age-native-simple">{title}</InputLabel>
-                <Select
-                    native
-                    value={value}
-                    onChange={changeHandle}
-                    inputProps={{
-                        name: name,
-                        id: id,
-                    }}
-                    label={label}
-                >
-                    <option aria-label="None" value="" />
-                    {children}
-                </Select>
-            </FormControl>
-        </>
-    );
-}
-
 
 
 export const Region: React.FC<RegionProps> = (props) => {
@@ -86,8 +41,8 @@ export const Region: React.FC<RegionProps> = (props) => {
 
 
     const handleEdit = () => {
-        if (!region.main) return setErrors(Object.assign({}, errors, { region: 'укажите регион' }));
-        if (otherWork && !region.work) return setErrors(Object.assign({}, errors, { workRegion: 'укажите регоин' }));
+        if (!region.main) return setErrors(Object.assign({}, errors, { region: '* укажите регион' }));
+        if (otherWork && !region.work) return setErrors(Object.assign({}, errors, { workRegion: '* укажите регоин' }));
 
         setErrors(Object.assign({}, errors, { workRegion: '', region: '' }))
         let regionToSave = region;
@@ -99,48 +54,56 @@ export const Region: React.FC<RegionProps> = (props) => {
             });
     }
 
+    const top100Films = [
+        'Регион 1',
+        'Регион 2',
+        'Регион 3',
+        'Регион 4',
+        'Регион 5',
+        'Регион 6',
+        'Регион 7',
+        'Регион 8',
+        'Регион 9',
+        'Регион 10',
+        'Регион 11',
+        'Регион 12',
+        'Регион 13'
+    ];
+
 
     return (
         <Layout title="выбор регоина" BackButtonCustom={<BackButton to={pathToBack} />} >
             <PageLayout className="region-page">
                 <h4 className="region-page__title">В каком регионе Вы проживаете?</h4>
 
-                <RegionSelect
-                    changeHandle={(e: React.ChangeEvent<any>) => setRegion({
-                        ...region,
-                        main: String(e.target.value)
-                    })}
-                    id="filled-age-native-simple1"
-                    name="region"
-                    title="Выбирите регион"
+                <Typography color="error">{errors.region}</Typography>
+                <Autocomplete
+                    id="combo-region-main"
+                    options={top100Films}
+                    getOptionLabel={(option) => option}
                     value={region.main}
-                    label="Выбирите регион"
-                    error={errors.region}
-                >
-                    <option value={'10'}>Южный федеральный округ 1</option>
-                    <option value={'20'}>Южный федеральный округ 2</option>
-                    <option value={'30'}>Южный федеральный округ 3</option>
-                </RegionSelect>
+                    fullWidth
+                    renderInput={(params) => <TextField {...params} label="выбирите регион" variant="outlined" />}
+                    onChange={(event, newValue) => {
+                        setRegion(Object.assign(region, { main: newValue }));
+                    }}
+                />
 
                 {otherWork &&
                     <Box mt={2}>
                         <h4 className="region-page__title">В каком регионе Вы работаете?</h4>
-                        <RegionSelect
-                            changeHandle={(e: React.ChangeEvent<any>) => setRegion({
-                                ...region,
-                                work: String(e.target.value)
-                            })}
-                            id="filled-age-native-simple1"
-                            name="region"
-                            title="Выбирите регион"
+                        <Typography color="error">{errors.workRegion}</Typography>
+                        <Autocomplete
+                            id="combo-region-work"
+                            options={top100Films}
+                            getOptionLabel={(option) => option}
                             value={region.work}
-                            label="Выбирите регион"
-                            error={errors.workRegion}
-                        >
-                            <option value={'10'}>Южный федеральный округ 1</option>
-                            <option value={'20'}>Южный федеральный округ 2</option>
-                            <option value={'30'}>Южный федеральный округ 3</option>
-                        </RegionSelect>
+                            fullWidth
+                            renderInput={(params) => <TextField {...params} label="выбирите регион" variant="outlined" />}
+                            onChange={(event, newValue) => {
+                                setRegion(Object.assign(region, { work: newValue }));
+                            }}
+                        />
                     </Box>
                 }
 

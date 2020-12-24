@@ -5,6 +5,9 @@ import Box from '@material-ui/core/Box';
 import { makeStyles } from '@material-ui/core/styles';
 import { connect } from 'react-redux';
 import { useHistory } from 'react-router-dom';
+import ruLocale from "date-fns/locale/ru";
+import { DatePicker, MuiPickersUtilsProvider } from '@material-ui/pickers';
+import DateFnsUtils from '@date-io/date-fns';
 
 import { AppButton } from '../../components/UI/AppButton';
 import { addMember } from '../../store/user/action';
@@ -42,7 +45,7 @@ const AddMember: React.FC<AddMemberProps> = ({
 }) => {
     const [sex, setSex] = useState('');
     const [name, setName] = useState('');
-    const [age, setAge] = useState('');
+    const [selectedDate, handleDateChange] = useState<Date | null>(null);
     const [loading, setLoading] = useState(false);
     const [errors, setErrors] = useState({
         name: '',
@@ -60,7 +63,6 @@ const AddMember: React.FC<AddMemberProps> = ({
         // sanitize
         const sexText = sex.trim();
         const nameText = name.trim();
-        const ageText = age.trim();
         const errors = {
             name: '',
             age: '',
@@ -72,7 +74,7 @@ const AddMember: React.FC<AddMemberProps> = ({
             errors.name = 'имя должно быть не короче 2 символов';
             valid = false;
         }
-        if (+ageText < 1 || +age > 150) {
+        if (!Boolean(selectedDate)) {
             errors.age = 'возраст обязателен';
             valid = false;
         }
@@ -82,7 +84,7 @@ const AddMember: React.FC<AddMemberProps> = ({
         }
 
         if (valid) {
-            addMember(name, +age, sex)
+            addMember(name, selectedDate?.getTime(), sex)
                 .then((r: any) => history.push(`/profile/${name}`));
         } else {
             setErrors(errors);
@@ -108,18 +110,22 @@ const AddMember: React.FC<AddMemberProps> = ({
                             onChange={(e: React.ChangeEvent<HTMLInputElement>) => setName(e.target.value)} />
 
                         <Typography color="error">{errors.age}</Typography>
-                        <TextField
-                            label="возраст"
-                            type="number"
-                            variant="outlined"
-                            className="reg__input"
-                            id="age-input"
-                            value={age}
-                            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setAge(e.target.value)}
-                        />
+                        <MuiPickersUtilsProvider utils={DateFnsUtils} locale={ruLocale}>
+                            <DatePicker
+                                label="дата рождения"
+                                value={selectedDate}
+                                onChange={handleDateChange as any}
+                                fullWidth
+                                cancelLabel="отмена"
+                                format="d MMM yyyy"
+                                disableFuture
+                                inputVariant="outlined"
+                                clearable
+                            />
+                        </MuiPickersUtilsProvider>
 
                         <Box fontSize={16} fontWeight="bold" mb={1}>пол</Box>
-                        <Typography  color="error">{errors.sex}</Typography>
+                        <Typography color="error">{errors.sex}</Typography>
                         <Box display="flex" justifyContent="space-between">
                             <AppRadioGroup onChange={(value: string) => {
                                 setSex(value);
