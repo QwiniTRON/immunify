@@ -5,3 +5,5 @@ export * from './questionnaire';
 export * from './risk';
 export * from './vaccination';
 export * from './stage';
+export * from './hospitalVisit';
+export * from './hospital';
