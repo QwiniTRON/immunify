@@ -16,6 +16,8 @@ import { Layout } from '../../components/Layout/Layout';
 import { BackButton } from '../../components/BackButton';
 import { useIsEmptyFamily } from '../../hooks';
 import { Profession as  ProfessionType} from '../../type';
+import { claculateRisks } from '../../store/appData/action';
+import { useReactOidc } from '@axa-fr/react-oidc-context';
 
 
 type ProfessionProps = {
@@ -38,10 +40,12 @@ const top100Films: ProfessionType[] = [
 
 
 export const Profession: React.FC<ProfessionProps> = (props) => {
+    const dispatch = useDispatch();
+    const { oidcUser } = useReactOidc();
+    
     const currentUser = useSelector((state: RootState) => state.user.currentUser);
     const isEmptyFamily = useIsEmptyFamily();
     const pathToBack = isEmptyFamily ? '/profile' : `/profile/${currentUser?.name}`;
-    const dispatch = useDispatch();
 
     const [open, setOpen] = useState(false);
     const [profession, setProfession] = useState<ProfessionType | undefined>(currentUser?.data?.profession);
@@ -57,6 +61,7 @@ export const Profession: React.FC<ProfessionProps> = (props) => {
         (dispatch(updateCurrentUserData({ profession })) as any)
             .then((r: any) => {
                 setOpen(true);
+                dispatch(claculateRisks(oidcUser.access_token));
             });
     }
 

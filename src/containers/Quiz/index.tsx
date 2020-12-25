@@ -10,9 +10,11 @@ import { useSelector, useDispatch } from 'react-redux';
 import Snackbar from '@material-ui/core/Snackbar';
 import MuiAlert from '@material-ui/lab/Alert';
 import { useHistory } from 'react-router-dom';
+import { useReactOidc } from '@axa-fr/react-oidc-context';
 
 import './quiz.scss';
 
+import { claculateRisks } from '../../store/appData/action';
 import { PageLayout } from '../../components/UI/PageLayout';
 import { AppButton } from '../../components/UI/AppButton';
 import { RootState } from '../../store';
@@ -41,13 +43,14 @@ export const Quiz: React.FC<QuizProps> = (props) => {
     const classes = useStyles();
     const dispatch = useDispatch();
     const history = useHistory();
+    const { oidcUser } = useReactOidc();
 
     const isEmptyFamily = useIsEmptyFamily();
     const [open, setOpen] = useState(false);
     const currentUser = useSelector((state: RootState) => state.user.currentUser);
     const currentQuestionnarie = useSelector((state: RootState) => state.appData.questionnaire);
     const pathToBack = isEmptyFamily ? '/profile' : `/profile/${currentUser?.name}`;
-    
+
     const [quiz, setQuiz] = useState<QuizState>({
         userAnswers: currentUser?.data?.quiz?.answers || [],
         currentStep: 0
@@ -129,6 +132,7 @@ export const Quiz: React.FC<QuizProps> = (props) => {
         (dispatch(updateCurrentUserData({ quiz: quizData })) as any)
             .then((r: any) => {
                 setOpen(true);
+                dispatch(claculateRisks(oidcUser.access_token));
             });
     }
 

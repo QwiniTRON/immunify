@@ -44,14 +44,19 @@ export const Passport: React.FC<PassportProps> = (props) => {
     return (
         <Layout title="Иммунный пасспорт" titleCurrentName domainPage>
             <PageLayout>
-                {compleatedStatus ?
+                {!compleatedStatus && <PassportPlaceholder />}
+
+
+                {compleatedStatus &&
                     <>
-                        <DiseasCard to={'/passport/:id'} name="Гепатит В" risks={['high', 'high', 'low']} />
-                        <DiseasCard to={'/passport/:id'} name="Корь" risks={['low', 'high', 'low']} />
-                        <DiseasCard to={'/passport/:id'} name="Грипп" risks={['low', 'medium', 'low']} />
+                        {currentUser?.Risks.map((risk) => (
+                            <DiseasCard
+                                to={`/passport/${risk.diseaseId}`}
+                                name={risk.disease}
+                                risks={[risk.risk, risk.professionRisk, risk.regionRisk]}
+                                key={risk.diseaseId} />
+                        ))}
                     </>
-                    :
-                    <PassportPlaceholder />
                 }
             </PageLayout>
         </Layout>

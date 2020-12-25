@@ -6,8 +6,9 @@ import {
 import {
   AppDataAction
 } from '../types';
-import { AxiosFetcher, GetQuestionnaire } from '../../server';
+import { AxiosFetcher, CalculateRisk, GetQuestionnaire } from '../../server';
 import { getYearOffestNow } from '../../utils';
+import { updateMember } from '../user/action';
 
 
 //  ***************************
@@ -25,6 +26,37 @@ export function setData(newState: Partial<AppDataStore>): AppDataAction {
 //  ***************************
 //? ********** ASYNC **********
 //  ***************************
+
+export function claculateRisks(authOidc: string) {
+  return async function (dispatch: Function, getState: Function) {
+    const fetcher = new AxiosFetcher(CalculateRisk, authOidc);
+    const state: RootState = getState();
+    const currentUser = state.user.currentUser;
+
+    if (!currentUser) return;
+
+    const lastQuestionnaireId = currentUser?.data?.quiz?.questionnaireId;
+    const userAnswersIds = currentUser?.data?.quiz?.answers.map((a) => Number(a.answerId));
+    const userId = currentUser?.id;
+    const userProfessionId = currentUser?.data?.profession?.id;
+    const userRegionId = currentUser?.data?.region?.main?.id;
+
+    const calculateReq = await fetcher.Fetch({
+      answerIds: userAnswersIds!,
+      patientId: Number(userId),
+      professionId: Number(userProfessionId),
+      questionnaireId: Number(lastQuestionnaireId)!,
+      regionId: Number(userRegionId)
+    });
+
+    if (calculateReq.succeeded) {
+      await dispatch(updateMember({ Risks: (calculateReq.data as any) }, currentUser.name));
+    }
+
+    return;
+  }
+}
+
 
 export function appDataInit(authOidc: string) {
   return async function (dispatch: Function, getState: Function) {

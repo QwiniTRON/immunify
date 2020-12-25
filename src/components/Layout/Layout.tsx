@@ -123,16 +123,16 @@ export const Layout: React.FC<LayoutProps> = ({
                         }}
                         label="запись"
                         icon={<PostAddIcon />}
-                        value="/take"
+                        value="/calendar"
                     />
 
                     <BottomNavigationAction
                         classes={{
                             root: classes.navIcon,
                         }}
-                        label="календарь"
+                        label="статус"
                         icon={<InsertInvitationIcon />}
-                        value="/calendar"
+                        value="/vaccination"
                     />
                 </BottomNavigation>
             </div>}
