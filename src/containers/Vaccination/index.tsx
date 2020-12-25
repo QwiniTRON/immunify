@@ -56,18 +56,20 @@ export const Vaccination: React.FC<VaccinationProps> = (props) => {
     vaccinations.reload();
   }
 
-  const vaccinesToShow = vaccines.map((vaccine, index) => { 
+  const copiedVaccines: PatientVaccinations = JSON.parse(JSON.stringify(vaccines));
+
+  const vaccinesToShow = copiedVaccines.map((vaccine, index) => { 
     let array: {
       stage: number;
       date: string;
-      durationBeforeNextInMonth: number;
-  }[][] = [];
+      durationBeforeNextInMonths: number;
+    }[][] = [];
 
     const lastVaccine = vaccine.passedStages[vaccine.passedStages.length - 1];
 
     let date = new Date(lastVaccine.date);
      
-    date = new Date(date.setMonth(date.getMonth() + lastVaccine.durationBeforeNextInMonth));
+    date = new Date(date.setMonth(date.getMonth() + lastVaccine.durationBeforeNextInMonths));
 
     // Get quence 3, 2, 1 or 2, 1
     for (let index = 0; index < vaccine.totalStages.length; index++) {
@@ -107,7 +109,7 @@ export const Vaccination: React.FC<VaccinationProps> = (props) => {
         .filter((x) => !item.map((el) => el.stage).includes(x));
 
       needToAdd.forEach((stage) => {
-        item.push({ stage, date: 'none', durationBeforeNextInMonth: -1 })
+        item.push({ stage, date: 'none', durationBeforeNextInMonths: -1 })
       });
       
       item = item.sort((a, b) => a.stage - b.stage);
@@ -140,7 +142,7 @@ export const Vaccination: React.FC<VaccinationProps> = (props) => {
             name: vaccine.name,
             stadies: sorted.map((el, index) => el.map((stady) => ({
               name: index > 0 ? `R${stady.stage}` : `V${stady.stage}`,
-              isVaccined: stady.durationBeforeNextInMonth !== -1
+              isVaccined: stady.durationBeforeNextInMonths !== -1
             })))
           }}
           status={new Date() >= date ? "bad" : "ok"}

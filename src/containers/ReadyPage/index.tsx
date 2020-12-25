@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { DatePicker, MuiPickersUtilsProvider } from '@material-ui/pickers';
 import ruLocale from "date-fns/locale/ru";
 import DateFnsUtils from '@date-io/date-fns';
@@ -13,7 +13,9 @@ import { AppButton } from '../../components/UI/AppButton';
 import { Layout } from '../../components/Layout/Layout';
 import { BackButton } from '../../components/BackButton';
 
+import { useServer } from '../../hooks/useServer';
 
+import { GetVaccines, GetAvailableStages, CreateVaccination } from '../../server';
 
 type ReadyPageProps = {
 
@@ -22,8 +24,40 @@ type ReadyPageProps = {
 
 export const ReadyPage: React.FC<ReadyPageProps> = (props) => {
     const [selectedDate, handleDateChange] = useState(new Date());
+    const [vaccines, setVaccines] = useState<{ id: number, name: string }[]>([]);
+    const [stages, setStages] = useState<{ id: number, stage: number }[]>([]);
     const [vaccine, setVaccine] = useState(0);
-    const [count, setCount] = useState(0);
+    const [currentStage, setCurrentStage] = useState(0);
+
+    const vaccinesRequest = useServer(GetVaccines);
+    const stagesRequest = useServer(GetAvailableStages);
+    const vaccinationRequest = useServer(CreateVaccination);
+
+    useEffect(() => {
+        vaccinesRequest.fetch(undefined);
+
+        return vaccinesRequest.cancel;
+    }, []);
+
+    const loading = vaccinesRequest.state.fetching || stagesRequest.state.fetching || vaccinationRequest.state.fetching;
+    const successVaccines = !loading && vaccinesRequest.state.answer.succeeded;
+    const successStages = !loading && stagesRequest.state.answer.succeeded;
+    const successVaccination = !loading && vaccinationRequest.state.answer.succeeded;
+
+    if (successVaccines) {
+        setVaccines(vaccinesRequest.state.answer.data || []);
+        vaccinesRequest.reload();
+    }
+
+    if (successStages) {
+        setStages(stagesRequest.state.answer.data || []);
+        stagesRequest.reload();
+    }
+
+    if (successVaccination) {
+        // do smth
+        vaccinationRequest.reload();
+    }
 
     // после ввода просто делаем переадресация на риски
     return (
@@ -35,7 +69,14 @@ export const ReadyPage: React.FC<ReadyPageProps> = (props) => {
                     <Select
                         native
                         value={vaccine}
-                        onChange={(e) => setVaccine(Number(e.target.value))}
+                        onChange={(e) => {
+                            const val = Number(e.target.value);
+
+                            stagesRequest.cancel();
+                            stagesRequest.fetch({ vaccineId: val });
+
+                            setVaccine(val);
+                        }}
                         inputProps={{
                             name: 'region',
                             id: 'filled-age-native-simple',
@@ -43,9 +84,11 @@ export const ReadyPage: React.FC<ReadyPageProps> = (props) => {
                         label="вакцина"
                     >
                         <option aria-label="None" value="" />
-                        <option value={10}>БСЖ</option>
-                        <option value={20}>Спутник-5</option>
-                        <option value={30}>Вакцинушка</option>
+                        { vaccines.map((vac) => (
+                            <option value={vac.id} key={vac.id}>
+                                {vac.name}
+                            </option>
+                        )) }
                     </Select>
                 </FormControl>
                 <FormControl variant="outlined" fullWidth className={'ready-page__input'}>
@@ -53,17 +96,19 @@ export const ReadyPage: React.FC<ReadyPageProps> = (props) => {
                     <Select
                         native
                         label="какая по счёту"
-                        value={count}
-                        onChange={(e) => setCount(Number(e.target.value))}
+                        value={currentStage}
+                        onChange={(e) => setCurrentStage(Number(e.target.value))}
                         inputProps={{
                             name: 'region',
                             id: 'filled-age-native-simple',
                         }}
                     >
                         <option aria-label="None" value="" />
-                        <option value={10}>1</option>
-                        <option value={20}>2</option>
-                        <option value={30}>3</option>
+                        { stages.map((stage) => (
+                            <option value={stage.id} key={stage.id}>
+                                {stage.stage}
+                            </option>
+                        )) }
                     </Select>
                 </FormControl>
                 <MuiPickersUtilsProvider utils={DateFnsUtils} locale={ruLocale}>
@@ -80,7 +125,13 @@ export const ReadyPage: React.FC<ReadyPageProps> = (props) => {
                     />
                 </MuiPickersUtilsProvider>
 
-                <AppButton floated>
+                <AppButton floated onClick={() => {
+                    vaccinationRequest.fetch({
+                        patientId: 1,
+                        stageId: currentStage,
+                        date: selectedDate,
+                    });
+                }}>
                     Сохранить
                 </AppButton>
             </PageLayout>
