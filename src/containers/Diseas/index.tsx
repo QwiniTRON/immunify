@@ -5,7 +5,7 @@ import Backdrop from '@material-ui/core/Backdrop';
 import Fade from '@material-ui/core/Fade';
 import ClearIcon from '@material-ui/icons/Clear';
 import ArrowRightAltIcon from '@material-ui/icons/ArrowRightAlt';
-import { Link } from 'react-router-dom';
+import { Link, useRouteMatch } from 'react-router-dom';
 
 import './diseas.scss';
 
@@ -15,8 +15,14 @@ import { Loader } from '../../components/UI/Loader';
 import { Layout } from '../../components/Layout/Layout';
 import { AppButtonGroup } from '../../components/UI/ButtonGroup';
 import { BackButton } from '../../components/BackButton';
+import { useServer } from '../../hooks/useServer';
+import { GetDetailedDisease, Vaccine } from '../../server';
 
 
+
+type DiseasRoutParams = {
+    id: string
+}
 
 type DiseasProps = {
 
@@ -68,31 +74,51 @@ const useStyles = makeStyles((theme) => ({
     }
 }));
 
-const diseas = {
-    name: 'Гипатит В',
-    about: 'это инфекционное заболевание печени, вызванное вирусом гепатита типа B. Острая (активная) стадия гепатита В развивается в течение первых 6 месяцев после заражения вирусной инфекцией и может протекать как в очень легкой форме, практически бессимптомно, так и в тяжелой вплоть до госпитализации.',
-    vaccines: `Все современные вакцины для профилактики вирусного гепатита В производятся с использованием генно-инженерной`,
-    signs: `Постоянная тошнота Быстрая утомляемость Появление болей в суставах Лихорадка`
+type Diseas = {
+    detailed: string
+    id: number
+    name: string
+    signs: string
+    vaccines: Vaccine[]
 }
 export const Diseas: React.FC<DiseasProps> = (props) => {
     const classes = useStyles();
+    const id = useRouteMatch<DiseasRoutParams>().params.id;
+
+    const diseasReq = useServer(GetDetailedDisease);
+    const loading = diseasReq.state.fetching;
+    const success = !loading && diseasReq.state.answer.succeeded;
+    const [diseas, setDiseas] = useState<Diseas | null>(null);
 
     const [openAbout, setOpenAbout] = useState(false);
     const [openVaccines, setOpenVaccines] = useState(false);
     const [openSigns, setOpenSigns] = useState(false);
-    const [loading, setLoading] = useState(true);
 
     // тут могла быть ваша загрузка данных
     useEffect(() => {
-        setTimeout(() => setLoading(false), 1000);
+        diseasReq.fetch({ diseaseId: Number(id) });
     }, []);
 
+    useEffect(() => {
+        if (success) {
+            setDiseas(diseasReq.state.answer?.data as Diseas);
+        }
+    }, [success]);
 
     if (loading) return (
         <Layout title="" BackButtonCustom={<BackButton text="Вернуться к иммунному паспорту" />}>
             <PageLayout className="diseas-page">
                 <h3 className={classes.title}>Идёт загрузка данных</h3>
                 <Loader />
+            </PageLayout>
+        </Layout>
+    );
+
+    if (!diseas) return (
+        <Layout title="" BackButtonCustom={<BackButton text="Вернуться к иммунному паспорту" />}>
+            <PageLayout className="diseas-page">
+                <h3 className={classes.title}>Такой болезни не нашлось</h3>
+                <Link to="/profile" >в профиль</Link>
             </PageLayout>
         </Layout>
     );
@@ -106,7 +132,7 @@ export const Diseas: React.FC<DiseasProps> = (props) => {
                 <div>
                     <div className={classes.paper + ' ' + classes.card} onClick={() => setOpenAbout(true)}>
                         <h2>Что это?</h2>
-                        <p>{diseas.about.slice(0, 100) + '...'}</p>
+                        <p>{diseas.detailed.slice(0, 100) + '...'}</p>
                         <div className={classes.more}>подробнее <ArrowRightAltIcon /></div>
                     </div>
                     <Modal
@@ -122,7 +148,7 @@ export const Diseas: React.FC<DiseasProps> = (props) => {
                         <Fade in={openAbout}>
                             <div className={classes.paper}>
                                 <h2 id="transition-modal-title">Что это?</h2>
-                                <p id="transition-modal-description">{diseas.about}</p>
+                                <p id="transition-modal-description">{diseas.detailed}</p>
                                 <ClearIcon classes={{ root: classes.closer }} onClick={() => setOpenAbout(false)} />
                             </div>
                         </Fade>
@@ -183,7 +209,9 @@ export const Diseas: React.FC<DiseasProps> = (props) => {
 
                 <AppButtonGroup floated>
                     <Link to="/passport/ready" className={classes.linkButton}><AppButton appColor="white"> Я привит </AppButton></Link>
-                    <Link to="/take" className={classes.linkButton}><AppButton>Записаться</AppButton></Link>
+                    <Link 
+                    to={`/passport/take`}
+                    className={classes.linkButton}><AppButton>Записаться</AppButton></Link>
                 </AppButtonGroup>
             </PageLayout>
         </Layout>

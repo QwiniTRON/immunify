@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useLayoutEffect, useState } from 'react';
 import Typography from '@material-ui/core/Typography';
 import TextField from '@material-ui/core/TextField';
 import Box from '@material-ui/core/Box';
@@ -18,12 +18,15 @@ import { AppRadioGroup } from '../../components/UI/AppRadioGroup';
 import { AppRadioButton } from '../../components/UI/AppRadioButton';
 import { s } from '../../utils/Styels';
 import { AppDatePicker } from '../../components/UI/appDatePicker';
+import { CreatePatient } from '../../server';
+import { useServer } from '../../hooks/useServer';
+import { appDataInit } from '../../store/appData/action';
+import { useReactOidc } from '@axa-fr/react-oidc-context';
 
 
 type RegProps = {
-
-
     register: Function
+    appDataInit: Function
 }
 
 const useStyle = makeStyles({
@@ -40,20 +43,41 @@ const useStyle = makeStyles({
 });
 
 const Reg: React.FC<RegProps> = ({
-    register
+    register,
+    appDataInit
 }) => {
     const clasess = useStyle();
     const history = useHistory();
+    const { oidcUser } = useReactOidc();
+
+    const addReq = useServer(CreatePatient);
+    const loading = addReq.state.fetching;
+    const success = !loading && addReq.state.answer.succeeded;
 
     const [sex, setSex] = useState('');
     const [name, setName] = useState('');
     const [selectedDate, handleDateChange] = useState<Date | null>(null);
-    const [loading, setLoading] = useState(false);
     const [errors, setErrors] = useState({
         name: '',
         age: '',
         sex: '',
     });
+
+
+    useLayoutEffect(() => {
+        if (success) {
+            register(name, selectedDate?.getTime(), sex, addReq.state?.answer?.data?.id)
+                .then((r: any) => {
+                    appDataInit(oidcUser.access_token).then(() => {
+                        // history.push('/profile');
+                    });
+                })
+                .catch((e: any) => {
+                    console.log(e);
+                });
+        } else if (addReq.state.answer.errorMessage) {}
+    }, [success]);
+
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
@@ -85,15 +109,7 @@ const Reg: React.FC<RegProps> = ({
         }
 
         if (valid) {
-            register(name, selectedDate?.getTime(), sex)
-                .then((r: any) => {
-                    if (r) {
-                        history.push('/profile');
-                    }
-                })
-                .catch((e: any) => {
-                    console.log(e);
-                });
+            addReq.fetch(undefined);
         } else {
             setErrors(errors);
         }
@@ -167,7 +183,8 @@ const Reg: React.FC<RegProps> = ({
 const mapStateToProps = (state: RootState) => ({
 });
 const mapDispatchToProps = {
-    register
+    register,
+    appDataInit
 }
 const connectedReg = connect(mapStateToProps, mapDispatchToProps)(Reg);
 export { connectedReg as Reg };

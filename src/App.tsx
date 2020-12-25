@@ -1,8 +1,8 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Switch, Route, Redirect } from 'react-router-dom';
 import { CSSTransition, TransitionGroup } from 'react-transition-group';
 import { connect } from 'react-redux';
-import { AuthenticationContext } from '@axa-fr/react-oidc-context';
+import { useReactOidc } from '@axa-fr/react-oidc-context';
 
 import { userInit } from './store/user/action';
 import { appDataInit } from './store/appData/action';
@@ -48,13 +48,13 @@ const App: React.FC<AppProps> = function ({
   appDataInit
 }) {
   const [isINIT, setIsINIT] = useState(false);
-  const authOidcContest = useContext(AuthenticationContext);
+  const { oidcUser } = useReactOidc();
   const isAuth = Boolean(user);
 
   useEffect(() => {
     void async function () {
       const userReq = await userInit();
-      const appDataReq = await appDataInit(authOidcContest.oidcUser?.access_token!);
+      const appDataReq = await appDataInit(oidcUser.access_token!);
 
       setIsINIT(true);
     }()
@@ -97,8 +97,16 @@ const App: React.FC<AppProps> = function ({
 
 
               {/* двух шаговые роуты */}
+              <Route path="/take/:id" exact>
+                <LastAppointment />
+              </Route>
+
               <Route path="/passport/ready" exact>
                 <ReadyPage />
+              </Route>
+
+              <Route path="/passport/take" exact>
+                <ChooseClinic />
               </Route>
 
               <Route path="/passport/:id" exact>
@@ -114,7 +122,12 @@ const App: React.FC<AppProps> = function ({
               </Route>
 
 
+
               {/* трёхуровневые роуты */}
+              <Route path="/passport/appointment/:id" exact>
+                <Appointment />
+              </Route>
+
               <Route path="/profile/:id/quiz" exact>
                 <Quiz />
               </Route>
@@ -126,7 +139,6 @@ const App: React.FC<AppProps> = function ({
               <Route path="/profile/:id/region" exact>
                 <Region />
               </Route>
-
 
               <Redirect to="/profile" />
 

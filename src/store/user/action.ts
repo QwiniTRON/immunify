@@ -77,10 +77,10 @@ export function login() {
 /*
     метод для регистрации
 */
-export function register(name: string, age: number, sex: Sex) {
+export function register(name: string, age: number, sex: Sex, id: string) {
     return async function (dispatch: Function, getState: Function) {
         // сервер ...
-        const user: User = new User(name, age, sex);
+        const user: User = new User(name, age, sex, undefined, undefined, undefined, id);
 
         UserModel.saveUser(user);
         dispatch(setUser(user));
@@ -117,17 +117,12 @@ export function addMember(name: string, age: number, sex: Sex, id: string) {
 /*
     
 */
-export function updateMember(name: string, age: number, sex: Sex, memberName: string) {
+export function updateMember(memberNextState: Partial<User>, memberName: string) {
     return async function (dispatch: Function, getState: Function) {
         let state: RootState = getState();
         const isCurrentUser = state.user.currentUser?.name == memberName;
 
-        const updatedMember = {
-            age,
-            name,
-            sex
-        }
-        dispatch(updateByName(updatedMember as User, memberName));
+        dispatch(updateByName(memberNextState as User, memberName));
 
         state = getState();
 
@@ -138,7 +133,6 @@ export function updateMember(name: string, age: number, sex: Sex, memberName: st
         } catch (err) {
             console.log(err);
         }
-
     }
 }
 

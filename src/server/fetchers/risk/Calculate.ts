@@ -5,8 +5,8 @@ type Request = {
   answerIds: number[],
   questionnaireId: number,
   patientId: number,
-  professionId: number,
-  regionId: number,
+  professionId?: number,
+  regionId?: number,
 }
 
 export const CalculateRisk: FetchFunc<Request, RiskViewModel> = (client, request) =>

@@ -11,7 +11,13 @@ import { Layout } from '../../components/Layout/Layout';
 import { PageLayout } from '../../components/UI/PageLayout';
 import { Divider } from '../../components/UI/Divider';
 import { AppButton } from '../../components/UI/AppButton';
+import { useRouteMatch } from 'react-router-dom';
 
+
+
+type AppointmentParams = {
+  id: string
+}
 
 type AppointmentProps = {}
 
@@ -32,11 +38,13 @@ const useStyles = makeStyles({
 });
 
 export const Appointment: React.FC<AppointmentProps> = (props) => {
-  const [selectedDate, handleDateChange] = useState(new Date());
   const clases = useStyles();
+  const clinicId = useRouteMatch<AppointmentParams>().params.id;
+
+  const [selectedDate, handleDateChange] = useState(new Date());
 
   return (
-    <Layout title="" BackButtonCustom={<BackButton text="Вернуться к списку центров" to="/" />}>
+    <Layout title="" BackButtonCustom={<BackButton text="Вернуться к списку центров" to="/passport/take" />}>
       <PageLayout className={clases.root}>
         <div className={clases.content}>
           <Box component="h2" fontSize={24}>
@@ -46,27 +54,18 @@ export const Appointment: React.FC<AppointmentProps> = (props) => {
 
           <Box fontWeight={500}>
             Клинико-диагностический центр МЕДСИ (Марьино)
-        </Box>
+          </Box>
           <Box>
             Москва, улица Перерва, дом 53
-        </Box>
+          </Box>
 
           <Box mt={4}>
             <Box>
               <CallIcon color="primary" fontSize="large" className={clases.phoneIcon} /> +7 (495) 342-85-01
-          </Box>
+            </Box>
             <Box>
               <CallIcon color="primary" fontSize="large" className={clases.phoneIcon} /> +7 (495) 342-85-02
-          </Box>
-            <Box>
-              <CallIcon color="primary" fontSize="large" className={clases.phoneIcon} /> +7 (495) 342-85-03
-          </Box>
-            <Box>
-              <CallIcon color="primary" fontSize="large" className={clases.phoneIcon} /> +7 (495) 342-85-03
-          </Box>
-            <Box>
-              <CallIcon color="primary" fontSize="large" className={clases.phoneIcon} /> +7 (495) 342-85-03
-          </Box>
+            </Box>
           </Box>
 
 

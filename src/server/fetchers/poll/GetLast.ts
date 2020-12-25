@@ -15,7 +15,7 @@ export enum RiskStage {
 export enum RiskCoefficient {
   None = 0,
   Low = 1,
-  High = 2,
+  High = 2
 }
 
 export type RiskViewModel = {

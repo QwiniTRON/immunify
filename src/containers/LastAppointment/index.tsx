@@ -45,7 +45,7 @@ export const LastAppointment: React.FC<LastAppointmentProps> = (props) => {
   const clases = useStyles();
 
   return (
-    <Layout title="" BackButtonCustom={<BackButton text="Вернуться к списку центров" to="/" />}>
+    <Layout title="" BackButtonCustom={<BackButton text="Вернуться к списку центров" to="/take" />}>
       <PageLayout className={clases.root}>
         <div className={clases.content}>
           <Box component="h2" fontSize={24}>

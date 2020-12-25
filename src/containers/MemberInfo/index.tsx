@@ -86,7 +86,7 @@ const MemberInfo: React.FC<MemberInfoProps> = ({
         }
 
         if (valid) {
-            (updateMember(name, Number(age), sex as Sex, id) as any)
+            (updateMember({ name, age: Number(age), sex: sex as Sex }, id) as any)
                 .then(() => {
                     setOpen(true);
                 });
@@ -148,7 +148,7 @@ const MemberInfo: React.FC<MemberInfoProps> = ({
                         <AppButton onClick={handleSubmit}>сохранить</AppButton>
                     }
                     {!isSelected &&
-                        <AppButton onClick={(e: React.MouseEvent) => (changeCurrentUser as Function)(id).then(() => { 
+                        <AppButton onClick={(e: React.MouseEvent) => (changeCurrentUser as Function)(id).then(() => {
                             history.push('/profile');
                         })} color="secondary">выбрать</AppButton>
                     }

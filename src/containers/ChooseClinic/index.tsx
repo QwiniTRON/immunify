@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
@@ -10,6 +10,9 @@ import { InfoCard } from '../../components/UI/InfoCard';
 import { AppTabPanel } from '../../components/UI/TabPanel';
 import { PageLayout } from '../../components/UI/PageLayout';
 import { BackButton } from '../../components/BackButton';
+import { useRouteMatch } from 'react-router-dom';
+import { GetHospitals } from '../../server/fetchers/hospital';
+import { useServer } from '../../hooks/useServer';
 
 
 type ChooseClinicProps = {}
@@ -26,18 +29,35 @@ const useStyles = makeStyles({
   }
 });
 
+type Clinic = { id: number, name: string }
+
 export const ChooseClinic: React.FC<ChooseClinicProps> = (props) => {
   const clasess = useStyles();
+  const clinicsReq = useServer(GetHospitals);
+  const loading = clinicsReq.state.fetching;
+  const success = !loading && clinicsReq.state.answer.succeeded;
 
   const [tabValue, setTabValue] = useState(0);
+  const [clinics, setClinics] = useState<Clinic[]>([]);
+
+  useEffect(() => {
+    clinicsReq.fetch(undefined);
+  }, []);
+
+  useEffect(() => {
+    if (success) {
+      setClinics(clinicsReq?.state?.answer?.data as Clinic[]);
+      clinicsReq.reload();
+    }
+  }, [success]);
 
   const handleTabChange = (event: any, newValue: any) => {
     setTabValue(newValue);
   };
 
-  
+
   return (
-    <Layout title="" clearScroll BackButtonCustom={<BackButton text="Вернуться к списку центров" />} >
+    <Layout title="" clearScroll BackButtonCustom={<BackButton to={`/passport`} text="Вернуться к списку центров" />} >
       <PageLayout className={clasess.root}>
 
         <Box component="h2" fontSize={24} fontWeight={500}>
@@ -46,56 +66,30 @@ export const ChooseClinic: React.FC<ChooseClinicProps> = (props) => {
 
         <Box mb={1}>
           <Tabs variant="fullWidth" indicatorColor="primary" value={tabValue} onChange={handleTabChange} aria-label="simple tabs example">
-            <Tab label="Календарь" textColor="#000" />
             <Tab label="Список" textColor="#000" />
+            <Tab label="карта" textColor="#000" />
           </Tabs>
         </Box>
 
-        <AppTabPanel value={tabValue} index={0}>
-          <Box textAlign="center">
-            <MapIcon />
+        <AppTabPanel value={tabValue} index={0} className={clasess.content} >
+          <Box p={1}>
+
+            {clinics.map((c) => (
+              <Box marginY={1}>
+                <InfoCard data={[
+                  { description: '', title: c.name }
+                ]}
+                  detailText="Детали"
+                  to={`/passport/appointment/${c.id}`}
+                />
+              </Box>
+            ))}
+
           </Box>
         </AppTabPanel>
-        <AppTabPanel value={tabValue} index={1} className={clasess.content} >
-          <Box marginY={1}>
-            <InfoCard data={[
-              { description: '11:00', title: '30 октября 2020' },
-              { description: 'Москва, улица Перерва, дом 53', title: 'Клинико-диагностический центр МЕДСИ (Марьино)' },
-              { description: 'Инфарникс', title: 'Вакцина' },
-            ]}
-              detailText="Детали"
-              to=""
-            />
-          </Box>
-          <Box marginY={1}>
-            <InfoCard data={[
-              { description: '11:00', title: '30 октября 2020' },
-              { description: 'Москва, улица Перерва, дом 53', title: 'Клинико-диагностический центр МЕДСИ (Марьино)' },
-              { description: 'Инфарникс', title: 'Вакцина' },
-            ]}
-              detailText="Детали"
-              to=""
-            />
-          </Box>
-          <Box marginY={1}>
-            <InfoCard data={[
-              { description: '11:00', title: '30 октября 2020' },
-              { description: 'Москва, улица Перерва, дом 53', title: 'Клинико-диагностический центр МЕДСИ (Марьино)' },
-              { description: 'Инфарникс', title: 'Вакцина' },
-            ]}
-              detailText="Детали"
-              to=""
-            />
-          </Box>
-          <Box marginY={1}>
-            <InfoCard data={[
-              { description: '11:00', title: '30 октября 2020' },
-              { description: 'Москва, улица Перерва, дом 53', title: 'Клинико-диагностический центр МЕДСИ (Марьино)' },
-              { description: 'Инфарникс', title: 'Вакцина' },
-            ]}
-              detailText="Детали"
-              to=""
-            />
+        <AppTabPanel value={tabValue} index={1}>
+          <Box textAlign="center">
+            <MapIcon />
           </Box>
         </AppTabPanel>
       </PageLayout>

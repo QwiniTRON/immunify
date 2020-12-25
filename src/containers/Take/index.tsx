@@ -17,18 +17,8 @@ const TakePlaceholder: React.FC<any> = (props) => {
             <TakeCardIcon />
 
             <Box fontSize={18} fontWeight={500} m="0 auto" width={0.5} mt={4}>
-                Недостаточно данных
+                У Вас нет предстоящих записей
             </Box>
-
-            <Box m="0 auto" width={0.5} mt={1}>
-                Заполните данные о себе, чтобы изучить личный иммунный паспорт
-            </Box>
-
-            <Link to="/profile">
-                <AppButton appColor="linear" floated>
-                    Добавить
-                </AppButton>
-            </Link>
         </Box>
     );
 }

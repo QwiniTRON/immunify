@@ -19,6 +19,8 @@ import { Layout } from '../../components/Layout/Layout';
 import { useIsEmptyFamily } from '../../hooks';
 import { BackButton } from '../../components/BackButton';
 import { Region as RegionType } from '../../type';
+import { useReactOidc } from '@axa-fr/react-oidc-context';
+import { claculateRisks } from '../../store/appData/action';
 
 
 
@@ -39,10 +41,12 @@ const top100Films: RegionType[] = [
 ];
 
 export const Region: React.FC<RegionProps> = (props) => {
+    const dispatch = useDispatch();
+    const { oidcUser } = useReactOidc();
+
     const currentUser = useSelector((state: RootState) => state.user.currentUser);
     const isEmptyFamily = useIsEmptyFamily();
     const pathToBack = isEmptyFamily ? '/profile' : `/profile/${currentUser?.name}`;
-    const dispatch = useDispatch();
 
     const [open, setOpen] = useState(false);
     const [region, setRegion] = useState(currentUser?.data?.region!);
@@ -63,6 +67,7 @@ export const Region: React.FC<RegionProps> = (props) => {
         (dispatch(updateCurrentUserData({ region: regionToSave })) as any)
             .then((r: any) => {
                 setOpen(true);
+                dispatch(claculateRisks(oidcUser.access_token));
             });
     }
 
