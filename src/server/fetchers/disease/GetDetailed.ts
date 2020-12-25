@@ -5,14 +5,14 @@ type Request = {
 }
 
 type Response = {
-  id: number,
-  name: string,
-  detailed: string,
-  signs: string,
-  vaccines: Vaccine[],
+  id: number
+  name: string
+  detailed: string
+  signs: string
+  vaccines: Vaccine[]
 };
 
-type Vaccine = {
+export type Vaccine = {
   id: number;
   name: string;
   detailed: string;

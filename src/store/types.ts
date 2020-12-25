@@ -3,9 +3,11 @@ import {
     USER_ADD_MEMBER,
     USER_SET_CURRENT_USER,
     USER_UPDATE_BY_NAME,
-    USER_SET_DATA
+    USER_SET_DATA,
+    APPDATA_SET_DATA
 } from './consts';
 import { User, QuizAnswer, RegionData, UserData } from '../models/User';
+import { AppDataStore } from './appData';
 
 // USER
 type userSetUser = {
@@ -41,6 +43,15 @@ export type UserAction = userSetUser |
     userAddMember |
     userSetData
 
+
+
+// APPDATA
+export type AppDataSetData = {
+    type: typeof APPDATA_SET_DATA,
+    newState: Partial<AppDataStore>
+}
+
+export type AppDataAction = AppDataSetData
 
 
 // CLASSES

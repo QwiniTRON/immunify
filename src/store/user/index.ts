@@ -51,7 +51,7 @@ const updateByName = (state: UserStore = initialState, action: UserAction) => {
 
 const addMember = (state: UserStore = initialState, action: UserAction) => {
     if (action.type !== USER_ADD_MEMBER) return state;
-
+    
     const user: User = state.user!;
     user?.family.push(action.member);
     return Object.assign({}, state);

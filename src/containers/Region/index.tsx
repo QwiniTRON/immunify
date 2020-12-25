@@ -18,29 +18,26 @@ import { RootState } from '../../store';
 import { Layout } from '../../components/Layout/Layout';
 import { useIsEmptyFamily } from '../../hooks';
 import { BackButton } from '../../components/BackButton';
+import { Region as RegionType } from '../../type';
 
 
 
-type RegionProps = {
-
-}
+type RegionProps = {}
 
 
-const top100Films = [
-    'Регион 1',
-    'Регион 2',
-    'Регион 3',
-    'Регион 4',
-    'Регион 5',
-    'Регион 6',
-    'Регион 7',
-    'Регион 8',
-    'Регион 9',
-    'Регион 10',
-    'Регион 11',
-    'Регион 12',
-    'Регион 13'
+const top100Films: RegionType[] = [
+    { id: 1, name: 'профессия 1' },
+    { id: 2, name: 'профессия 2' },
+    { id: 3, name: 'профессия 3' },
+    { id: 4, name: 'профессия 4' },
+    { id: 5, name: 'профессия 5' },
+    { id: 6, name: 'профессия 6' },
+    { id: 7, name: 'профессия 7' },
+    { id: 8, name: 'профессия 8' },
+    { id: 9, name: 'профессия 9' },
+    { id: 10, name: 'профессия 10' }
 ];
+
 export const Region: React.FC<RegionProps> = (props) => {
     const currentUser = useSelector((state: RootState) => state.user.currentUser);
     const isEmptyFamily = useIsEmptyFamily();
@@ -59,9 +56,9 @@ export const Region: React.FC<RegionProps> = (props) => {
         if (!region.main) return setErrors(Object.assign({}, errors, { region: '* укажите регион' }));
         if (otherWork && !region.work) return setErrors(Object.assign({}, errors, { workRegion: '* укажите регоин' }));
 
-        setErrors(Object.assign({}, errors, { workRegion: '', region: '' }))
+        setErrors({ workRegion: '', region: '' })
         let regionToSave = region;
-        if (!otherWork) region.work = '';
+        if (!otherWork) region.work = undefined;
 
         (dispatch(updateCurrentUserData({ region: regionToSave })) as any)
             .then((r: any) => {
@@ -79,13 +76,18 @@ export const Region: React.FC<RegionProps> = (props) => {
                 <Autocomplete
                     id="combo-region-main"
                     options={top100Films}
-                    getOptionLabel={(option) => option}
+                    getOptionLabel={(option) => option.name}
                     value={region?.main}
                     fullWidth
-                    renderInput={(params) => <TextField {...params} label="выбирите регион" variant="outlined" />}
+                    renderInput={(params) =>
+                        <TextField
+                            {...params}
+                            helperText={errors.region}
+                            error={Boolean(errors.region)}
+                            label="выбирите регион"
+                            variant="outlined" />
+                    }
                     onChange={(event, newValue) => {
-                        console.log(newValue);
-
                         setRegion(Object.assign({}, region, { main: newValue }));
                     }}
                 />
@@ -97,7 +99,7 @@ export const Region: React.FC<RegionProps> = (props) => {
                         <Autocomplete
                             id="combo-region-work"
                             options={top100Films}
-                            getOptionLabel={(option) => option}
+                            getOptionLabel={(option) => option.name}
                             value={region?.work}
                             fullWidth
                             renderInput={(params) => <TextField {...params} label="выбирите регион" variant="outlined" />}

@@ -11,29 +11,29 @@ type Response = {
   regions: Region[],
 };
 
-type Questionnaire = {
+export type Questionnaire = {
   id: number,
   title: string,
   questions: Question[],
 }
 
-type Question = {
+export type Question = {
   id: number,
   text: string,
   answers: Answer[],
 };
 
-type Answer = {
+export type Answer = {
   id: number,
   text: string,
 };
 
-type Profession = {
+export type Profession = {
   id: number,
   name: string,
 }
 
-type Region = {
+export type Region = {
   id: number,
   name: string,
 }
