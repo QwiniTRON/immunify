@@ -208,7 +208,7 @@ export const Diseas: React.FC<DiseasProps> = (props) => {
                 </div>
 
                 <AppButtonGroup floated>
-                    <Link to="/passport/ready" className={classes.linkButton}><AppButton appColor="white"> Я привит </AppButton></Link>
+                    <Link to="/vaccination/add" className={classes.linkButton}><AppButton appColor="white"> Я привит </AppButton></Link>
                     <Link 
                     to={`/passport/take`}
                     className={classes.linkButton}><AppButton>Записаться</AppButton></Link>

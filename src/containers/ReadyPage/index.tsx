@@ -5,6 +5,8 @@ import DateFnsUtils from '@date-io/date-fns';
 import Select from '@material-ui/core/Select';
 import InputLabel from '@material-ui/core/InputLabel';
 import FormControl from '@material-ui/core/FormControl';
+import { useSelector } from 'react-redux';
+import { useHistory } from 'react-router-dom';
 
 import './readypage.scss';
 
@@ -16,6 +18,7 @@ import { BackButton } from '../../components/BackButton';
 import { useServer } from '../../hooks/useServer';
 
 import { GetVaccines, GetAvailableStages, CreateVaccination } from '../../server';
+import { RootState } from '../../store';
 
 type ReadyPageProps = {
 
@@ -23,6 +26,9 @@ type ReadyPageProps = {
 
 
 export const ReadyPage: React.FC<ReadyPageProps> = (props) => {
+    const currentUser = useSelector((state: RootState) => state.user.currentUser);
+    const history = useHistory();
+
     const [selectedDate, handleDateChange] = useState(new Date());
     const [vaccines, setVaccines] = useState<{ id: number, name: string }[]>([]);
     const [stages, setStages] = useState<{ id: number, stage: number }[]>([]);
@@ -55,7 +61,7 @@ export const ReadyPage: React.FC<ReadyPageProps> = (props) => {
     }
 
     if (successVaccination) {
-        // do smth
+        history.push('/vaccination');
         vaccinationRequest.reload();
     }
 
@@ -84,11 +90,11 @@ export const ReadyPage: React.FC<ReadyPageProps> = (props) => {
                         label="вакцина"
                     >
                         <option aria-label="None" value="" />
-                        { vaccines.map((vac) => (
+                        {vaccines.map((vac) => (
                             <option value={vac.id} key={vac.id}>
                                 {vac.name}
                             </option>
-                        )) }
+                        ))}
                     </Select>
                 </FormControl>
                 <FormControl variant="outlined" fullWidth className={'ready-page__input'}>
@@ -104,11 +110,11 @@ export const ReadyPage: React.FC<ReadyPageProps> = (props) => {
                         }}
                     >
                         <option aria-label="None" value="" />
-                        { stages.map((stage) => (
+                        {stages.map((stage) => (
                             <option value={stage.id} key={stage.id}>
                                 {stage.stage}
                             </option>
-                        )) }
+                        ))}
                     </Select>
                 </FormControl>
                 <MuiPickersUtilsProvider utils={DateFnsUtils} locale={ruLocale}>
@@ -127,7 +133,7 @@ export const ReadyPage: React.FC<ReadyPageProps> = (props) => {
 
                 <AppButton floated onClick={() => {
                     vaccinationRequest.fetch({
-                        patientId: 1,
+                        patientId: Number(currentUser?.id),
                         stageId: currentStage,
                         date: selectedDate,
                     });

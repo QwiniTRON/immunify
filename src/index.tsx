@@ -11,23 +11,21 @@ import { OidcSecure, AuthenticationProvider, } from '@axa-fr/react-oidc-context'
 import './styles/index.scss';
 
 import { mainTheme } from './styles/Theme';
-import {  store } from "./store";
+import { store } from "./store";
 import { config } from './configuration';
 
 ReactDOM.render(
-  <React.StrictMode>
-    <Provider store={store}>
-      <BrowserRouter>
-        <ThemeProvider theme={mainTheme}>
-          <AuthenticationProvider configuration={config}>
-            <OidcSecure>
-              <App />
-            </OidcSecure>
-          </AuthenticationProvider>
-        </ThemeProvider>
-      </BrowserRouter>
-    </Provider>
-  </React.StrictMode>,
+  <Provider store={store}>
+    <BrowserRouter>
+      <ThemeProvider theme={mainTheme}>
+        <AuthenticationProvider configuration={config}>
+          <OidcSecure>
+            <App />
+          </OidcSecure>
+        </AuthenticationProvider>
+      </ThemeProvider>
+    </BrowserRouter>
+  </Provider>,
   document.getElementById('root')
 );
 

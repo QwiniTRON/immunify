@@ -100,10 +100,6 @@ const App: React.FC<AppProps> = function ({
                 <LastAppointment />
               </Route>
 
-              <Route path="/passport/ready" exact>
-                <ReadyPage />
-              </Route>
-
               <Route path="/passport/take" exact>
                 <ChooseClinic />
               </Route>
@@ -124,6 +120,9 @@ const App: React.FC<AppProps> = function ({
                 <LastAppointment />
               </Route>
 
+              <Route path="/vaccination/add" exact>
+                <ReadyPage />
+              </Route>
 
               {/* трёхуровневые роуты */}
               <Route path="/passport/appointment/:id" exact>

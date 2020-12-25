@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import Box from '@material-ui/core/Box';
+import { useSelector } from 'react-redux';
 
 import { Layout } from '../../components/Layout/Layout';
 import { VaccineCard } from '../../components/UI/VaccineCard';
@@ -8,41 +9,19 @@ import { PageLayout } from '../../components/UI/PageLayout';
 import { useServer } from '../../hooks/useServer';
 
 import { GetVaccinationByPatient, PatientVaccinations } from '../../server';
+import { RootState } from '../../store';
 
 type VaccinationProps = {}
 
 export const Vaccination: React.FC<VaccinationProps> = (props) => {
   const vaccinations = useServer(GetVaccinationByPatient);
-  // const [vaccines, setVaccines] = useState<PatientVaccinations>([
-  //   {
-  //     id: 1,
-  //     name: 'tesd',
-  //     detailed: 'description',
-  //     passedStages: [
-  //       { stage: 3, date: '2010-10-05T14:48:00.000Z', durationBeforeNextInMonth: 12 },
-  //       { stage: 2, date: '2011-10-05T14:48:00.000Z', durationBeforeNextInMonth: 12 },
-  //       { stage: 1, date: '2012-10-05T14:48:00.000Z', durationBeforeNextInMonth: 12 },
-  //       { stage: 2, date: '2013-10-05T14:48:00.000Z', durationBeforeNextInMonth: 12 },
-  //       { stage: 1, date: '2014-10-05T14:48:00.000Z', durationBeforeNextInMonth: 12 },
-  //       { stage: 1, date: '2015-10-05T14:48:00.000Z', durationBeforeNextInMonth: 12 },
-  //       { stage: 2, date: '2016-10-05T14:48:00.000Z', durationBeforeNextInMonth: 12 },
-  //       { stage: 3, date: '2017-10-05T14:48:00.000Z', durationBeforeNextInMonth: 12 },
-  //       { stage: 3, date: '2018-10-05T14:48:00.000Z', durationBeforeNextInMonth: 12 },
-  //       { stage: 2, date: '2019-10-05T14:48:00.000Z', durationBeforeNextInMonth: 12 },
-  //       { stage: 1, date: '2020-10-05T14:48:00.000Z', durationBeforeNextInMonth: 12 },
-  //     ],
-  //     totalStages: [
-  //       3, 2, 1
-  //     ],
-  //   }
-  // ]);
-  
+  const currentUser = useSelector((state: RootState) => state.user.currentUser);
+
   const [vaccines, setVaccines] = useState<PatientVaccinations>([]);
 
   useEffect(() => {
     vaccinations.fetch({
-      // TODO: change patient id
-      patientId: 1,
+      patientId: Number(currentUser?.id),
     });
 
     return vaccinations.cancel;
@@ -58,7 +37,7 @@ export const Vaccination: React.FC<VaccinationProps> = (props) => {
 
   const copiedVaccines: PatientVaccinations = JSON.parse(JSON.stringify(vaccines));
 
-  const vaccinesToShow = copiedVaccines.map((vaccine, index) => { 
+  const vaccinesToShow = copiedVaccines.map((vaccine, index) => {
     let array: {
       stage: number;
       date: string;
@@ -68,13 +47,13 @@ export const Vaccination: React.FC<VaccinationProps> = (props) => {
     const lastVaccine = vaccine.passedStages[vaccine.passedStages.length - 1];
 
     let date = new Date(lastVaccine.date);
-     
+
     date = new Date(date.setMonth(date.getMonth() + lastVaccine.durationBeforeNextInMonths));
 
     // Get quence 3, 2, 1 or 2, 1
     for (let index = 0; index < vaccine.totalStages.length; index++) {
       const ar1 = vaccine.totalStages.slice(index, vaccine.totalStages.length);
-      
+
       for (let j = 0; j < vaccine.passedStages.length; j++) {
         const secondArray = vaccine.passedStages.slice(j, j + ar1.length);
         const secondArrayStages = secondArray.map((el) => el.stage);
@@ -92,7 +71,7 @@ export const Vaccination: React.FC<VaccinationProps> = (props) => {
     // Get signle 1 or 2 or 3
     for (let index = 0; index < vaccine.totalStages.length; index++) {
       const elem = vaccine.totalStages[index];
-      
+
       for (let j = 0; j < vaccine.passedStages.length; j++) {
         const secondElem = vaccine.passedStages[j];
 
@@ -111,7 +90,7 @@ export const Vaccination: React.FC<VaccinationProps> = (props) => {
       needToAdd.forEach((stage) => {
         item.push({ stage, date: 'none', durationBeforeNextInMonths: -1 })
       });
-      
+
       item = item.sort((a, b) => a.stage - b.stage);
     });
 
@@ -131,7 +110,7 @@ export const Vaccination: React.FC<VaccinationProps> = (props) => {
       });
 
       return aMaxDate.getTime() - bMaxDate.getTime();
-    }); 
+    });
 
     return (
       <Box marginY={1} key={vaccine.id + vaccine.name + index.toString()}>

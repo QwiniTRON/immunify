@@ -41,9 +41,14 @@ const useStyles = makeStyles({
         flexBasis: 1,
         paddingBottom: 60
     },
+    
     root: {
         display: 'flex',
         flexDirection: 'column'
+    },
+
+    linkButton: {
+        textDecoration: 'none'
     }
 });
 
@@ -105,12 +110,12 @@ export const Calendar: React.FC<CalendarProps> = (props) => {
                         {!loading && visits.map((v) => (
                             <Box marginY={1} key={v.id}>
                                 <InfoCard data={[
-                                    { 
+                                    {
                                         description: new Date(v.date).toLocaleString('ru', {
                                             hour: '2-digit', minute: '2-digit',
                                             day: '2-digit', year: 'numeric', month: 'short'
-                                        }), 
-                                        title: v.hospital.name 
+                                        }),
+                                        title: v.hospital.name
                                     }
                                 ]}
                                     detailText="Детали"
@@ -133,9 +138,11 @@ export const Calendar: React.FC<CalendarProps> = (props) => {
                     <AppButton appColor="white">
                         Отменить
                     </AppButton>
-                    <AppButton>
-                        Я привит
-                    </AppButton>
+                    <Link className={clasess.linkButton} to="/vaccination/add">
+                        <AppButton>
+                            Я привит
+                        </AppButton>
+                    </Link>
                 </AppButtonGroup>
             </PageLayout>
         </Layout>
