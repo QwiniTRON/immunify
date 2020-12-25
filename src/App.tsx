@@ -131,7 +131,6 @@ const App: React.FC<AppProps> = function ({
                 <Vaccination />
               </Route>
 
-
               <Redirect to="/profile" />
 
             </Switch>

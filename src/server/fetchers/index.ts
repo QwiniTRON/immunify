@@ -7,3 +7,4 @@ export * from './vaccination';
 export * from './stage';
 export * from './hospitalVisit';
 export * from './hospital';
+export * from './vaccine';
