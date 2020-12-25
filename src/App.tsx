@@ -91,10 +91,9 @@ const App: React.FC<AppProps> = function ({
                 <Passport />
               </Route>
 
-              <Route path="/take" exact>
-                <Take />
+              <Route path="/vaccination" exact>
+                <Vaccination />
               </Route>
-
 
               {/* двух шаговые роуты */}
               <Route path="/take/:id" exact>
@@ -121,6 +120,9 @@ const App: React.FC<AppProps> = function ({
                 <Patient />
               </Route>
 
+              <Route path="/calendar/:id" exact>
+                <LastAppointment />
+              </Route>
 
 
               {/* трёхуровневые роуты */}
