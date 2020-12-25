@@ -9,6 +9,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import { useSelector, useDispatch } from 'react-redux';
 import Snackbar from '@material-ui/core/Snackbar';
 import MuiAlert from '@material-ui/lab/Alert';
+import { useHistory } from 'react-router-dom';
 
 import './quiz.scss';
 
@@ -32,39 +33,6 @@ const useStyles = makeStyles((theme) => ({
     }
 }));
 
-const quizDataMock = {
-    id: 1,
-    title: 'детский опросник',
-    questions:
-        [
-            {
-                text: 'Что Вы думаете о войне во Вьетнаме?',
-                answers: [{ text: 'да', id: '1' }, { text: 'нет', id: '2' }, { text: 'смотря кто спрашивает', id: '3' }],
-                id: '1'
-            },
-            {
-                text: 'Сколько пальцев на ноге?',
-                answers: [{ text: 'сложно', id: '4' }, { text: '10', id: '5' }, { text: '5', id: '6' }],
-                id: '2'
-            },
-            {
-                text: 'Небо какого цвета?',
-                answers: [{ text: 'красное', id: '7' }, { text: 'зелёное', id: '8' }, { text: 'голубое', id: '9' }],
-                id: '3'
-            },
-            {
-                text: 'Какой год сегодня?',
-                answers: [{ text: '2019', id: '10' }, { text: '2020', id: '11' }, { text: '2021', id: '12' }],
-                id: '4'
-            },
-            {
-                text: 'Солнце это звезда?',
-                answers: [{ text: 'нет', id: '13' }, { text: 'да', id: '14' }, { text: 'планета', id: '15' }],
-                id: '5'
-            }
-        ]
-}
-
 type QuizState = {
     currentStep: number
     userAnswers: QuizAnswer[]
@@ -72,23 +40,30 @@ type QuizState = {
 export const Quiz: React.FC<QuizProps> = (props) => {
     const classes = useStyles();
     const dispatch = useDispatch();
+    const history = useHistory();
+
     const isEmptyFamily = useIsEmptyFamily();
     const [open, setOpen] = useState(false);
     const currentUser = useSelector((state: RootState) => state.user.currentUser);
+    const currentQuestionnarie = useSelector((state: RootState) => state.appData.questionnaire);
     const pathToBack = isEmptyFamily ? '/profile' : `/profile/${currentUser?.name}`;
-
-
+    
     const [quiz, setQuiz] = useState<QuizState>({
         userAnswers: currentUser?.data?.quiz?.answers || [],
         currentStep: 0
     });
     const [selectedAnswer, setSelectedAnswer] = useState(currentUser?.data?.quiz?.answers?.[0]?.answerId);
 
-    const Questionnaire = quizDataMock;
-    const quizQuestions = Questionnaire.questions;
-    const quizProgress = quiz.userAnswers.length / quizQuestions.length * 100;
+
+    const Questionnaire = currentQuestionnarie;
+    if (!Questionnaire) {
+        history.push('/profile');
+        return null;
+    }
+    const quizQuestions = Questionnaire?.questions!;
+    const quizProgress = quiz.userAnswers.length / quizQuestions?.length * 100;
     const isNotCurrentAnswer = !Boolean(quiz.userAnswers[quiz.currentStep]) && !selectedAnswer;
-    const currentQuestion = quizQuestions[quiz.currentStep];
+    const currentQuestion = quizQuestions?.[quiz.currentStep];
 
 
     const setAnswer = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -150,14 +125,12 @@ export const Quiz: React.FC<QuizProps> = (props) => {
             userAnswers: [...lastUserAnswers]
         });
 
-        const quizData = new QuizData(Date.now().toString(), true, Questionnaire.id.toString(), quiz.userAnswers);
+        const quizData = new QuizData(Date.now().toString(), true, Questionnaire?.id?.toString(), quiz.userAnswers);
         (dispatch(updateCurrentUserData({ quiz: quizData })) as any)
             .then((r: any) => {
                 setOpen(true);
             });
     }
-
-
 
     return (
         <Layout title="" BackButtonCustom={<BackButton to={pathToBack} text="Вернуться в профиль" />} >
@@ -171,8 +144,8 @@ export const Quiz: React.FC<QuizProps> = (props) => {
                     <FormLabel component="legend">ответ</FormLabel>
                     <RadioGroup
                         aria-label="answer"
-                        name="gender1"
-                        value={selectedAnswer}
+                        name="quiz"
+                        value={Number(selectedAnswer)}
                         onChange={setAnswer}>
                         {currentQuestion.answers.map((answer) => (
                             <FormControlLabel key={answer.id} value={answer.id} control={<Radio color="primary" />} label={answer.text} />
