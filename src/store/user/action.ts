@@ -9,6 +9,13 @@ import {
 import { Sex, User, UserAction, UserData } from '../types';
 import { UserModel } from '../../models/User';
 
+
+//  ***************************
+//? ********** STATIC *********
+//  ***************************
+
+
+
 // setUser
 export function setUser(user: User): UserAction {
     return {
@@ -89,8 +96,9 @@ export function register(name: string, age: number, sex: Sex) {
 */
 export function addMember(name: string, age: number, sex: Sex, id: string) {
     return async function (dispatch: Function, getState: Function) {
+        
         // добавляем в store нового члена семьи
-        const newMember = new User(name, age, sex, undefined, undefined, id)
+        const newMember = new User(name, age, sex, undefined, undefined, undefined, id)
         dispatch(addNewMember(newMember));
 
         // обновляем localeStorage пользователя

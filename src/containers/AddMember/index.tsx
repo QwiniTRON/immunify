@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useLayoutEffect, useState } from 'react';
 import Typography from '@material-ui/core/Typography';
 import TextField from '@material-ui/core/TextField';
 import Box from '@material-ui/core/Box';
@@ -62,18 +62,14 @@ const AddMember: React.FC<AddMemberProps> = ({
         sex: ''
     });
 
-    if (success) {
-        // do some stuff
-        addReq.reload();
-    }
-
-    useEffect(() => {
+    useLayoutEffect(() => {
         if (success) {
-            addMember(name, selectedDate?.getTime(), sex, addReq.state.answer.data)
+            addMember(name, selectedDate?.getTime(), sex, addReq?.state?.answer?.data?.id)
                 .then((r: any) => {
                     history.push(`/profile/${name}`);
+                    addReq.reload();
                 });
-        } else if(addReq.state.answer.errorMessage) {
+        } else if (addReq.state.answer.errorMessage) {
             // handle error
         }
     }, [success]);

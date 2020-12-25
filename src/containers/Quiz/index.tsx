@@ -20,12 +20,11 @@ import { QuizAnswer } from '../../store/types';
 import { Layout } from '../../components/Layout/Layout';
 import { BackButton } from '../../components/BackButton';
 import { useIsEmptyFamily } from '../../hooks';
+import { QuizData } from '../../models/User';
 
 
 
-type QuizProps = {
-
-}
+type QuizProps = {}
 
 const useStyles = makeStyles((theme) => ({
     notice: {
@@ -33,33 +32,38 @@ const useStyles = makeStyles((theme) => ({
     }
 }));
 
-const quizData = [
-    {
-        question: 'Что Вы думаете о войне во Вьетнаме?',
-        answers: [{ text: 'да', id: '1' }, { text: 'нет', id: '2' }, { text: 'смотря кто спрашивает', id: '3' }],
-        id: '1'
-    },
-    {
-        question: 'Сколько пальцев на ноге?',
-        answers: [{ text: 'сложно', id: '4' }, { text: '10', id: '5' }, { text: '5', id: '6' }],
-        id: '2'
-    },
-    {
-        question: 'Небо какого цвета?',
-        answers: [{ text: 'красное', id: '7' }, { text: 'зелёное', id: '8' }, { text: 'голубое', id: '9' }],
-        id: '3'
-    },
-    {
-        question: 'Какой год сегодня?',
-        answers: [{ text: '2019', id: '10' }, { text: '2020', id: '11' }, { text: '2021', id: '12' }],
-        id: '4'
-    },
-    {
-        question: 'Солнце это звезда?',
-        answers: [{ text: 'нет', id: '13' }, { text: 'да', id: '14' }, { text: 'планета', id: '15' }],
-        id: '5'
-    }
-]
+const quizDataMock = {
+    id: 1,
+    title: 'детский опросник',
+    questions:
+        [
+            {
+                text: 'Что Вы думаете о войне во Вьетнаме?',
+                answers: [{ text: 'да', id: '1' }, { text: 'нет', id: '2' }, { text: 'смотря кто спрашивает', id: '3' }],
+                id: '1'
+            },
+            {
+                text: 'Сколько пальцев на ноге?',
+                answers: [{ text: 'сложно', id: '4' }, { text: '10', id: '5' }, { text: '5', id: '6' }],
+                id: '2'
+            },
+            {
+                text: 'Небо какого цвета?',
+                answers: [{ text: 'красное', id: '7' }, { text: 'зелёное', id: '8' }, { text: 'голубое', id: '9' }],
+                id: '3'
+            },
+            {
+                text: 'Какой год сегодня?',
+                answers: [{ text: '2019', id: '10' }, { text: '2020', id: '11' }, { text: '2021', id: '12' }],
+                id: '4'
+            },
+            {
+                text: 'Солнце это звезда?',
+                answers: [{ text: 'нет', id: '13' }, { text: 'да', id: '14' }, { text: 'планета', id: '15' }],
+                id: '5'
+            }
+        ]
+}
 
 type QuizState = {
     currentStep: number
@@ -69,26 +73,29 @@ export const Quiz: React.FC<QuizProps> = (props) => {
     const classes = useStyles();
     const dispatch = useDispatch();
     const isEmptyFamily = useIsEmptyFamily();
-
     const [open, setOpen] = useState(false);
     const currentUser = useSelector((state: RootState) => state.user.currentUser);
     const pathToBack = isEmptyFamily ? '/profile' : `/profile/${currentUser?.name}`;
 
+
     const [quiz, setQuiz] = useState<QuizState>({
-        userAnswers: currentUser?.data?.quiz || [],
+        userAnswers: currentUser?.data?.quiz?.answers || [],
         currentStep: 0
     });
-    const [selectedAnswer, setSelectedAnswer] = useState(currentUser?.data?.quiz?.[0]?.answerId);
+    const [selectedAnswer, setSelectedAnswer] = useState(currentUser?.data?.quiz?.answers?.[0]?.answerId);
 
-    const quizQuestions = quizData;
+    const Questionnaire = quizDataMock;
+    const quizQuestions = Questionnaire.questions;
     const quizProgress = quiz.userAnswers.length / quizQuestions.length * 100;
     const isNotCurrentAnswer = !Boolean(quiz.userAnswers[quiz.currentStep]) && !selectedAnswer;
     const currentQuestion = quizQuestions[quiz.currentStep];
+
 
     const setAnswer = (e: React.ChangeEvent<HTMLInputElement>) => {
         const value = e.target.value;
         setSelectedAnswer(value);
     }
+
 
     const nextQuestion = () => {
         if (quiz.currentStep >= quizQuestions.length) return;
@@ -111,6 +118,7 @@ export const Quiz: React.FC<QuizProps> = (props) => {
         });
     }
 
+
     const backQuestion = () => {
         if (quiz.currentStep === 0) return;
 
@@ -128,6 +136,7 @@ export const Quiz: React.FC<QuizProps> = (props) => {
         });
     }
 
+
     const finishQuiz = () => {
         if (quiz.currentStep >= quizQuestions.length) return;
         const lastUserAnswers = quiz.userAnswers;
@@ -141,11 +150,13 @@ export const Quiz: React.FC<QuizProps> = (props) => {
             userAnswers: [...lastUserAnswers]
         });
 
-        (dispatch(updateCurrentUserData({ quiz: quiz.userAnswers })) as any)
+        const quizData = new QuizData(Date.now().toString(), true, Questionnaire.id.toString(), quiz.userAnswers);
+        (dispatch(updateCurrentUserData({ quiz: quizData })) as any)
             .then((r: any) => {
                 setOpen(true);
             });
     }
+
 
 
     return (
@@ -154,7 +165,7 @@ export const Quiz: React.FC<QuizProps> = (props) => {
                 <LinearProgress variant="determinate" value={quizProgress} />
                 <p>вопрос {`${quiz.currentStep + 1}/${quizQuestions.length}`}</p>
                 {isNotCurrentAnswer && (<p className={classes.notice}>ответьте на этот вопрос</p>)}
-                <h3 className="quiz-page__question">{currentQuestion.question}</h3>
+                <h3 className="quiz-page__question">{currentQuestion.text}</h3>
 
                 <FormControl component="fieldset" color="primary">
                     <FormLabel component="legend">ответ</FormLabel>

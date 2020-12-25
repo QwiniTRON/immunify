@@ -27,6 +27,14 @@ export const UserData: React.FC<UserDataProps> = (props) => {
 
     const currentUser = useSelector((state: RootState) => state.user.currentUser);
 
+    const quizStatus = currentUser?.data?.quiz?.isDone ? 'success' : 'error';
+    const quizText = quizStatus === 'success' ? 'пройдено' : 'не пройдено';
+
+    const professionStatus = currentUser?.data?.profession ? 'success' : 'error';
+    const professionText = professionStatus === 'success' ? 'пройдено' : 'не указано';
+
+    const regionStatus = Boolean(currentUser?.data?.region?.main) ? 'success' : 'error';
+    const regionText = regionStatus === 'success' ? 'пройдено' : 'не указано';
 
     return (
         <>
@@ -35,6 +43,8 @@ export const UserData: React.FC<UserDataProps> = (props) => {
                 subTitle="Ответьте на несколько вопросов, чтобы узнать о возможных рисках"
                 to={`/profile/${currentUser?.name}/quiz`}
                 Icon={<CaseIcon color="primary" fontSize="large" className={classes.svgIcon} />}
+                status={quizStatus}
+                statusLabel={quizText}
             />
 
             <CardLink
@@ -42,6 +52,8 @@ export const UserData: React.FC<UserDataProps> = (props) => {
                 subTitle="Укажите род деятельности, чтобы узнать возможный профессиональный риск"
                 to={`/profile/${currentUser?.name}/profession`}
                 Icon={<ListIcon color="primary" fontSize="large" className={classes.svgIcon} />}
+                status={professionStatus}
+                statusLabel={professionText}
             />
 
             <CardLink
@@ -49,6 +61,8 @@ export const UserData: React.FC<UserDataProps> = (props) => {
                 subTitle="Укажите регион  проживания, чтобы узнать эпидемиологическую обстановку"
                 to={`/profile/${currentUser?.name}/region`}
                 Icon={<PlanetIcon color="primary" fontSize="large" className={classes.svgIcon} />}
+                status={regionStatus}
+                statusLabel={regionText}
             />
 
             {/* <CardLink
