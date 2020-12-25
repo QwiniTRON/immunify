@@ -4,21 +4,21 @@ import {
 import {
   AppDataAction
 } from '../types';
-import { RiskViewModel } from '../../type';
+import { Questionnaire } from '../../type';
 
 
 
 export type AppDataStore = {
   regions?: string[]
   professions?: string[]
-  currentQuiz?: RiskViewModel[]
+  questionnaire?: Questionnaire
 }
 
 
 const initialState: AppDataStore = {
   regions: [],
   professions: [],
-  currentQuiz: []
+  questionnaire: undefined
 }
 
 // funcs
@@ -34,7 +34,7 @@ const handlerDictionary: { [p: string]: any } = {
 }
 
 // reducer
-export const userReducer = function (state: AppDataStore = initialState, action: AppDataAction): AppDataStore {
+export const AppDataReducer = function (state: AppDataStore = initialState, action: AppDataAction): AppDataStore {
   const handler = handlerDictionary[action?.type];
   return handler ? handler.call(null, state, action) : state;
 }

@@ -1,8 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { Switch, Route, Redirect } from 'react-router-dom';
 import { CSSTransition, TransitionGroup } from 'react-transition-group';
 import { connect } from 'react-redux';
+import { AuthenticationContext } from '@axa-fr/react-oidc-context';
 
+import { userInit } from './store/user/action';
+import { appDataInit } from './store/appData/action';
 import { Layout } from './components/Layout/Layout';
 import { Reg } from './containers/Reg/Reg';
 import { Calendar } from './containers/Calendar';
@@ -19,7 +22,6 @@ import { ReadyPage } from './containers/ReadyPage';
 import { RootState } from './store';
 import { RegSuccess } from './containers/RegSuccess';
 import { AddMember } from './containers/AddMember';
-import { userInit } from './store/user/action';
 import { SplashScreen } from './components/SplashScreen';
 import { MemberInfo } from './containers/MemberInfo';
 import { MainPage } from './containers/MainPage';
@@ -37,22 +39,24 @@ type AppProps = {
   user: any
 
   userInit: Function
+  appDataInit: Function
 }
 
 const App: React.FC<AppProps> = function ({
   user,
-  userInit
+  userInit,
+  appDataInit
 }) {
   const [isINIT, setIsINIT] = useState(false);
+  const authOidcContest = useContext(AuthenticationContext);
   const isAuth = Boolean(user);
 
   useEffect(() => {
     void async function () {
-      const userInitReq = userInit();
+      const userReq = await userInit();
+      const appDataReq = await appDataInit(authOidcContest.oidcUser?.access_token!);
 
-      setTimeout(() => {
-        setIsINIT(true);
-      }, 1000);
+      setIsINIT(true);
     }()
   }, []);
 
@@ -141,6 +145,7 @@ const mapStateToProps = (state: RootState) => ({
   user: state.user.user
 });
 const mapDispatchToProps = {
-  userInit
+  userInit,
+  appDataInit
 }
 export default connect(mapStateToProps, mapDispatchToProps)(App);
