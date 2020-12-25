@@ -140,6 +140,10 @@ const App: React.FC<AppProps> = function ({
                 <Region />
               </Route>
 
+              <Route path="/test" exact>
+                <Vaccination />
+              </Route>
+
               <Redirect to="/profile" />
 
             </Switch>

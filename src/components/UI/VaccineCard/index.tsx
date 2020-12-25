@@ -15,7 +15,7 @@ type VaccineCardProps = {
     stadies: {
       name: string,
       isVaccined: boolean
-    }[]
+    }[][]
   }
 
   status: 'ok' | 'bad'
@@ -104,24 +104,31 @@ export const VaccineCard: React.FC<VaccineCardProps> = ({
           {vaccine.for}
         </Box>
 
-        {vaccine.stadies.map((item) => (
-          <Box display="inline-block"
-            borderRadius={10}
-            p={2}
-            bgcolor={item.isVaccined ? '#9BC83F' : '#acacac'}
-            m={1}
-            fontSize={18}
-            key={item.name}>
-            {item.name}
-          </Box>
+        {vaccine.stadies.map((stady, index) => (
+          <div key={stady[0].name + "main" + index.toString()}>
+            {
+            stady.map((item) => (
+              <Box display="inline-block"
+                borderRadius={10}
+                p={2}
+                bgcolor={item.isVaccined ? '#9BC83F' : '#acacac'}
+                m={1}
+                fontSize={18}
+                key={item.name}>
+                {item.name}
+              </Box>
+              ))
+            }
+          </div>
+          
         ))}
 
         <Box>{vaccine.date}</Box>
 
         <Box mt={2} display="flex" justifyContent="space-between">
-          <AppButton className={clases.cardButton} appColor="white">
+          {/* <AppButton className={clases.cardButton} appColor="white">
             Мне стало плохо
-          </AppButton>
+          </AppButton> */}
           <AppButton className={clases.cardButton}>
             Записаться
           </AppButton>

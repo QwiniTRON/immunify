@@ -4,9 +4,10 @@ type Request = {
   patientId: number,
 }
 
-type Response = {
+export type PatientVaccinations = {
   id: number,
   name: string,
+  detailed: string,
   passedStages: {
     stage: number,
     date: string,
@@ -15,5 +16,5 @@ type Response = {
   totalStages: number[],
 }[];
 
-export const GetVaccinationByPatient: FetchFunc<Request, Response> = (client, request) =>
+export const GetVaccinationByPatient: FetchFunc<Request, PatientVaccinations> = (client, request) =>
   client.get(`/vaccination/byPatient?patientId=${request.patientId}`);
