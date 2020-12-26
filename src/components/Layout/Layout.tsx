@@ -17,6 +17,7 @@ import { RootState } from '../../store';
 import { User } from '../../store/types';
 import { BackButton } from '../BackButton';
 import { sif } from '../../utils/Styels';
+import { RoutePrefix } from '../../App';
 
 // import { CalendarIcon, PassportIcon, ProfileIcon, TakeIcon } from '../UI/Icons/Icons';
 
@@ -66,8 +67,7 @@ export const Layout: React.FC<LayoutProps> = ({
     const currentUser = useSelector((state: RootState) => state.user.currentUser);
 
     // определяем в какой мы находимся сущности(разделе)
-    const parentRoute = '/' + locationData.pathname.split('/')[1];
-
+    const parentRoute = RoutePrefix + '/' + locationData.pathname.split('/')[2];
 
     return (
         <div className={"layout " + classes.layout}>
@@ -105,7 +105,7 @@ export const Layout: React.FC<LayoutProps> = ({
                         }}
                         label="профиль"
                         icon={<SupervisorAccountIcon />}
-                        value="/profile"
+                        value={`${RoutePrefix}/profile`}
                     />
 
                     <BottomNavigationAction
@@ -114,7 +114,7 @@ export const Layout: React.FC<LayoutProps> = ({
                         }}
                         label="пасспорт"
                         icon={<ListAltIcon />}
-                        value="/passport"
+                        value={`${RoutePrefix}/passport`}
                     />
 
                     <BottomNavigationAction
@@ -123,7 +123,7 @@ export const Layout: React.FC<LayoutProps> = ({
                         }}
                         label="запись"
                         icon={<PostAddIcon />}
-                        value="/calendar"
+                        value={`${RoutePrefix}/calendar`}
                     />
 
                     <BottomNavigationAction
@@ -132,7 +132,7 @@ export const Layout: React.FC<LayoutProps> = ({
                         }}
                         label="статус"
                         icon={<InsertInvitationIcon />}
-                        value="/vaccination"
+                        value={`${RoutePrefix}/vaccination`}
                     />
                 </BottomNavigation>
             </div>}

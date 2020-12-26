@@ -101,8 +101,8 @@ export const Diseas: React.FC<DiseasProps> = (props) => {
     }, []);
 
     useEffect(() => {
-        if (success) {
-            setDiseas(diseasReq.state.answer?.data as Diseas);
+        if (success && diseasReq.state.answer?.data !== undefined) {
+            setDiseas(diseasReq.state.answer.data);
         }
     }, [success]);
 
@@ -159,7 +159,7 @@ export const Diseas: React.FC<DiseasProps> = (props) => {
                 <div>
                     <div className={classes.paper + ' ' + classes.card} onClick={() => setOpenVaccines(true)}>
                         <h2>Какие есть вакцины?</h2>
-                        <p>{diseas.vaccines.slice(0, 100) + '...'}</p>
+                        <p>{diseas.vaccines.slice(0, 3).map((vaccine) => vaccine.name) + '...'}</p>
                         <div className={classes.more}>подробнее <ArrowRightAltIcon /></div>
                     </div>
                     <Modal
@@ -175,7 +175,7 @@ export const Diseas: React.FC<DiseasProps> = (props) => {
                         <Fade in={openVaccines}>
                             <div className={classes.paper}>
                                 <h2 id="transition-modal-title">Какие есть вакцины?</h2>
-                                <p id="transition-modal-description">{diseas.vaccines}</p>
+                                <p id="transition-modal-description">{diseas.vaccines.map((vaccine) => vaccine.name)}</p>
                                 <ClearIcon classes={{ root: classes.closer }} onClick={() => setOpenVaccines(false)} />
                             </div>
                         </Fade>
