@@ -7,18 +7,25 @@ import { ThemeProvider } from '@material-ui/core/styles';
 import * as serviceWorkerRegistration from './serviceWorkerRegistration';
 import { Provider } from 'react-redux';
 import { OidcSecure, AuthenticationProvider, } from '@axa-fr/react-oidc-context';
+import { SplashScreen } from './components/SplashScreen';
 
 import './styles/index.scss';
 
 import { mainTheme } from './styles/Theme';
 import { store } from "./store";
-import { config } from './configuration';
+import { ProductionConfig, DeveloperConfig } from './configuration';
 
 ReactDOM.render(
   <Provider store={store}>
     <BrowserRouter>
       <ThemeProvider theme={mainTheme}>
-        <AuthenticationProvider configuration={config}>
+        <AuthenticationProvider 
+          notAuthorized={SplashScreen}
+          notAuthenticated={SplashScreen} 
+          authenticating={SplashScreen}
+          
+          configuration={process.env.NODE_ENV === 'production' ? ProductionConfig : DeveloperConfig}
+        >
           <OidcSecure>
             <App />
           </OidcSecure>

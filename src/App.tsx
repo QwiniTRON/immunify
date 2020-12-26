@@ -64,6 +64,8 @@ const App: React.FC<AppProps> = function ({
     <SplashScreen />
   </div>;
 
+  const routePrefix = process.env.NODE_ENV === 'production' ? "/app" : '';
+
   return (
     <div className="App">
       <Route render={({ location }) => (
@@ -72,80 +74,76 @@ const App: React.FC<AppProps> = function ({
 
             <Switch location={location}>
 
-              {!isAuth && <Route path="/reg" exact>
+              {!isAuth && <Route path={`${routePrefix}/reg`} exact>
                 <Reg />
               </Route>}
 
               {/* если пользователь не зарегистрировался, то ему доступен только роут reg - страница входа */}
-              {!isAuth && <Redirect to="/reg" />}
+              {!isAuth && <Redirect to={`${routePrefix}/reg`} />}
 
-              <Route path="/profile" exact>
+              <Route path={`${routePrefix}/profile`} exact>
                 <Profile />
               </Route>
 
-              <Route path="/calendar" exact>
+              <Route path={`${routePrefix}/calendar`} exact>
                 <Calendar />
               </Route>
 
-              <Route path="/passport" exact>
+              <Route path={`${routePrefix}/passport`} exact>
                 <Passport />
               </Route>
 
-              <Route path="/vaccination" exact>
+              <Route path={`${routePrefix}/vaccination`} exact>
                 <Vaccination />
               </Route>
 
               {/* двух шаговые роуты */}
-              <Route path="/take/:id" exact>
+              <Route path={`${routePrefix}/take/:id`} exact>
                 <LastAppointment />
               </Route>
 
-              <Route path="/passport/take" exact>
+              <Route path={`${routePrefix}/passport/take`} exact>
                 <ChooseClinic />
               </Route>
 
-              <Route path="/passport/:id" exact>
+              <Route path={`${routePrefix}/passport/:id`} exact>
                 <Diseas />
               </Route>
 
-              <Route path="/profile/add" exact>
+              <Route path={`${routePrefix}/profile/add`} exact>
                 <AddMember />
               </Route>
 
-              <Route path="/profile/:id" exact>
+              <Route path={`${routePrefix}/profile/:id`} exact>
                 <Patient />
               </Route>
 
-              <Route path="/calendar/:id" exact>
+              <Route path={`${routePrefix}/calendar/:id`} exact>
                 <LastAppointment />
               </Route>
 
-              <Route path="/vaccination/add" exact>
+              <Route path={`${routePrefix}/vaccination/add`} exact>
                 <ReadyPage />
               </Route>
 
               {/* трёхуровневые роуты */}
-              <Route path="/passport/appointment/:id" exact>
+              <Route path={`${routePrefix}/passport/appointment/:id`} exact>
                 <Appointment />
               </Route>
 
-              <Route path="/profile/:id/quiz" exact>
+              <Route path={`${routePrefix}/profile/:id/quiz`} exact>
                 <Quiz />
               </Route>
 
-              <Route path="/profile/:id/profession" exact>
+              <Route path={`${routePrefix}/profile/:id/profession`} exact>
                 <Profession />
               </Route>
 
-              <Route path="/profile/:id/region" exact>
+              <Route path={`${routePrefix}/profile/:id/region`} exact>
                 <Region />
               </Route>
 
-              <Route path="/test" exact>
-                <Vaccination />
-              </Route>
-
-              <Redirect to="/profile" />
+              <Redirect to={`${routePrefix}/profile`} />
 
             </Switch>
           </CSSTransition>
