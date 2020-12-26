@@ -15,6 +15,7 @@ import { GetQuestionnaire } from '../../server';
 import { RootState } from '../../store';
 import {setData} from '../../store/appData/action';
 import { getYearOffestNow } from '../../utils';
+import { RoutePrefix } from '../../App';
 
 
 type MemberInfoParams = {
@@ -67,7 +68,7 @@ export const Patient: React.FC<PatientProps> = (props) => {
           <AppButton
             floated
             disabled={!UserModel.getCurrentUserDataStatus()}
-            onClick={() => history.push('/passport')}
+            onClick={() => history.push(`${RoutePrefix}/passport`)}
             appColor="linear">
             Имунный паспорт
           </AppButton>

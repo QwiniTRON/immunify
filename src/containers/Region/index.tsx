@@ -21,6 +21,7 @@ import { BackButton } from '../../components/BackButton';
 import { Region as RegionType } from '../../type';
 import { useReactOidc } from '@axa-fr/react-oidc-context';
 import { claculateRisks } from '../../store/appData/action';
+import { RoutePrefix } from '../../App';
 
 
 
@@ -46,7 +47,7 @@ export const Region: React.FC<RegionProps> = (props) => {
 
     const currentUser = useSelector((state: RootState) => state.user.currentUser);
     const isEmptyFamily = useIsEmptyFamily();
-    const pathToBack = isEmptyFamily ? '/profile' : `/profile/${currentUser?.name}`;
+    const pathToBack = RoutePrefix + isEmptyFamily ? '/profile' : `/profile/${currentUser?.name}`;
 
     const [open, setOpen] = useState(false);
     const [region, setRegion] = useState(currentUser?.data?.region!);

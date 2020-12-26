@@ -10,6 +10,7 @@ import { PageLayout } from '../../components/UI/PageLayout';
 import { RootState } from '../../store';
 import { UserModel } from '../../models/User';
 import { AppButton } from '../../components/UI/AppButton';
+import { RoutePrefix } from '../../App';
 
 type PassportProps = {
 
@@ -28,7 +29,7 @@ const PassportPlaceholder: React.FC<any> = (props) => {
                 Заполните данные о себе, чтобы изучить личный иммунный паспорт
             </Box>
 
-            <Link to="/profile">
+            <Link to={`${RoutePrefix}/profile`}>
                 <AppButton appColor="linear" floated>
                     Добавить
                 </AppButton>
@@ -51,7 +52,7 @@ export const Passport: React.FC<PassportProps> = (props) => {
                     <>
                         {currentUser?.Risks.map((risk) => (
                             <DiseasCard
-                                to={`/passport/${risk.diseaseId}`}
+                                to={`${RoutePrefix}/passport/${risk.diseaseId}`}
                                 name={risk.disease}
                                 risks={[risk.risk, risk.professionRisk, risk.regionRisk]}
                                 key={risk.diseaseId} />

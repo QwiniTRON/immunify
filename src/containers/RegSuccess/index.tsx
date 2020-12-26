@@ -12,6 +12,7 @@ import { PageLayout } from '../../components/UI/PageLayout';
 import { AppButton } from '../../components/UI/AppButton';
 import { RootState } from '../../store';
 import { User } from '../../store/types';
+import { RoutePrefix } from '../../App';
 
 type RegSuccessProps = {
     user: User | null
@@ -38,7 +39,7 @@ const RegSuccess: React.FC<RegSuccessProps> = ({
     const classes = useStyles();
 
     return (
-        <PageLayout ButtonBackto="/">
+        <PageLayout ButtonBackto={`${RoutePrefix}/`}>
             <Box marginBottom={1} textAlign="center">
                 <Typography className={classes.title} variant="h2" >поздравляем вы зарегистрированы!</Typography>
             </Box>
@@ -58,7 +59,7 @@ const RegSuccess: React.FC<RegSuccessProps> = ({
                     <AssignmentIndIcon classes={{root: classes.textIcon}} color="primary" />{user?.name}</Typography>
                 </Typography>
             </Box>
-            <Link to="/">
+            <Link to={`${RoutePrefix}/`}>
                 <AppButton floated>
                     перейти на главную
                 </AppButton>

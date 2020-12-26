@@ -14,6 +14,7 @@ import { useRouteMatch } from 'react-router-dom';
 import { GetHospitals } from '../../server/fetchers/hospital';
 import { useServer } from '../../hooks/useServer';
 
+import { RoutePrefix } from '../../App';
 
 type ChooseClinicProps = {}
 
@@ -57,7 +58,7 @@ export const ChooseClinic: React.FC<ChooseClinicProps> = (props) => {
 
 
   return (
-    <Layout title="" clearScroll BackButtonCustom={<BackButton to={`/passport`} text="Вернуться к списку центров" />} >
+    <Layout title="" clearScroll BackButtonCustom={<BackButton to={`${RoutePrefix}/passport`} text="Вернуться к списку центров" />} >
       <PageLayout className={clasess.root}>
 
         <Box component="h2" fontSize={24} fontWeight={500}>
@@ -80,7 +81,7 @@ export const ChooseClinic: React.FC<ChooseClinicProps> = (props) => {
                   { description: '', title: c.name }
                 ]}
                   detailText="Детали"
-                  to={`/passport/appointment/${c.id}`}
+                  to={`${RoutePrefix}/passport/appointment/${c.id}`}
                 />
               </Box>
             ))}

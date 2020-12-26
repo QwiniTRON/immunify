@@ -19,6 +19,7 @@ import { useCheckUserDataCompoeated } from '../../hooks';
 import { User, UserModel } from '../../models/User';
 import { useServer } from '../../hooks/useServer';
 import { AppButtonGroup } from '../../components/UI/ButtonGroup';
+import { RoutePrefix } from '../../App';
 
 
 type ProfileProps = {
@@ -60,7 +61,7 @@ export const Profile: React.FC<ProfileProps> = (props) => {
                 dataStatus == 'error' ? <CardLink
                   title="Заполнить данные"
                   subTitle="Для выбранного пациента введены не все данные"
-                  to={`/profile/${currentUser?.name}`}
+                  to={`${RoutePrefix}/profile/${currentUser?.name}`}
                   Icon={<AccountBoxIcon color="primary" fontSize="large" />}
                 /> :
                   <Box>С данными всё в порядке</Box>
@@ -71,7 +72,7 @@ export const Profile: React.FC<ProfileProps> = (props) => {
                 active={user == currentUser}
                 progress={UserModel.getCompleatedStatus(user as User)}
                 title={String(user?.name)}
-                to={`/profile/${user?.name}`}
+                to={`${RoutePrefix}/profile/${user?.name}`}
                 avatarLetters={String(user?.name)[0]} />
 
               {user?.family.map((u) => {
@@ -81,7 +82,7 @@ export const Profile: React.FC<ProfileProps> = (props) => {
                     active={u == currentUser}
                     progress={UserModel.getCompleatedStatus(u)}
                     title={String(u?.name)}
-                    to={`/profile/${u?.name}`}
+                    to={`${RoutePrefix}/profile/${u?.name}`}
                     avatarLetters={String(u?.name)[0]} />
                 )
               })}
@@ -91,9 +92,9 @@ export const Profile: React.FC<ProfileProps> = (props) => {
         }
 
         <AppButtonGroup floated>
-          <AppButton className="family-page__add" onClick={() => history.push('/profile/add')} >добавить</AppButton>
+          <AppButton className="family-page__add" onClick={() => history.push(`${RoutePrefix}/profile/add`)} >добавить</AppButton>
           {user?.family.length == 0 ?
-            <AppButton appColor="linear" onClick={() => history.push('/passport')} disabled={!idUserDataCompleate}>
+            <AppButton appColor="linear" onClick={() => history.push(`${RoutePrefix}/passport`)} disabled={!idUserDataCompleate}>
               Иммунный паспорт
             </AppButton>
             :

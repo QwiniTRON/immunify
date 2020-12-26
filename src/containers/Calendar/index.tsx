@@ -19,7 +19,7 @@ import { GetHospitalByPatient } from '../../server/fetchers/hospitalVisit';
 import { RootState } from '../../store';
 import { Loader } from '../../components';
 
-
+import { RoutePrefix } from '../../App';
 
 type CalendarProps = {
 
@@ -119,12 +119,12 @@ export const Calendar: React.FC<CalendarProps> = (props) => {
                                     }
                                 ]}
                                     detailText="Детали"
-                                    to={`/calendar/${v.id}`}
+                                    to={`${RoutePrefix}/calendar/${v.id}`}
                                 />
                             </Box>
                         ))}
 
-                        <Link to="/"><Box color="#333" textAlign="center" margin={'10px auto'} width={0.8}>Добавьте события в календарь, чтобы не забыть об этом</Box></Link>
+                        <Link to={`${RoutePrefix}/`}><Box color="#333" textAlign="center" margin={'10px auto'} width={0.8}>Добавьте события в календарь, чтобы не забыть об этом</Box></Link>
                     </Box>
                 </AppTabPanel>
 
@@ -138,7 +138,7 @@ export const Calendar: React.FC<CalendarProps> = (props) => {
                     <AppButton appColor="white">
                         Отменить
                     </AppButton>
-                    <Link className={clasess.linkButton} to="/vaccination/add">
+                    <Link className={clasess.linkButton} to={`${RoutePrefix}/vaccination/add`}>
                         <AppButton>
                             Я привит
                         </AppButton>

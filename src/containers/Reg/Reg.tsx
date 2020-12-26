@@ -47,7 +47,6 @@ const Reg: React.FC<RegProps> = ({
     appDataInit
 }) => {
     const clasess = useStyle();
-    const history = useHistory();
     const { oidcUser } = useReactOidc();
 
     const addReq = useServer(CreatePatient);

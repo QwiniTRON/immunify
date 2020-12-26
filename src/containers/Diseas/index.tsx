@@ -18,6 +18,7 @@ import { BackButton } from '../../components/BackButton';
 import { useServer } from '../../hooks/useServer';
 import { GetDetailedDisease, Vaccine } from '../../server';
 
+import { RoutePrefix } from '../../App';
 
 
 type DiseasRoutParams = {
@@ -118,7 +119,7 @@ export const Diseas: React.FC<DiseasProps> = (props) => {
         <Layout title="" BackButtonCustom={<BackButton text="Вернуться к иммунному паспорту" />}>
             <PageLayout className="diseas-page">
                 <h3 className={classes.title}>Такой болезни не нашлось</h3>
-                <Link to="/profile" >в профиль</Link>
+                <Link to={`${RoutePrefix}/profile`} >в профиль</Link>
             </PageLayout>
         </Layout>
     );

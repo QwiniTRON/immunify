@@ -10,6 +10,7 @@ import { PageLayout } from '../../components/UI/PageLayout';
 import { UserCard } from '../../components/UI/UserCard';
 import { RootState } from '../../store';
 import { User } from '../../store/types';
+import { RoutePrefix } from '../../App';
 
 type FamilyProps = {
     user: User | null
@@ -29,14 +30,14 @@ const Family: React.FC<FamilyProps> = ({
     return (
         <PageLayout className="family-page">
             <p className="family-page__description">Введите данные о членах вашей семьи, чтобы застраховать их от возможных осложнений</p>
-            <Link to="/profile/family/add"><AppButton floated className="family-page__add">добавить</AppButton></Link>
+            <Link to={`${RoutePrefix}/profile/family/add`}><AppButton floated className="family-page__add">добавить</AppButton></Link>
 
             <UserCard
                 active={user == currentUser}
                 progress={10}
                 title={String(user?.name)}
                 subtitle={String(user?.age)}
-                to={`/profile/family/${user?.name}`}
+                to={`${RoutePrefix}/profile/family/${user?.name}`}
                 avatarLetters={String(user?.name)[0]} />
 
             {user?.family.map((u) => (
@@ -46,7 +47,7 @@ const Family: React.FC<FamilyProps> = ({
                     progress={10}
                     title={String(u?.name)}
                     subtitle={String(u?.age)}
-                    to={`/profile/family/${u?.name}`}
+                    to={`${RoutePrefix}/profile/family/${u?.name}`}
                     avatarLetters={String(u?.name)[0]} />
             ))}
 

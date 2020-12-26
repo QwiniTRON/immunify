@@ -18,7 +18,7 @@ import { CreateVisit } from '../../server/fetchers/hospitalVisit';
 import { useServer } from '../../hooks/useServer';
 import { Loader } from '../../components';
 import { RootState } from '../../store';
-
+import { RoutePrefix } from '../../App';
 
 
 type AppointmentParams = {
@@ -97,14 +97,14 @@ export const Appointment: React.FC<AppointmentProps> = (props) => {
 
   useEffect(() => {
     if (createSuccess) {
-      history.push(`/calendar/${createAppointmentReq.state.answer.data?.id}`);
+      history.push(`${RoutePrefix}/calendar/${createAppointmentReq.state.answer.data?.id}`);
       createAppointmentReq.reload();
     }
   }, [createSuccess]);
 
 
   return (
-    <Layout title="" BackButtonCustom={<BackButton text="Вернуться к списку центров" to="/passport/take" />}>
+    <Layout title="" BackButtonCustom={<BackButton text="Вернуться к списку центров" to={`${RoutePrefix}/passport/take`} />}>
       <PageLayout className={clases.root}>
 
         <Box component="h2" fontSize={24}>

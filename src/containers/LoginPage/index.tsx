@@ -5,6 +5,7 @@ import TextField from '@material-ui/core/TextField';
 
 import { AppButton } from '../../components/UI/AppButton';
 import { AppLink } from '../../components/UI/AppLink';
+import { RoutePrefix } from '../../App';
 
 type LoginPageProps = {
 
@@ -76,7 +77,7 @@ export const LoginPage: React.FC<LoginPageProps> = (props) => {
                         onChange={(e: React.ChangeEvent<HTMLInputElement>) => setPassword(e.target.value)} />
                 </Box>
 
-                <AppLink to="/reg">регистрация</AppLink>
+                <AppLink to={`${RoutePrefix}/reg`}>регистрация</AppLink>
 
                 <AppButton disabled={loading} type="submit" floated>войти</AppButton>
             </form>

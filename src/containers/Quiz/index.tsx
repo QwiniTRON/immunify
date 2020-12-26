@@ -24,6 +24,7 @@ import { Layout } from '../../components/Layout/Layout';
 import { BackButton } from '../../components/BackButton';
 import { useIsEmptyFamily } from '../../hooks';
 import { QuizData } from '../../models/User';
+import { RoutePrefix } from '../../App';
 
 
 
@@ -49,7 +50,7 @@ export const Quiz: React.FC<QuizProps> = (props) => {
     const [open, setOpen] = useState(false);
     const currentUser = useSelector((state: RootState) => state.user.currentUser);
     const currentQuestionnarie = useSelector((state: RootState) => state.appData.questionnaire);
-    const pathToBack = isEmptyFamily ? '/profile' : `/profile/${currentUser?.name}`;
+    const pathToBack = RoutePrefix + isEmptyFamily ? '/profile' : `/profile/${currentUser?.name}`;
 
     const [quiz, setQuiz] = useState<QuizState>({
         userAnswers: currentUser?.data?.quiz?.answers || [],
@@ -60,7 +61,7 @@ export const Quiz: React.FC<QuizProps> = (props) => {
 
     const Questionnaire = currentQuestionnarie;
     if (!Questionnaire) {
-        history.push('/profile');
+        history.push(`${RoutePrefix}/profile`);
         return null;
     }
     const quizQuestions = Questionnaire?.questions!;

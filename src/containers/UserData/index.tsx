@@ -7,6 +7,7 @@ import { ReactComponent as ListIcon } from '../../assets/list.svg';
 import { ReactComponent as PlanetIcon } from '../../assets/planet.svg';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../store';
+import { RoutePrefix } from '../../App';
 
 
 type UserDataProps = {
@@ -41,7 +42,7 @@ export const UserData: React.FC<UserDataProps> = (props) => {
             <CardLink
                 title="Пройти опрос"
                 subTitle="Ответьте на несколько вопросов, чтобы узнать о возможных рисках"
-                to={`/profile/${currentUser?.name}/quiz`}
+                to={`${RoutePrefix}/profile/${currentUser?.name}/quiz`}
                 Icon={<CaseIcon color="primary" fontSize="large" className={classes.svgIcon} />}
                 status={quizStatus}
                 statusLabel={quizText}
@@ -50,7 +51,7 @@ export const UserData: React.FC<UserDataProps> = (props) => {
             <CardLink
                 title="Выбрать профессию"
                 subTitle="Укажите род деятельности, чтобы узнать возможный профессиональный риск"
-                to={`/profile/${currentUser?.name}/profession`}
+                to={`${RoutePrefix}/profile/${currentUser?.name}/profession`}
                 Icon={<ListIcon color="primary" fontSize="large" className={classes.svgIcon} />}
                 status={professionStatus}
                 statusLabel={professionText}
@@ -59,7 +60,7 @@ export const UserData: React.FC<UserDataProps> = (props) => {
             <CardLink
                 title="Указать регион"
                 subTitle="Укажите регион  проживания, чтобы узнать эпидемиологическую обстановку"
-                to={`/profile/${currentUser?.name}/region`}
+                to={`${RoutePrefix}/profile/${currentUser?.name}/region`}
                 Icon={<PlanetIcon color="primary" fontSize="large" className={classes.svgIcon} />}
                 status={regionStatus}
                 statusLabel={regionText}

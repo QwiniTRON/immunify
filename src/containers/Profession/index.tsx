@@ -18,6 +18,7 @@ import { useIsEmptyFamily } from '../../hooks';
 import { Profession as  ProfessionType} from '../../type';
 import { claculateRisks } from '../../store/appData/action';
 import { useReactOidc } from '@axa-fr/react-oidc-context';
+import { RoutePrefix } from '../../App';
 
 
 type ProfessionProps = {
@@ -45,7 +46,7 @@ export const Profession: React.FC<ProfessionProps> = (props) => {
     
     const currentUser = useSelector((state: RootState) => state.user.currentUser);
     const isEmptyFamily = useIsEmptyFamily();
-    const pathToBack = isEmptyFamily ? '/profile' : `/profile/${currentUser?.name}`;
+    const pathToBack = RoutePrefix + isEmptyFamily ? '/profile' : `/profile/${currentUser?.name}`;
 
     const [open, setOpen] = useState(false);
     const [profession, setProfession] = useState<ProfessionType | undefined>(currentUser?.data?.profession);
