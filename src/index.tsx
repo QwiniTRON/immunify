@@ -25,6 +25,8 @@ ReactDOM.render(
           notAuthorized={SplashScreen}
           notAuthenticated={SplashScreen} 
           authenticating={SplashScreen}
+          sessionLostComponent={SplashScreen}
+          callbackComponentOverride={SplashScreen}
           
           configuration={process.env.NODE_ENV === 'production' ? ProductionConfig : DeveloperConfig}
         >
