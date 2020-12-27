@@ -13,6 +13,7 @@ import { BackButton } from '../../components/BackButton';
 import { useRouteMatch } from 'react-router-dom';
 import { GetHospitals } from '../../server/fetchers/hospital';
 import { useServer } from '../../hooks/useServer';
+import { Loader } from '../../components';
 
 type ChooseClinicProps = {}
 
@@ -73,7 +74,8 @@ export const ChooseClinic: React.FC<ChooseClinicProps> = (props) => {
         <AppTabPanel value={tabValue} index={0} className={clasess.content} >
           <Box p={1}>
 
-            {clinics.map((c) => (
+            {loading && <Box m={3}><Loader /></Box>}
+            {!loading && clinics.map((c) => (
               <Box marginY={1}>
                 <InfoCard data={[
                   { description: '', title: c.name }

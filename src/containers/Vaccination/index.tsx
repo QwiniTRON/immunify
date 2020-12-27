@@ -12,7 +12,7 @@ import { useServer } from '../../hooks/useServer';
 import { GetVaccinationByPatient, PatientVaccinations } from '../../server';
 import { RootState } from '../../store';
 import { Link } from 'react-router-dom';
-import { AppButton } from '../../components';
+import { AppButton, Loader } from '../../components';
 
 
 
@@ -33,7 +33,7 @@ const VaccinationPlaceholder: React.FC = () => {
         <AppButton floated appColor="linear">
           Добавить
         </AppButton>
-        </Link>
+      </Link>
     </Box>
   );
 }
@@ -159,10 +159,12 @@ export const Vaccination: React.FC<VaccinationProps> = (props) => {
     <Layout title="Прошедшие вакцинации" domainPage>
       <PageLayout>
 
-        {vaccinesToShow.length == 0 ?
-          <VaccinationPlaceholder />
-          :
-          vaccinesToShow
+        {vaccinations.state.fetching && <Box m={3}><Loader /></Box>}
+        {!vaccinations.state.fetching && (
+          vaccinesToShow.length == 0 ?
+            <VaccinationPlaceholder />
+            :
+            vaccinesToShow)
         }
 
       </PageLayout>

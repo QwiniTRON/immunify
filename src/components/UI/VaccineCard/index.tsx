@@ -6,6 +6,7 @@ import { s, sif } from '../../../utils/Styels';
 import { useExpanded } from '../../../hooks/expand';
 import { AppButton } from '../AppButton';
 import DoneIcon from '@material-ui/icons/Done';
+import { Link } from 'react-router-dom';
 
 type VaccineCardProps = {
   vaccine: {
@@ -74,6 +75,10 @@ const useStyles = makeStyles({
     height: 30,
     lineHeight: '30px',
     textAlign: 'center'
+  },
+
+  linkButton: {
+    textDecoration: 'none'
   }
 });
 
@@ -107,20 +112,20 @@ export const VaccineCard: React.FC<VaccineCardProps> = ({
         {vaccine.stadies.map((stady, index) => (
           <div key={stady[0].name + "main" + index.toString()}>
             {
-            stady.map((item) => (
-              <Box display="inline-block"
-                borderRadius={10}
-                p={2}
-                bgcolor={item.isVaccined ? '#9BC83F' : '#acacac'}
-                m={1}
-                fontSize={18}
-                key={item.name}>
-                {item.name}
-              </Box>
+              stady.map((item) => (
+                <Box display="inline-block"
+                  borderRadius={10}
+                  p={2}
+                  bgcolor={item.isVaccined ? '#9BC83F' : '#acacac'}
+                  m={1}
+                  fontSize={18}
+                  key={item.name}>
+                  {item.name}
+                </Box>
               ))
             }
           </div>
-          
+
         ))}
 
         <Box>{vaccine.date}</Box>
@@ -129,9 +134,11 @@ export const VaccineCard: React.FC<VaccineCardProps> = ({
           {/* <AppButton className={clases.cardButton} appColor="white">
             Мне стало плохо
           </AppButton> */}
-          <AppButton className={clases.cardButton}>
-            Записаться
-          </AppButton>
+          <Link className={clases.linkButton} to={`/passport/take`}>
+            <AppButton className={clases.cardButton}>
+              Записаться
+            </AppButton>
+          </Link>
         </Box>
       </div>
 

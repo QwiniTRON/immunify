@@ -7,6 +7,10 @@ import InputLabel from '@material-ui/core/InputLabel';
 import FormControl from '@material-ui/core/FormControl';
 import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
+import FormHelperText from '@material-ui/core/FormHelperText';
+import Box from '@material-ui/core/Box';
+import Autocomplete from '@material-ui/lab/Autocomplete';
+import TextField from '@material-ui/core/TextField';
 
 import './readypage.scss';
 
@@ -19,6 +23,7 @@ import { useServer } from '../../hooks/useServer';
 
 import { GetVaccines, GetAvailableStages, CreateVaccination } from '../../server';
 import { RootState } from '../../store';
+import { Loader } from '../../components';
 
 
 
@@ -26,16 +31,25 @@ type ReadyPageProps = {
 
 }
 
+type Vaccine = {
+    id: string
+    name: string
+}
 
 export const ReadyPage: React.FC<ReadyPageProps> = (props) => {
     const currentUser = useSelector((state: RootState) => state.user.currentUser);
     const history = useHistory();
 
     const [selectedDate, handleDateChange] = useState(new Date());
-    const [vaccines, setVaccines] = useState<{ id: number, name: string }[]>([]);
+    const [vaccines, setVaccines] = useState<Vaccine[]>([]);
     const [stages, setStages] = useState<{ id: number, stage: number }[]>([]);
-    const [vaccine, setVaccine] = useState(0);
+    const [vaccine, setVaccine] = useState<Vaccine | null>(null);
     const [currentStage, setCurrentStage] = useState(0);
+    const [errors, setErrors] = useState({
+        'vaccine': '',
+        'stage': '',
+        'date': ''
+    });
 
     const vaccinesRequest = useServer(GetVaccines);
     const stagesRequest = useServer(GetAvailableStages);
@@ -52,8 +66,49 @@ export const ReadyPage: React.FC<ReadyPageProps> = (props) => {
     const successStages = !loading && stagesRequest.state.answer.succeeded;
     const successVaccination = !loading && vaccinationRequest.state.answer.succeeded;
 
+    const validate = () => {
+        let isValid = true;
+        const clearedErrors = {
+            'vaccine': '',
+            'stage': '',
+            'date': ''
+        }
+        if (!vaccine) {
+            clearedErrors['vaccine'] = 'сначала выбирите вакцину';
+            isValid = false;
+            return [isValid, clearedErrors]; 
+        }
+        if (!currentStage) {
+            clearedErrors['stage'] = 'выбирите какая вакцина по счёту';
+            isValid = false;
+            return [isValid, clearedErrors];
+        }
+        if (!selectedDate) {
+            clearedErrors['date'] = 'укажите дату вакцинации';
+            isValid = false;
+            return [isValid, clearedErrors];
+        }
+
+        return [isValid, clearedErrors];
+    }
+
+    const saveHandle = () => {
+        const [isValid, errors] = validate();
+
+        if(!isValid) {
+            return setErrors(errors as any);
+        }
+
+        vaccinationRequest.fetch({
+            patientId: Number(currentUser?.id),
+            stageId: currentStage,
+            date: selectedDate,
+        });
+    }
+
+
     if (successVaccines) {
-        setVaccines(vaccinesRequest.state.answer.data || []);
+        setVaccines((vaccinesRequest.state.answer.data || []) as any);
         vaccinesRequest.reload();
     }
 
@@ -72,34 +127,42 @@ export const ReadyPage: React.FC<ReadyPageProps> = (props) => {
         <Layout title="" BackButtonCustom={<BackButton text="Вернуться к заболеванию" />}>
             <PageLayout className="ready-page">
                 <p className="ready-page__text">Добавьте даные о вакцинах</p>
-                <FormControl variant="outlined" fullWidth className={'ready-page__input'}>
-                    <InputLabel htmlFor="filled-age-native-simple">вакцина</InputLabel>
-                    <Select
-                        native
-                        value={vaccine}
-                        onChange={(e) => {
-                            const val = Number(e.target.value);
+                {vaccinesRequest.state.fetching &&
+                    <Box m={3}><Loader /></Box>}
 
-                            stagesRequest.cancel();
-                            stagesRequest.fetch({ vaccineId: val });
+                {!vaccinesRequest.state.fetching &&
+                    <Box marginY={2}>
+                        <Autocomplete
+                            id="combo-region-main"
+                            options={vaccines}
+                            getOptionLabel={(option) => option.name}
+                            value={vaccine}
+                            fullWidth
+                            renderInput={(params) =>
+                                <TextField
+                                    {...params}
+                                    helperText={errors.vaccine}
+                                    error={Boolean(errors.vaccine)}
+                                    label="укажите вакцину"
+                                    variant="outlined" />
+                            }
+                            onChange={(event, newValue) => {
+                                stagesRequest.cancel();
+                                stagesRequest.fetch({ vaccineId: Number(newValue?.id) });
+                                setErrors(Object.assign({}, errors, {'vaccine': ''}));
+                                setVaccine(newValue);
+                            }}
+                        />
+                    </Box>
+                }
 
-                            setVaccine(val);
-                        }}
-                        inputProps={{
-                            name: 'region',
-                            id: 'filled-age-native-simple',
-                        }}
-                        label="вакцина"
-                    >
-                        <option aria-label="None" value="" />
-                        {vaccines.map((vac) => (
-                            <option value={vac.id} key={vac.id}>
-                                {vac.name}
-                            </option>
-                        ))}
-                    </Select>
-                </FormControl>
-                <FormControl variant="outlined" fullWidth className={'ready-page__input'}>
+                {stagesRequest.state.fetching && <Box m={3} mb={6}><Loader /></Box>}
+                {!stagesRequest.state.fetching && <FormControl
+                    variant="outlined"
+                    fullWidth
+                    className={'ready-page__input'}
+                    error={Boolean(errors.stage)}>
+
                     <InputLabel htmlFor="filled-age-native-simple">какая по счёту</InputLabel>
                     <Select
                         native
@@ -118,7 +181,9 @@ export const ReadyPage: React.FC<ReadyPageProps> = (props) => {
                             </option>
                         ))}
                     </Select>
-                </FormControl>
+                    <FormHelperText>{errors.stage}</FormHelperText>
+                </FormControl>}
+
                 <MuiPickersUtilsProvider utils={DateFnsUtils} locale={ruLocale}>
                     <DatePicker
                         label="дата последней вакцинации"
@@ -130,16 +195,12 @@ export const ReadyPage: React.FC<ReadyPageProps> = (props) => {
                         disableFuture
                         inputVariant="outlined"
                         clearable
+                        error={Boolean(errors.date)}
+                        helperText={errors.date}
                     />
                 </MuiPickersUtilsProvider>
 
-                <AppButton floated onClick={() => {
-                    vaccinationRequest.fetch({
-                        patientId: Number(currentUser?.id),
-                        stageId: currentStage,
-                        date: selectedDate,
-                    });
-                }}>
+                <AppButton floated onClick={saveHandle} disabled={loading}>
                     Сохранить
                 </AppButton>
             </PageLayout>
