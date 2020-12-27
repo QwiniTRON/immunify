@@ -1,7 +1,6 @@
 {
   "name": "imunnify",
   "version": "0.1.0",
-  "homepage": "app",
   "private": true,
   "dependencies": {
     "@axa-fr/react-oidc-context": "^3.1.6",

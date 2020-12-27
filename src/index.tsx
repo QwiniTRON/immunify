@@ -15,9 +15,11 @@ import { mainTheme } from './styles/Theme';
 import { store } from "./store";
 import { ProductionConfig, DeveloperConfig } from './configuration';
 
+export const appBaseName = process.env.NODE_ENV === 'production' ? "/app" : '';
+
 ReactDOM.render(
   <Provider store={store}>
-    <BrowserRouter>
+    <BrowserRouter basename={appBaseName}>
       <ThemeProvider theme={mainTheme}>
         <AuthenticationProvider 
           notAuthorized={SplashScreen}

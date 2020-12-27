@@ -1,11 +1,10 @@
-import react, { useState, useEffect } from 'react';
-import Logo from '../../assets/logo.png';
+import React from 'react';
 import Avatar from '@material-ui/core/Avatar';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import BottomNavigation from '@material-ui/core/BottomNavigation';
 import BottomNavigationAction from '@material-ui/core/BottomNavigationAction';
-import { useHistory, useLocation, Link } from 'react-router-dom';
+import { useHistory, useLocation } from 'react-router-dom';
 import InsertInvitationIcon from '@material-ui/icons/InsertInvitation';
 import ListAltIcon from '@material-ui/icons/ListAlt';
 import PostAddIcon from '@material-ui/icons/PostAdd';
@@ -14,10 +13,8 @@ import { useSelector } from 'react-redux';
 
 import "./Layout.scss";
 import { RootState } from '../../store';
-import { User } from '../../store/types';
 import { BackButton } from '../BackButton';
 import { sif } from '../../utils/Styels';
-import { RoutePrefix } from '../../App';
 
 // import { CalendarIcon, PassportIcon, ProfileIcon, TakeIcon } from '../UI/Icons/Icons';
 
@@ -67,7 +64,8 @@ export const Layout: React.FC<LayoutProps> = ({
     const currentUser = useSelector((state: RootState) => state.user.currentUser);
 
     // определяем в какой мы находимся сущности(разделе)
-    const parentRoute = RoutePrefix + '/' + locationData.pathname.split('/')[2];
+    const parentRoute = '/' + locationData.pathname.split('/')[1];
+    
 
     return (
         <div className={"layout " + classes.layout}>
@@ -105,7 +103,7 @@ export const Layout: React.FC<LayoutProps> = ({
                         }}
                         label="профиль"
                         icon={<SupervisorAccountIcon />}
-                        value={`${RoutePrefix}/profile`}
+                        value={`/profile`}
                     />
 
                     <BottomNavigationAction
@@ -114,7 +112,7 @@ export const Layout: React.FC<LayoutProps> = ({
                         }}
                         label="пасспорт"
                         icon={<ListAltIcon />}
-                        value={`${RoutePrefix}/passport`}
+                        value={`/passport`}
                     />
 
                     <BottomNavigationAction
@@ -123,7 +121,7 @@ export const Layout: React.FC<LayoutProps> = ({
                         }}
                         label="запись"
                         icon={<PostAddIcon />}
-                        value={`${RoutePrefix}/calendar`}
+                        value={`/calendar`}
                     />
 
                     <BottomNavigationAction
@@ -132,7 +130,7 @@ export const Layout: React.FC<LayoutProps> = ({
                         }}
                         label="статус"
                         icon={<InsertInvitationIcon />}
-                        value={`${RoutePrefix}/vaccination`}
+                        value={`/vaccination`}
                     />
                 </BottomNavigation>
             </div>}

@@ -19,7 +19,8 @@ import { AppButton } from '../../components/UI/AppButton';
 import { changeCurrentUser, updateMember } from '../../store/user/action';
 import { Layout } from '../../components/Layout/Layout';
 import { BackButton } from '../../components/BackButton';
-import { RoutePrefix } from '../../App';
+
+
 
 type MemberInfoParams = {
     id: string
@@ -97,8 +98,8 @@ const MemberInfo: React.FC<MemberInfoProps> = ({
     }
 
     return (
-        <Layout title="Данные семьи" BackButtonCustom={<BackButton to={`${RoutePrefix}/profile`} />}>
-            <PageLayout className="member-page" ButtonBackto={`${RoutePrefix}/profile`}>
+        <Layout title="Данные семьи" BackButtonCustom={<BackButton to={`/profile`} />}>
+            <PageLayout className="member-page" ButtonBackto={`/profile`}>
                 <form className="reg__form" onSubmit={handleSubmit}>
                     <Box marginY={2}>
                         <Typography color="error">{errors.name}</Typography>

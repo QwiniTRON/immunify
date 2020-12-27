@@ -24,7 +24,6 @@ import { GetVisitById } from '../../server/fetchers/hospitalVisit/GetById';
 import { DeleteVisit } from '../../server/fetchers/hospitalVisit';
 import { UpdateVisit } from '../../server/fetchers/hospitalVisit/Update';
 import { Loader } from '../../components';
-import { RoutePrefix } from '../../App';
 
 
 type LastAppointmentProps = {}
@@ -161,7 +160,7 @@ export const LastAppointment: React.FC<LastAppointmentProps> = (props) => {
       setDeleteNotieceOpen(true);
       setDeleteOpen(false);
       redirectTimer.current = setTimeout(() => {
-        history.push(`${RoutePrefix}/calendar`);
+        history.push(`/calendar`);
       }, TimeToRedirect);
     }
   }, [successDelete]);
@@ -173,7 +172,7 @@ export const LastAppointment: React.FC<LastAppointmentProps> = (props) => {
 
       setEditNotieceOpen(true);
       redirectTimer.current = setTimeout(() => {
-        history.push(`${RoutePrefix}/calendar`);
+        history.push(`/calendar`);
       }, TimeToRedirect);
     }
   }, [successUpdate]);
@@ -181,7 +180,7 @@ export const LastAppointment: React.FC<LastAppointmentProps> = (props) => {
 
   if (successDelete) {
     return (
-      <Layout title="" BackButtonCustom={<BackButton text="Вернуться к списку записей" to={`${RoutePrefix}/calendar`} />}>
+      <Layout title="" BackButtonCustom={<BackButton text="Вернуться к списку записей" to={`/calendar`} />}>
         <PageLayout className={clases.root}>
           <Box fontSize={24} fontWeight={500} textAlign="center">
             Запись удалена
@@ -196,7 +195,7 @@ export const LastAppointment: React.FC<LastAppointmentProps> = (props) => {
             }}>
             <MuiAlert onClose={() => setDeleteNotieceOpen(false)} elevation={6} variant="filled">
               Заявка отменена
-            <Box p={1}><Link to={`${RoutePrefix}/calendar`}>к записям</Link></Box>
+            <Box p={1}><Link to={`/calendar`}>к записям</Link></Box>
             </MuiAlert>
           </Snackbar>
         </PageLayout>
@@ -207,7 +206,7 @@ export const LastAppointment: React.FC<LastAppointmentProps> = (props) => {
 
   if (successUpdate) {
     return (
-      <Layout title="" BackButtonCustom={<BackButton text="Вернуться к списку записей" to={`${RoutePrefix}/calendar`} />}>
+      <Layout title="" BackButtonCustom={<BackButton text="Вернуться к списку записей" to={`/calendar`} />}>
         <PageLayout className={clases.root}>
           <Box fontSize={24} fontWeight={500} textAlign="center">
             Запись обновлена
@@ -222,7 +221,7 @@ export const LastAppointment: React.FC<LastAppointmentProps> = (props) => {
             }}>
             <MuiAlert onClose={() => setEditNotieceOpen(false)} elevation={6} variant="filled">
               запись обновлена
-            <Box p={1}><Link to={`${RoutePrefix}/calendar`}>к записям</Link></Box>
+            <Box p={1}><Link to={`/calendar`}>к записям</Link></Box>
             </MuiAlert>
           </Snackbar>
         </PageLayout>
@@ -232,7 +231,7 @@ export const LastAppointment: React.FC<LastAppointmentProps> = (props) => {
 
 
   return (
-    <Layout title="" BackButtonCustom={<BackButton text="Вернуться к списку записей" to={`${RoutePrefix}/calendar`} />}>
+    <Layout title="" BackButtonCustom={<BackButton text="Вернуться к списку записей" to={`/calendar`} />}>
       <PageLayout className={clases.root}>
         {(loading || loadingDelete || loadingUpdate) && <Loader />}
 
@@ -290,7 +289,7 @@ export const LastAppointment: React.FC<LastAppointmentProps> = (props) => {
             </Paper>}
 
           {!isEdit && <div className={clases.notationLink}>
-            <Link to={`${RoutePrefix}/`}>Добавить событие в календарь</Link>
+            <Link to={`/`}>Добавить событие в календарь</Link>
           </div>}
         </div>}
 

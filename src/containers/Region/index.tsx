@@ -21,7 +21,6 @@ import { BackButton } from '../../components/BackButton';
 import { Region as RegionType } from '../../type';
 import { useReactOidc } from '@axa-fr/react-oidc-context';
 import { claculateRisks } from '../../store/appData/action';
-import { RoutePrefix } from '../../App';
 
 
 
@@ -45,9 +44,10 @@ export const Region: React.FC<RegionProps> = (props) => {
     const dispatch = useDispatch();
     const { oidcUser } = useReactOidc();
 
+    const regions = useSelector((state: RootState) => state.appData.regions) ?? [];
     const currentUser = useSelector((state: RootState) => state.user.currentUser);
     const isEmptyFamily = useIsEmptyFamily();
-    const pathToBack = RoutePrefix + isEmptyFamily ? '/profile' : `/profile/${currentUser?.name}`;
+    const pathToBack = isEmptyFamily ? '/profile' : `/profile/${currentUser?.name}`;
 
     const [open, setOpen] = useState(false);
     const [region, setRegion] = useState(currentUser?.data?.region!);
@@ -81,7 +81,7 @@ export const Region: React.FC<RegionProps> = (props) => {
                 <Typography color="error">{errors.region}</Typography>
                 <Autocomplete
                     id="combo-region-main"
-                    options={top100Films}
+                    options={regions}
                     getOptionLabel={(option) => option.name}
                     value={region?.main}
                     fullWidth
@@ -104,7 +104,7 @@ export const Region: React.FC<RegionProps> = (props) => {
                         <Typography color="error">{errors.workRegion}</Typography>
                         <Autocomplete
                             id="combo-region-work"
-                            options={top100Films}
+                            options={regions}
                             getOptionLabel={(option) => option.name}
                             value={region?.work}
                             fullWidth

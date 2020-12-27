@@ -2,6 +2,7 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import { RootState } from '../store';
 import {UserModel} from '../models/User';
+import { useLocation } from 'react-router-dom';
 
 export function usePathByMainUser(isMainUserPath: string, patientPath: string) {
   const currentUser = useSelector((state: RootState) => state.user.currentUser);

@@ -21,8 +21,6 @@ import { useServer } from '../../hooks/useServer';
 import { CreatePatient } from '../../server';
 import { Loader } from '../../components/UI/Loader';
 
-import { RoutePrefix } from '../../App';
-
 type AddMemberProps = {
 
 
@@ -68,7 +66,7 @@ const AddMember: React.FC<AddMemberProps> = ({
         if (success) {
             addMember(name, selectedDate?.getTime(), sex, addReq?.state?.answer?.data?.id)
                 .then((r: any) => {
-                    history.push(`${RoutePrefix}/profile/${name}`);
+                    history.push(`/profile/${name}`);
                     addReq.reload();
                 });
         } else if (addReq.state.answer.errorMessage) {

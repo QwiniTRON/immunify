@@ -5,12 +5,13 @@ import {
   AppDataAction
 } from '../types';
 import { Questionnaire } from '../../type';
+import {Profession, Region} from '../../type';
 
 
 
 export type AppDataStore = {
-  regions?: string[]
-  professions?: string[]
+  regions?: Region[]
+  professions?: Profession[]
   questionnaire?: Questionnaire
 }
 

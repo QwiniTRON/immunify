@@ -18,35 +18,20 @@ import { useIsEmptyFamily } from '../../hooks';
 import { Profession as  ProfessionType} from '../../type';
 import { claculateRisks } from '../../store/appData/action';
 import { useReactOidc } from '@axa-fr/react-oidc-context';
-import { RoutePrefix } from '../../App';
 
 
 type ProfessionProps = {
 
 }
 
-const top100Films: ProfessionType[] = [
-    { id: 1, name: 'профессия 1' },
-    { id: 2, name: 'профессия 2' },
-    { id: 3, name: 'профессия 3' },
-    { id: 4, name: 'профессия 4' },
-    { id: 5, name: 'профессия 5' },
-    { id: 6, name: 'профессия 6' },
-    { id: 7, name: 'профессия 7' },
-    { id: 8, name: 'профессия 8' },
-    { id: 9, name: 'профессия 9' },
-    { id: 10, name: 'профессия 10' },
-    { id: 11, name: 'профессия 11' }
-];
-
-
 export const Profession: React.FC<ProfessionProps> = (props) => {
     const dispatch = useDispatch();
     const { oidcUser } = useReactOidc();
     
+    const professions = useSelector((state: RootState) => state.appData.professions);
     const currentUser = useSelector((state: RootState) => state.user.currentUser);
     const isEmptyFamily = useIsEmptyFamily();
-    const pathToBack = RoutePrefix + isEmptyFamily ? '/profile' : `/profile/${currentUser?.name}`;
+    const pathToBack = isEmptyFamily ? '/profile' : `/profile/${currentUser?.name}`;
 
     const [open, setOpen] = useState(false);
     const [profession, setProfession] = useState<ProfessionType | undefined>(currentUser?.data?.profession);
@@ -74,7 +59,7 @@ export const Profession: React.FC<ProfessionProps> = (props) => {
                 <Typography color="error">{errors.profession}</Typography>
                 <Autocomplete
                     id="combo-profession"
-                    options={top100Films}
+                    options={professions ?? []}
                     getOptionLabel={(option) => option.name}
                     value={profession}
                     fullWidth

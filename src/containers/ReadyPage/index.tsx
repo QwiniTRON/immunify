@@ -19,7 +19,8 @@ import { useServer } from '../../hooks/useServer';
 
 import { GetVaccines, GetAvailableStages, CreateVaccination } from '../../server';
 import { RootState } from '../../store';
-import { RoutePrefix } from '../../App';
+
+
 
 type ReadyPageProps = {
 
@@ -62,7 +63,7 @@ export const ReadyPage: React.FC<ReadyPageProps> = (props) => {
     }
 
     if (successVaccination) {
-        history.push(`${RoutePrefix}/vaccination`);
+        history.push(`/vaccination`);
         vaccinationRequest.reload();
     }
 

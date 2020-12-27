@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import Box from '@material-ui/core/Box';
 import { useSelector } from 'react-redux';
+import { ReactComponent as VaccinationIcon } from '../../assets/vaccination.svg';
 
 import { Layout } from '../../components/Layout/Layout';
 import { VaccineCard } from '../../components/UI/VaccineCard';
@@ -10,8 +11,32 @@ import { useServer } from '../../hooks/useServer';
 
 import { GetVaccinationByPatient, PatientVaccinations } from '../../server';
 import { RootState } from '../../store';
+import { Link } from 'react-router-dom';
+import { AppButton } from '../../components';
+
+
 
 type VaccinationProps = {}
+
+const VaccinationPlaceholder: React.FC = () => {
+  return (
+    <Box>
+      <Box textAlign="center" mt={1}>
+        <VaccinationIcon />
+      </Box>
+
+      <Box fontSize={24} fontWeight={500} textAlign="center" width={0.8} m="16px auto">
+        У Вас нет отмеченных вакцинаций
+      </Box>
+
+      <Link to="/profile">
+        <AppButton floated appColor="linear">
+          Добавить
+        </AppButton>
+        </Link>
+    </Box>
+  );
+}
 
 export const Vaccination: React.FC<VaccinationProps> = (props) => {
   const vaccinations = useServer(GetVaccinationByPatient);
@@ -134,7 +159,11 @@ export const Vaccination: React.FC<VaccinationProps> = (props) => {
     <Layout title="Прошедшие вакцинации" domainPage>
       <PageLayout>
 
-        {vaccinesToShow}
+        {vaccinesToShow.length == 0 ?
+          <VaccinationPlaceholder />
+          :
+          vaccinesToShow
+        }
 
       </PageLayout>
     </Layout>
