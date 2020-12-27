@@ -69,11 +69,11 @@ export const Vaccination: React.FC<VaccinationProps> = (props) => {
       durationBeforeNextInMonths: number;
     }[][] = [];
 
-    const lastVaccine = vaccine.passedStages[vaccine.passedStages.length - 1];
+    const firstVaccine = vaccine.passedStages[0];
 
-    let date = new Date(lastVaccine.date);
+    let date = new Date(firstVaccine.date);
 
-    date = new Date(date.setMonth(date.getMonth() + lastVaccine.durationBeforeNextInMonths));
+    date = new Date(date.setMonth(date.getMonth() + firstVaccine.durationBeforeNextInMonths));
 
     // Get quence 3, 2, 1 or 2, 1
     for (let index = 0; index < vaccine.totalStages.length; index++) {
