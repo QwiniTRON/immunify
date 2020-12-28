@@ -1,8 +1,11 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
+import logo from '../../assets/splashlogo.png';
 
-import logo from '../../assets/logo.png';
+import './splashcreen.scss';
+import { CircleLoader } from '../UI/CircleLoader';
+
 
 type SplashScreenProps = {
 
@@ -29,6 +32,7 @@ export const SplashScreen: React.FC<SplashScreenProps> = (props) => {
         <div>
             <div className={classes.content}>
                 <img className={classes.img} src={logo} alt="app logo" />
+                <CircleLoader />
             </div>
         </div>
     );
