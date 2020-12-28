@@ -30,7 +30,7 @@ export const AppRadioGroup: React.FC<AppRadioGroupProps> = ({ onChange, value, .
 
   return (
     <>
-      { patchedRadio}
+      { patchedRadio }
     </>
   );
 };

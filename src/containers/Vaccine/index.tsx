@@ -8,23 +8,41 @@ import { Layout } from '../../components/Layout/Layout';
 import { PageLayout } from '../../components/UI/PageLayout';
 import { Divider } from '@material-ui/core';
 import { BackButton } from '../../components/BackButton';
+import { Link, useLocation, useRouteMatch } from 'react-router-dom';
+import { useServer } from '../../hooks/useServer';
 
 
+
+type VaccineRouteParams = {
+  id: string
+}
 
 type VaccineProps = {}
 
 const useStyles = makeStyles({
+  linkButton: {
+    textDecoration: 'none'
+  }
 });
 
 export const Vaccine: React.FC<VaccineProps> = (props) => {
-  const clasess = useStyles();
+  const clases = useStyles();
+  const vaccine = useLocation<{ id: string, name: string }>().state;
+
+  // const vaccineReq = useServer();
 
 
   return (
-    <Layout title="" BackButtonCustom={<BackButton text="Вернуться к заболеванию" />}>
+    <Layout title="" BackButtonCustom={<BackButton simpleBack text="Вернуться к заболеванию" />}>
       <PageLayout>
-        <Box fontSize={18}>
-          <Box fontWeight={500} fontSize={24}><h2>Гардасил</h2></Box>
+
+        {!vaccine && 
+        <Box>
+          такая вацина не нашлась
+        </Box>
+        }
+        {vaccine && <Box fontSize={18}>
+          <Box fontWeight={500} fontSize={24}><h2>{vaccine.name}</h2></Box>
 
           <Divider />
 
@@ -48,11 +66,23 @@ export const Vaccine: React.FC<VaccineProps> = (props) => {
             <Box>Апрель 2019 - ревакцинация</Box>
           </Box>
         </Box>
+        }
+
+
 
 
         <AppButtonGroup floated>
-          <AppButton appColor="white">Я уже прививался</AppButton>
-          <AppButton>Записаться</AppButton>
+          <Link to='/vaccination/add' className={clases.linkButton}>
+            <AppButton appColor="white">Я уже прививался</AppButton>
+          </Link>
+
+          { vaccine && 
+            <Link to={
+            { pathname: '/passport/take', state: { type: 'vaccine', data: vaccine } }
+          } className={clases.linkButton}>
+            <AppButton>Записаться</AppButton>
+          </Link>
+          }
         </AppButtonGroup>
       </PageLayout>
     </Layout>

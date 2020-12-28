@@ -3,6 +3,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import Modal from '@material-ui/core/Modal';
 import Backdrop from '@material-ui/core/Backdrop';
 import Fade from '@material-ui/core/Fade';
+import Box from '@material-ui/core/Box';
 import ClearIcon from '@material-ui/icons/Clear';
 import ArrowRightAltIcon from '@material-ui/icons/ArrowRightAlt';
 import { Link, useRouteMatch } from 'react-router-dom';
@@ -17,6 +18,7 @@ import { AppButtonGroup } from '../../components/UI/ButtonGroup';
 import { BackButton } from '../../components/BackButton';
 import { useServer } from '../../hooks/useServer';
 import { GetDetailedDisease, Vaccine } from '../../server';
+import { version } from 'react-dom';
 
 
 
@@ -174,8 +176,24 @@ export const Diseas: React.FC<DiseasProps> = (props) => {
                         <Fade in={openVaccines}>
                             <div className={classes.paper}>
                                 <h2 id="transition-modal-title">Какие есть вакцины?</h2>
-                                <p id="transition-modal-description">{diseas.vaccines.map((vaccine) => vaccine.name)}</p>
-                                <ClearIcon classes={{ root: classes.closer }} onClick={() => setOpenVaccines(false)} />
+                                <p id="transition-modal-description">
+                                    {diseas.vaccines.map((vaccine) => (
+                                        <Box key={vaccine.id} m={1}>
+                                            <Link 
+                                            to={{
+                                               pathname: `/passport/vaccine/${vaccine.id}`,
+                                               state: vaccine
+                                            }}
+                                            >
+                                                {vaccine.name}
+                                            </Link>
+                                        </Box>
+                                    ))}
+                                </p>
+                                <ClearIcon
+                                    classes={{ root: classes.closer }}
+                                    onClick={() => setOpenVaccines(false)}
+                                />
                             </div>
                         </Fade>
                     </Modal>
@@ -209,9 +227,15 @@ export const Diseas: React.FC<DiseasProps> = (props) => {
 
                 <AppButtonGroup floated>
                     <Link to="/vaccination/add" className={classes.linkButton}><AppButton appColor="white"> Я привит </AppButton></Link>
-                    <Link 
-                    to={`/passport/take`}
-                    className={classes.linkButton}><AppButton>Записаться</AppButton></Link>
+                    <Link
+                        to={{
+                            pathname: `/passport/take`,
+                            state: { type: 'diseas', data: diseas }
+                        }}
+                        className={classes.linkButton}
+                    >
+                        <AppButton>Записаться</AppButton>
+                    </Link>
                 </AppButtonGroup>
             </PageLayout>
         </Layout>

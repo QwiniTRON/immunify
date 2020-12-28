@@ -10,12 +10,19 @@ import { InfoCard } from '../../components/UI/InfoCard';
 import { AppTabPanel } from '../../components/UI/TabPanel';
 import { PageLayout } from '../../components/UI/PageLayout';
 import { BackButton } from '../../components/BackButton';
-import { useRouteMatch } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import { GetHospitals } from '../../server/fetchers/hospital';
 import { useServer } from '../../hooks/useServer';
 import { Loader } from '../../components';
 
+
+
 type ChooseClinicProps = {}
+
+type ChooseClinicRouteState = {
+  type: 'vaccine' | 'diseas',
+  data: any
+}
 
 const useStyles = makeStyles({
   content: {
@@ -33,6 +40,8 @@ type Clinic = { id: number, name: string }
 
 export const ChooseClinic: React.FC<ChooseClinicProps> = (props) => {
   const clasess = useStyles();
+  const routeData: ChooseClinicRouteState | undefined  = useLocation<ChooseClinicRouteState>().state;
+
   const clinicsReq = useServer(GetHospitals);
   const loading = clinicsReq.state.fetching;
   const success = !loading && clinicsReq.state.answer.succeeded;
@@ -56,11 +65,24 @@ export const ChooseClinic: React.FC<ChooseClinicProps> = (props) => {
   };
 
 
+  let takeTarget = '';
+  if(routeData.type == 'diseas') {
+    takeTarget = `Запись на болезнь ${routeData.data.name}`;
+  }
+  if(routeData.type == 'vaccine') {
+    takeTarget = `Запись на вакцину ${routeData.data.name}`;
+  }
+
+
   return (
     <Layout title="" clearScroll BackButtonCustom={<BackButton to={`/passport`} text="Вернуться к списку центров" />} >
       <PageLayout className={clasess.root}>
 
         <Box component="h2" fontSize={24} fontWeight={500}>
+          {takeTarget}
+        </Box>
+
+        <Box component="h2" fontSize={18} fontWeight={500}>
           Выберите медцентр
         </Box>
 

@@ -76,10 +76,11 @@ export const Appointment: React.FC<AppointmentProps> = (props) => {
       return setErrors({date: 'укажите дату и время приёма'});
     }
 
+    const useTimeZoneOffset = 60000 * selectedDate.getTimezoneOffset();
     createAppointmentReq.fetch({
       patientId: Number(currentUser?.id),
       hospitalId: Number(clinicId),
-      date: selectedDate
+      date: new Date(selectedDate.getTime() - useTimeZoneOffset)
     });
   }
 
@@ -150,6 +151,7 @@ export const Appointment: React.FC<AppointmentProps> = (props) => {
                 ampm={false}
                 helperText={error.date}
                 error={Boolean(error.date)}
+                
               />
             </MuiPickersUtilsProvider>
           </div>

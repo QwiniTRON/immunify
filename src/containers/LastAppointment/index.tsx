@@ -129,8 +129,12 @@ export const LastAppointment: React.FC<LastAppointmentProps> = (props) => {
     if (!selectedDate) {
       return setError('дата должны быть выбрана');
     }
-    
-    updateReq.fetch({ date: selectedDate, visitId: Number(appointmentId) });
+
+    const useTimeZoneOffset = 60000 * selectedDate.getTimezoneOffset();
+    updateReq.fetch({
+      date: new Date(selectedDate.getTime() - useTimeZoneOffset),
+      visitId: Number(appointmentId)
+    });
   }
 
 
@@ -155,7 +159,6 @@ export const LastAppointment: React.FC<LastAppointmentProps> = (props) => {
 
   useEffect(() => {
     if (successDelete) {
-      // deleteReq.reload();
 
       setDeleteNotieceOpen(true);
       setDeleteOpen(false);

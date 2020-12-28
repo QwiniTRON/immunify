@@ -56,9 +56,8 @@ const App: React.FC<AppProps> = function ({
       if (oidcUser !== null) {
         const userReq = await userInit();
         const appDataReq = await appDataInit(oidcUser.access_token!);
+        setIsINIT(true);
       }
-
-      setIsINIT(true);
     }()
   }, [oidcUser]);
 
@@ -103,7 +102,7 @@ const App: React.FC<AppProps> = function ({
 
               <Route path={`/vaccination`} exact>
                 <OidcSecure>
-                 <Vaccination />
+                  <Vaccination />
                 </OidcSecure>
               </Route>
 
@@ -151,6 +150,12 @@ const App: React.FC<AppProps> = function ({
               </Route>
 
               {/* трёхуровневые роуты */}
+              <Route path={`/passport/vaccine/:id`} exact>
+                <OidcSecure>
+                  <Vaccine />
+                </OidcSecure>
+              </Route>
+
               <Route path={`/passport/appointment/:id`} exact>
                 <OidcSecure>
                   <Appointment />

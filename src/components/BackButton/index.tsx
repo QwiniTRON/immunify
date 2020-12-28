@@ -1,5 +1,5 @@
-import react from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import React from 'react';
+import { Link, useLocation, useHistory } from 'react-router-dom';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import { makeStyles } from '@material-ui/core/styles';
 
@@ -8,12 +8,14 @@ type BackButtonProps = {
     to?: string
     text?: string
     SubstituteComponent?: any
+    simpleBack?: boolean
 }
 
 const useStyles = makeStyles({
     root: {
         textDecoration: 'none',
-        color: '#333'
+        color: '#333',
+        cursor: 'pointer'
     },
     text: {
         verticalAlign: 'super'
@@ -24,11 +26,27 @@ const useStyles = makeStyles({
     }
 });
 
-export const BackButton: React.FC<BackButtonProps> = ({ to, text, SubstituteComponent = 'div' }) => {
+export const BackButton: React.FC<BackButtonProps> = ({
+    to,
+    text,
+    SubstituteComponent = 'div',
+    simpleBack
+}) => {
+    const classes = useStyles();
+
     const locationData = useLocation();
+    const history = useHistory();
+    
+
     const pathNames = locationData.pathname.split('/').slice(1);
     const pathToBack = '/' + pathNames.slice(0, -1).join('/');
-    const classes = useStyles();
+
+    if (simpleBack) {
+        return (<div className={classes.root} onClick={() => history.goBack()}>
+            <ChevronLeftIcon className={classes.icon} />
+            <span className={classes.text}> {text || 'назад'}</span>
+        </div>)
+    }
 
     if (pathToBack == '/' && !Boolean(to)) return (<SubstituteComponent></SubstituteComponent>);
 
