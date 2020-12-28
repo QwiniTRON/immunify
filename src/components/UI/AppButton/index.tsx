@@ -46,7 +46,8 @@ const useStyles = makeStyles((theme) => ({
         left: 0,
         right: 0,
         margin: '0 auto',
-        minWidth: 160
+        minWidth: 160,
+        zIndex: 10
     }
 }));
 

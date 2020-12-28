@@ -24,6 +24,7 @@ import { Layout } from '../../components/Layout/Layout';
 import { BackButton } from '../../components/BackButton';
 import { useIsEmptyFamily } from '../../hooks';
 import { QuizData } from '../../models/User';
+import { useTimerFunction } from '../../hooks/timerFunction';
 
 
 
@@ -39,6 +40,9 @@ type QuizState = {
     currentStep: number
     userAnswers: QuizAnswer[]
 }
+
+const timeToBack = 1500;
+
 export const Quiz: React.FC<QuizProps> = (props) => {
     const classes = useStyles();
     const dispatch = useDispatch();
@@ -46,6 +50,8 @@ export const Quiz: React.FC<QuizProps> = (props) => {
     const { oidcUser } = useReactOidc();
 
     const isEmptyFamily = useIsEmptyFamily();
+
+    const [performTimer, cancelTimer] = useTimerFunction();
     const [open, setOpen] = useState(false);
     const currentUser = useSelector((state: RootState) => state.user.currentUser);
     const currentQuestionnarie = useSelector((state: RootState) => state.appData.questionnaire);
@@ -132,6 +138,7 @@ export const Quiz: React.FC<QuizProps> = (props) => {
         (dispatch(updateCurrentUserData({ quiz: quizData })) as any)
             .then((r: any) => {
                 setOpen(true);
+                performTimer(() => history.push(pathToBack), timeToBack);
                 dispatch(claculateRisks(oidcUser.access_token));
             });
     }

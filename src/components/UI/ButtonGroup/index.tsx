@@ -23,7 +23,8 @@ const useStyles = makeStyles({
         left: 0,
         right: 0,
         maxWidth: 600,
-        margin: '0 auto'
+        margin: '0 auto',
+        zIndex: 10
     }
 });
 

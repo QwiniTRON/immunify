@@ -21,27 +21,19 @@ import { BackButton } from '../../components/BackButton';
 import { Region as RegionType } from '../../type';
 import { useReactOidc } from '@axa-fr/react-oidc-context';
 import { claculateRisks } from '../../store/appData/action';
+import { useHistory } from 'react-router-dom';
+import { useTimerFunction } from '../../hooks/timerFunction';
 
 
 
 type RegionProps = {}
 
 
-const top100Films: RegionType[] = [
-    { id: 1, name: 'профессия 1' },
-    { id: 2, name: 'профессия 2' },
-    { id: 3, name: 'профессия 3' },
-    { id: 4, name: 'профессия 4' },
-    { id: 5, name: 'профессия 5' },
-    { id: 6, name: 'профессия 6' },
-    { id: 7, name: 'профессия 7' },
-    { id: 8, name: 'профессия 8' },
-    { id: 9, name: 'профессия 9' },
-    { id: 10, name: 'профессия 10' }
-];
+const timeToBack = 1500;
 
 export const Region: React.FC<RegionProps> = (props) => {
     const dispatch = useDispatch();
+    const history = useHistory();
     const { oidcUser } = useReactOidc();
 
     const regions = useSelector((state: RootState) => state.appData.regions) ?? [];
@@ -49,6 +41,7 @@ export const Region: React.FC<RegionProps> = (props) => {
     const isEmptyFamily = useIsEmptyFamily();
     const pathToBack = isEmptyFamily ? '/profile' : `/profile/${currentUser?.name}`;
 
+    const [performTimer, cancelTimer] = useTimerFunction();
     const [open, setOpen] = useState(false);
     const [region, setRegion] = useState(currentUser?.data?.region!);
     const [otherWork, setOtherWork] = useState(Boolean(region?.work));
@@ -68,6 +61,7 @@ export const Region: React.FC<RegionProps> = (props) => {
         (dispatch(updateCurrentUserData({ region: regionToSave })) as any)
             .then((r: any) => {
                 setOpen(true);
+                performTimer(() => history.push(pathToBack), timeToBack);
                 dispatch(claculateRisks(oidcUser.access_token));
             });
     }

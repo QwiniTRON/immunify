@@ -1,4 +1,4 @@
-import React, { useLayoutEffect, useState } from 'react';
+import React, { useEffect, useLayoutEffect, useState } from 'react';
 import Typography from '@material-ui/core/Typography';
 import TextField from '@material-ui/core/TextField';
 import Box from '@material-ui/core/Box';
@@ -42,6 +42,8 @@ const useStyle = makeStyles({
     }
 });
 
+
+// todo или формик или переписать под декларатив
 const Reg: React.FC<RegProps> = ({
     register,
     appDataInit
@@ -59,8 +61,14 @@ const Reg: React.FC<RegProps> = ({
     const [errors, setErrors] = useState({
         name: '',
         age: '',
-        sex: '',
+        sex: ''
     });
+    const [inputTouches, setInputTouches] = useState({
+        name: false,
+        age: false,
+        sex: false
+    });
+    const [isValid, setIsValid] = useState(false);
 
 
     useLayoutEffect(() => {
@@ -74,14 +82,11 @@ const Reg: React.FC<RegProps> = ({
                 .catch((e: any) => {
                     console.log(e);
                 });
-        } else if (addReq.state.answer.errorMessage) {}
+        } else if (addReq.state.answer.errorMessage) { }
     }, [success]);
 
 
-    const handleSubmit = (e: React.FormEvent) => {
-        e.preventDefault();
-        if (loading) return;
-
+    const validate = () => {
         let valid = true;
 
         // sanitize
@@ -90,27 +95,42 @@ const Reg: React.FC<RegProps> = ({
         const errors = {
             name: '',
             age: '',
-            sex: '',
+            sex: ''
         }
 
         // валидация
-        if (nameText.length < 2) {
+        if (nameText.length < 2 && inputTouches.name) {
             errors.name = 'имя должно быть не короче 2 символов';
             valid = false;
-        }
-        if (!Boolean(selectedDate)) {
+        } else if (!Boolean(selectedDate) && inputTouches.age) {
             errors.age = 'возраст обязателен';
             valid = false;
-        }
-        if (!sexText) {
+        } else if (!sexText && inputTouches.sex) {
             errors.sex = 'пол обязателен';
             valid = false;
         }
 
+        if (!inputTouches.name || !inputTouches.age || !inputTouches.sex) {
+            valid = false;
+        }
+        setIsValid(valid);
+        setErrors(errors);
+
+        return [valid, errors]
+    }
+
+    useEffect(() => {
+        validate();
+    }, [sex, name, selectedDate]);
+
+    const handleSubmit = (e: React.FormEvent) => {
+        e.preventDefault();
+        if (loading) return;
+
+        const [valid, errors] = validate();
+
         if (valid) {
             addReq.fetch(undefined);
-        } else {
-            setErrors(errors);
         }
     }
 
@@ -134,7 +154,11 @@ const Reg: React.FC<RegProps> = ({
                         variant="outlined"
                         className="reg__input"
                         value={name}
-                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => setName(e.target.value)}
+                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                            setName(e.target.value);
+                            setInputTouches(Object.assign({}, inputTouches, { name: true }));
+                        }}
+                        onBlur={validate}
                         error={Boolean(errors.name)}
                         helperText={errors.name} />
 
@@ -152,6 +176,8 @@ const Reg: React.FC<RegProps> = ({
                                 disableFuture
                                 inputVariant="outlined"
                                 clearable
+                                onBlur={validate}
+                                onFocus={() => setInputTouches(Object.assign({}, inputTouches, { age: true }))}
                             />
                         </MuiPickersUtilsProvider>
                         {/* <AppDatePicker value={Number(age)} changeHandle={(value) => setAge(String(value))} /> */}
@@ -161,6 +187,7 @@ const Reg: React.FC<RegProps> = ({
                     <Typography color="error">{errors.sex}</Typography>
                     <Box display="flex" justifyContent="space-between">
                         <AppRadioGroup onChange={(value: string) => {
+                            setInputTouches(Object.assign({}, inputTouches, { sex: true }));
                             setSex(value);
                         }}
                             value={sex}
@@ -170,7 +197,7 @@ const Reg: React.FC<RegProps> = ({
                         </AppRadioGroup>
                     </Box>
 
-                    <AppButton disabled={loading} type="submit" className="reg_start" appColor="linear">
+                    <AppButton disabled={loading || !isValid} type="submit" className="reg_start" appColor="linear">
                         Начать
                     </AppButton>
                 </form>

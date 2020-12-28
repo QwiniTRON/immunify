@@ -15,24 +15,30 @@ import { updateCurrentUserData } from '../../store/user/action';
 import { Layout } from '../../components/Layout/Layout';
 import { BackButton } from '../../components/BackButton';
 import { useIsEmptyFamily } from '../../hooks';
-import { Profession as  ProfessionType} from '../../type';
+import { Profession as ProfessionType } from '../../type';
 import { claculateRisks } from '../../store/appData/action';
 import { useReactOidc } from '@axa-fr/react-oidc-context';
+import { useTimerFunction } from '../../hooks/timerFunction';
+import { useHistory } from 'react-router-dom';
 
 
 type ProfessionProps = {
 
 }
 
+const timeToBack = 1500;
+
 export const Profession: React.FC<ProfessionProps> = (props) => {
     const dispatch = useDispatch();
+    const history = useHistory();
     const { oidcUser } = useReactOidc();
-    
+
     const professions = useSelector((state: RootState) => state.appData.professions);
     const currentUser = useSelector((state: RootState) => state.user.currentUser);
     const isEmptyFamily = useIsEmptyFamily();
     const pathToBack = isEmptyFamily ? '/profile' : `/profile/${currentUser?.name}`;
 
+    const [performTimer, cancelTimer] = useTimerFunction();
     const [open, setOpen] = useState(false);
     const [profession, setProfession] = useState<ProfessionType | undefined>(currentUser?.data?.profession);
     const [errors, setErrors] = useState({
@@ -47,6 +53,7 @@ export const Profession: React.FC<ProfessionProps> = (props) => {
         (dispatch(updateCurrentUserData({ profession })) as any)
             .then((r: any) => {
                 setOpen(true);
+                performTimer(() => history.push(pathToBack), timeToBack);
                 dispatch(claculateRisks(oidcUser.access_token));
             });
     }

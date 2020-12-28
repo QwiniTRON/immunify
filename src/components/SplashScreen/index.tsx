@@ -32,7 +32,9 @@ export const SplashScreen: React.FC<SplashScreenProps> = (props) => {
         <div>
             <div className={classes.content}>
                 <img className={classes.img} src={logo} alt="app logo" />
-                <CircleLoader />
+                <div>
+                    <CircleLoader />
+                </div>
             </div>
         </div>
     );
