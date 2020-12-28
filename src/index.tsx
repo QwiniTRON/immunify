@@ -6,7 +6,7 @@ import { BrowserRouter } from 'react-router-dom';
 import { ThemeProvider } from '@material-ui/core/styles';
 import * as serviceWorkerRegistration from './serviceWorkerRegistration';
 import { Provider } from 'react-redux';
-import { OidcSecure, AuthenticationProvider, } from '@axa-fr/react-oidc-context';
+import { AuthenticationProvider, } from '@axa-fr/react-oidc-context';
 import { SplashScreen } from './components/SplashScreen';
 
 import './styles/index.scss';
@@ -30,9 +30,7 @@ ReactDOM.render(
           
           configuration={process.env.NODE_ENV === 'production' ? ProductionConfig : DeveloperConfig}
         >
-          <OidcSecure>
-            <App />
-          </OidcSecure>
+          <App />
         </AuthenticationProvider>
       </ThemeProvider>
     </BrowserRouter>
