@@ -1,19 +1,19 @@
 import React, { useState } from 'react';
-import Box from '@material-ui/core/Box';
-import Typography from '@material-ui/core/Typography';
-import TextField from '@material-ui/core/TextField';
+import googlelogo from '../../assets/google.png';
+import vklogo from '../../assets/vk.png';
+import facebooklogo from '../../assets/facebook.png';
+import { Link } from 'react-router-dom';
 
-import { AppButton } from '../../components/UI/AppButton';
-import { AppLink } from '../../components/UI/AppLink';
+import './loginpage.scss';
 
 type LoginPageProps = {
 
 }
 
+
 export const LoginPage: React.FC<LoginPageProps> = (props) => {
     const [login, setLogin] = useState('');
     const [password, setPassword] = useState('');
-    const [loading, setLoading] = useState(false);
     const [errors, setErrors] = useState({
         email: '',
         password: ''
@@ -21,7 +21,7 @@ export const LoginPage: React.FC<LoginPageProps> = (props) => {
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        if (loading) return;
+        // if (loading) return;
 
         let valid = true;
         // sanitize
@@ -39,6 +39,11 @@ export const LoginPage: React.FC<LoginPageProps> = (props) => {
             valid = false;
         }
 
+        if(passwordText.length < 6) {
+            errors.password = 'пароль не короче 6 символов';
+            valid = false;
+        }
+
         if (valid) {
             // вход через сервер
         } else {
@@ -47,39 +52,75 @@ export const LoginPage: React.FC<LoginPageProps> = (props) => {
     }
 
     return (
-        <Box className="login-page" p={1}>
-            <Box fontSize={36} fontWeight={500} textAlign="center">Вход в Immunify</Box>
+        <div className="login-page">
+            <div className="container">
+                <h1 className="title">Вход</h1>
 
-            <form className="reg__form" onSubmit={handleSubmit}>
-                <Box marginY={2}>
-                    <Typography color="error">{errors.email}</Typography>
-                    <TextField
-                        label="email"
-                        variant="outlined"
-                        className="reg__input"
-                        id="email-field"
-                        fullWidth
-                        value={login}
-                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => setLogin(e.target.value)} />
-                </Box>
+                <main>
 
-                <Box marginBottom={2}>
-                    <Typography color="error">{errors.password}</Typography>
-                    <TextField
-                        label="пароль"
-                        variant="outlined"
-                        className="reg__input"
-                        type="password"
-                        id="password-field"
-                        fullWidth
-                        value={password}
-                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => setPassword(e.target.value)} />
-                </Box>
+                    <div className="error"></div>
+                    <form onSubmit={handleSubmit}>
 
-                <AppLink to={`/reg`}>регистрация</AppLink>
+                        <div className="input-group">
+                            <label>
+                                <input
+                                    type="text"
+                                    placeholder=" "
+                                    className="input-group__input"
+                                    name="email"
+                                    value={login}
+                                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => setLogin(e.target.value)} />
+                                <p className="input-group__title">Эл. почта</p>
+                            </label>
+                            <div className="input-group__error">
+                                {errors.email}
+                            </div>
+                        </div>
 
-                <AppButton disabled={loading} type="submit" floated>войти</AppButton>
-            </form>
-        </Box>
+                        <div className="input-group">
+                            <label>
+                                <input
+                                    type="text"
+                                    placeholder=" "
+                                    className="input-group__input"
+                                    name="password"
+                                    value={password}
+                                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => setPassword(e.target.value)} /> 
+                                <p className="input-group__title">Пароль</p>
+                            </label>
+                            <div className="input-group__error">
+                                {errors.password}
+                            </div>
+                        </div>
+
+
+                        <div className="login__buttons">
+                            <button className="button button--app" type="submit">войти</button>
+                        </div>
+                    </form>
+
+
+                    <div className="socials">
+                        <div className="socials__title">вход через соцсети</div>
+
+                        <div className="socials__networks">
+                            <div className="socials__item">
+                                <img src={googlelogo} alt="google" />
+                            </div>
+                            <div className="socials__item">
+                                <img src={vklogo} alt="vk" />
+                            </div>
+                            <div className="socials__item">
+                                <img src={facebooklogo} alt="facebook" />
+                            </div>
+                        </div>
+
+                        <div className="socials__notice">
+                            Нет аккаунта? <Link className="socials__link" to="/registration">Зарегистрироваться</Link>
+                        </div>
+                    </div>
+                </main>
+            </div>
+        </div>
     );
 }

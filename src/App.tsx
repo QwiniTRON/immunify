@@ -33,6 +33,8 @@ import { ChooseClinic } from './containers/ChooseClinic';
 import { Vaccination } from './containers/Vaccination';
 import { Appointment } from './containers/Appointment';
 import { LastAppointment } from './containers/LastAppointment';
+import { Registration } from './containers/Registration';
+import { MeetingPage } from './containers/MeetingPage';
 
 
 type AppProps = {
@@ -53,13 +55,13 @@ const App: React.FC<AppProps> = function ({
 
   useEffect(() => {
     void async function () {
-      if (oidcUser !== null) {
-        const userReq = await userInit();
-        const appDataReq = await appDataInit(oidcUser.access_token!);
+      // if (oidcUser !== null) {
+        // const userReq = await userInit();
+        // const appDataReq = await appDataInit(oidcUser.access_token!);
         setIsINIT(true);
-      }
+      // }
     }()
-  }, [oidcUser]);
+  }, []);
 
   if (!isINIT) return <div className="App">
     <SplashScreen />
@@ -73,111 +75,86 @@ const App: React.FC<AppProps> = function ({
 
             <Switch location={location}>
 
+              {!isAuth && <Route path={`/`} exact>
+                <MeetingPage />
+              </Route>}
               {!isAuth && <Route path={`/reg`} exact>
-                <OidcSecure>
-                  <Reg />
-                </OidcSecure>
+                <Reg />
+              </Route>}
+              {!isAuth && <Route path={`/login`} exact>
+                <LoginPage />
+              </Route>}
+              {!isAuth && <Route path={`/registration`} exact>
+                <Registration />
               </Route>}
 
               {/* если пользователь не зарегистрировался, то ему доступен только роут reg - страница входа */}
               {!isAuth && <Redirect to={`/reg`} />}
 
               <Route path={`/profile`} exact>
-                <OidcSecure>
-                  <Profile />
-                </OidcSecure>
+                <Profile />
               </Route>
 
               <Route path={`/calendar`} exact>
-                <OidcSecure>
-                  <Calendar />
-                </OidcSecure>
+                <Calendar />
               </Route>
 
               <Route path={`/passport`} exact>
-                <OidcSecure>
-                  <Passport />
-                </OidcSecure>
+                <Passport />
               </Route>
 
               <Route path={`/vaccination`} exact>
-                <OidcSecure>
-                  <Vaccination />
-                </OidcSecure>
+                <Vaccination />
               </Route>
 
               {/* двух шаговые роуты */}
               <Route path={`/take/:id`} exact>
-                <OidcSecure>
-                  <LastAppointment />
-                </OidcSecure>
+                <LastAppointment />
               </Route>
 
               <Route path={`/passport/take`} exact>
-                <OidcSecure>
-                  <ChooseClinic />
-                </OidcSecure>
+                <ChooseClinic />
               </Route>
 
               <Route path={`/passport/:id`} exact>
-                <OidcSecure>
-                  <Diseas />
-                </OidcSecure>
+                <Diseas />
               </Route>
 
               <Route path={`/profile/add`} exact>
-                <OidcSecure>
-                  <AddMember />
-                </OidcSecure>
+                <AddMember />
               </Route>
 
               <Route path={`/profile/:id`} exact>
-                <OidcSecure>
-                  <Patient />
-                </OidcSecure>
+                <Patient />
               </Route>
 
               <Route path={`/calendar/:id`} exact>
-                <OidcSecure>
-                  <LastAppointment />
-                </OidcSecure>
+                <LastAppointment />
               </Route>
 
               <Route path={`/vaccination/add`} exact>
-                <OidcSecure>
-                  <ReadyPage />
-                </OidcSecure>
+                <ReadyPage />
               </Route>
 
               {/* трёхуровневые роуты */}
               <Route path={`/passport/vaccine/:id`} exact>
-                <OidcSecure>
-                  <Vaccine />
-                </OidcSecure>
+                <Vaccine />
               </Route>
 
               <Route path={`/passport/appointment/:id`} exact>
-                <OidcSecure>
-                  <Appointment />
-                </OidcSecure>
+                <Appointment />
               </Route>
 
               <Route path={`/profile/:id/quiz`} exact>
-                <OidcSecure>
-                  <Quiz />
-                </OidcSecure>
+                <Quiz />
               </Route>
 
               <Route path={`/profile/:id/profession`} exact>
-                <OidcSecure>
-                  <Profession />
-                </OidcSecure>
+                <Profession />
               </Route>
 
               <Route path={`/profile/:id/region`} exact>
-                <OidcSecure>
-                  <Region />
-                </OidcSecure>
+                <Region />
               </Route>
 
               <Redirect to={`/profile`} />
