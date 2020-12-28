@@ -1,8 +1,8 @@
-
 .layout {
     height: 100vh;
     display: flex;
     flex-direction: column;
+    padding-bottom: 56px;
 
     .layout__header {
         display: flex;
@@ -18,5 +18,15 @@
 
     .layout__content--scrollcleared {
         overflow: initial;
+    }
+
+    .layout__navigation {
+        height: 56px;
+        position: fixed;
+        left: 0;
+        bottom: 0;
+        right: 0;
+        max-width: 600px;
+        margin: 0 auto;
     }
 }
