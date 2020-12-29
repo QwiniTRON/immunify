@@ -1,8 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, FC } from 'react';
 import { Switch, Route, Redirect } from 'react-router-dom';
 import { CSSTransition, TransitionGroup } from 'react-transition-group';
 import { connect } from 'react-redux';
-import { useReactOidc, OidcSecure } from '@axa-fr/react-oidc-context';
 
 import { userInit } from './store/user/action';
 import { appDataInit } from './store/appData/action';
@@ -36,6 +35,9 @@ import { LastAppointment } from './containers/LastAppointment';
 import { Registration } from './containers/Registration';
 import { MeetingPage } from './containers/MeetingPage';
 
+import { useAccessToken } from './hooks/useAccessToken';
+
+import { Secure } from './components';
 
 type AppProps = {
   user: any
@@ -44,30 +46,50 @@ type AppProps = {
   appDataInit: Function
 }
 
+const appValidation = (tokenToCheck: string) => tokenToCheck.length > 0;
+const loginValidation = (tokenToCheck: string) => tokenToCheck.length === 0;
+
+type SecureProps = {
+  children: JSX.Element,
+}
+
+const ApplicationSecure: FC<SecureProps> = (props) => (
+  <Secure validation={appValidation} redirect="/">
+    {props.children}
+  </Secure>
+);
+
+const LoginnSecure: FC<SecureProps> = (props) => (
+  <Secure validation={loginValidation} redirect="/profile">
+    {props.children}
+  </Secure>
+);
+
 const App: React.FC<AppProps> = function ({
   user,
   userInit,
   appDataInit
 }) {
   const [isINIT, setIsINIT] = useState(false);
-  const { oidcUser } = useReactOidc();
   const isAuth = Boolean(user);
+  const { token } = useAccessToken();
 
   useEffect(() => {
     void async function () {
-      const userReq = await userInit();
+      await userInit();
 
-      if (oidcUser !== null) {
-        const appDataReq = await appDataInit(oidcUser.access_token!);
+      if (token.length > 0) {
+        await appDataInit(token);
       }
       
       setIsINIT(true);
     }()
-  }, [oidcUser]);
+  }, [token]);
 
   if (!isINIT) return <div className="App">
     <SplashScreen />
   </div>;
+
 
   return (
     <div className="App">
@@ -77,118 +99,131 @@ const App: React.FC<AppProps> = function ({
 
             <Switch location={location}>
 
-              {!isAuth && <Route path={`/`} exact>
-                <OidcSecure><MeetingPage /></OidcSecure>
-              </Route>}
               {!isAuth && <Route path={`/reg`} exact>
-                <OidcSecure><Reg /></OidcSecure>
+                <ApplicationSecure>
+                  <Reg />
+                </ApplicationSecure>
               </Route>}
-              {!isAuth && <Route path={`/login`} exact>
-                <OidcSecure><LoginPage /></OidcSecure>
-              </Route>}
-              {!isAuth && <Route path={`/registration`} exact>
-                <OidcSecure><Registration /></OidcSecure>
-              </Route>}
+
+              <Route path={`/`} exact>
+                <Secure validation={loginValidation} redirect="/profile">
+                  <MeetingPage />
+                </Secure>
+              </Route>
+
+
+              <Route path={`/login`} exact>
+                <LoginnSecure>
+                  <LoginPage />
+                </LoginnSecure>
+              </Route>
+
+
+              <Route path={`/registration`} exact>
+                <LoginnSecure>
+                  <Registration />
+                </LoginnSecure>
+              </Route>
 
               {/* если пользователь не зарегистрировался, то ему доступен только роут reg - страница входа */}
               {!isAuth && <Redirect to={`/reg`} />}
 
               <Route path={`/profile`} exact>
-                <OidcSecure>
+                <ApplicationSecure>
                   <Profile />
-                </OidcSecure>
+                </ApplicationSecure>
               </Route>
 
               <Route path={`/calendar`} exact>
-                <OidcSecure>
+                <ApplicationSecure>
                   <Calendar />
-                </OidcSecure>
+                </ApplicationSecure>
               </Route>
 
               <Route path={`/passport`} exact>
-                <OidcSecure>
+                <ApplicationSecure>
                   <Passport />
-                </OidcSecure>
+                </ApplicationSecure>
               </Route>
 
               <Route path={`/vaccination`} exact>
-                <OidcSecure>
+                <ApplicationSecure>
                   <Vaccination />
-                </OidcSecure>
+                </ApplicationSecure>
               </Route>
 
               {/* двух шаговые роуты */}
               <Route path={`/take/:id`} exact>
-                <OidcSecure>
+                <ApplicationSecure>
                   <LastAppointment />
-                </OidcSecure>
+                </ApplicationSecure>
               </Route>
 
               <Route path={`/passport/take`} exact>
-                <OidcSecure>
+                <ApplicationSecure>
                   <ChooseClinic />
-                </OidcSecure>
+                </ApplicationSecure>
               </Route>
 
               <Route path={`/passport/:id`} exact>
-                <OidcSecure>
+                <ApplicationSecure>
                   <Diseas />
-                </OidcSecure>
+                </ApplicationSecure>
               </Route>
 
               <Route path={`/profile/add`} exact>
-                <OidcSecure>
+                <ApplicationSecure>
                   <AddMember />
-                </OidcSecure>
+                </ApplicationSecure>
               </Route>
 
               <Route path={`/profile/:id`} exact>
-                <OidcSecure>
+                <ApplicationSecure>
                   <Patient />
-                </OidcSecure>
+                </ApplicationSecure>
               </Route>
 
               <Route path={`/calendar/:id`} exact>
-                <OidcSecure>
+                <ApplicationSecure>
                   <LastAppointment />
-                </OidcSecure>
+                </ApplicationSecure>
               </Route>
 
               <Route path={`/vaccination/add`} exact>
-                <OidcSecure>
+                <ApplicationSecure>
                   <ReadyPage />
-                </OidcSecure>
+                </ApplicationSecure>
               </Route>
 
               {/* трёхуровневые роуты */}
               <Route path={`/passport/vaccine/:id`} exact>
-                <OidcSecure>
+                <ApplicationSecure>
                   <Vaccine />
-                </OidcSecure>
+                </ApplicationSecure>
               </Route>
 
               <Route path={`/passport/appointment/:id`} exact>
-                <OidcSecure>
+                <ApplicationSecure>
                   <Appointment />
-                </OidcSecure>
+                </ApplicationSecure>
               </Route>
 
               <Route path={`/profile/:id/quiz`} exact>
-                <OidcSecure>
+                <ApplicationSecure>
                   <Quiz />
-                </OidcSecure>
+                </ApplicationSecure>
               </Route>
 
               <Route path={`/profile/:id/profession`} exact>
-                <OidcSecure>
+                <ApplicationSecure>
                   <Profession />
-                </OidcSecure>
+                </ApplicationSecure>
               </Route>
 
               <Route path={`/profile/:id/region`} exact>
-                <OidcSecure>
+                <ApplicationSecure>
                   <Region />
-                </OidcSecure>
+                </ApplicationSecure>
               </Route>
 
               <Redirect to={`/profile`} />

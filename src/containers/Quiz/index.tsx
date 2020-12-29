@@ -10,7 +10,8 @@ import { useSelector, useDispatch } from 'react-redux';
 import Snackbar from '@material-ui/core/Snackbar';
 import MuiAlert from '@material-ui/lab/Alert';
 import { useHistory } from 'react-router-dom';
-import { useReactOidc } from '@axa-fr/react-oidc-context';
+
+import { useAccessToken } from '../../hooks/useAccessToken';
 
 import './quiz.scss';
 
@@ -47,7 +48,7 @@ export const Quiz: React.FC<QuizProps> = (props) => {
     const classes = useStyles();
     const dispatch = useDispatch();
     const history = useHistory();
-    const { oidcUser } = useReactOidc();
+    const { token } = useAccessToken();
 
     const [performTimer, cancelTimer] = useTimerFunction();
     const [open, setOpen] = useState(false);
@@ -137,7 +138,7 @@ export const Quiz: React.FC<QuizProps> = (props) => {
             .then((r: any) => {
                 setOpen(true);
                 performTimer(() => history.push(pathToBack), timeToBack);
-                dispatch(claculateRisks(oidcUser.access_token));
+                dispatch(claculateRisks(token));
             });
     }
 

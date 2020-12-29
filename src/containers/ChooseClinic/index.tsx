@@ -82,7 +82,7 @@ export const ChooseClinic: React.FC<ChooseClinicProps> = (props) => {
           {takeTarget}
         </Box>
 
-        <Box component="h2" fontSize={18} fontWeight={500}>
+        <Box component="h2" fontSize={18} fontWeight={500} marginY={1}>
           Выберите медцентр
         </Box>
 
@@ -98,7 +98,7 @@ export const ChooseClinic: React.FC<ChooseClinicProps> = (props) => {
 
             {loading && <Box m={3}><Loader /></Box>}
             {!loading && clinics.map((c) => (
-              <Box marginY={1}>
+              <Box marginY={2}>
                 <InfoCard data={[
                   { description: '', title: c.name }
                 ]}

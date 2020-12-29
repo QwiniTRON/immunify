@@ -21,7 +21,8 @@ import { AppDatePicker } from '../../components/UI/appDatePicker';
 import { CreatePatient } from '../../server';
 import { useServer } from '../../hooks/useServer';
 import { appDataInit } from '../../store/appData/action';
-import { useReactOidc } from '@axa-fr/react-oidc-context';
+
+import { useAccessToken } from '../../hooks/useAccessToken';
 
 
 type RegProps = {
@@ -49,8 +50,12 @@ const Reg: React.FC<RegProps> = ({
     appDataInit
 }) => {
     const clasess = useStyle();
+<<<<<<< HEAD
     const history = useHistory();
     const { oidcUser } = useReactOidc();
+=======
+    const { token } = useAccessToken();
+>>>>>>> 50f4bc9a32bb0045700dbb2c28d4fd4b6491568e
 
     const addReq = useServer(CreatePatient);
     const loading = addReq.state.fetching;
@@ -76,7 +81,12 @@ const Reg: React.FC<RegProps> = ({
         if (success) {
             register(name, selectedDate?.getTime(), sex, addReq.state?.answer?.data?.id)
                 .then((r: any) => {
+<<<<<<< HEAD
                     appDataInit(oidcUser.access_token).then(() => {
+=======
+                    appDataInit(token).then(() => {
+                        // history.push('/profile');
+>>>>>>> 50f4bc9a32bb0045700dbb2c28d4fd4b6491568e
                     });
                     history.push(`/profile/${name.trim()}`);
                 })

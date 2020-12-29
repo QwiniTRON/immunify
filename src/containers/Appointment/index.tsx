@@ -104,7 +104,7 @@ export const Appointment: React.FC<AppointmentProps> = (props) => {
 
 
   return (
-    <Layout title="" BackButtonCustom={<BackButton text="Вернуться к списку центров" to={`/passport/take`} />}>
+    <Layout title="" BackButtonCustom={<BackButton text="Вернуться к списку центров" simpleBack />}>
       <PageLayout className={clases.root}>
 
         <Box component="h2" fontSize={24}>

@@ -4,56 +4,46 @@ import vklogo from '../../assets/vk.png';
 import facebooklogo from '../../assets/facebook.png';
 import { Link } from 'react-router-dom';
 
-import './Registration.scss';
+import { useServer } from '../../hooks/useServer';
+import { useAccessToken } from '../../hooks/useAccessToken';
 
+import { Register } from '../../server';
+
+import './Registration.scss';
+import { useForm } from 'react-hook-form';
+
+type Form = {
+  username: string,
+  password: string,
+  confirmPassword: string,
+}
 
 export const Registration: React.FC = () => {
-    const [login, setLogin] = useState('');
-    const [password, setPassword] = useState('');
-    const [rpassword, setRpassword] = useState('');
-    const [errors, setErrors] = useState({
-        email: '',
-        password: '',
-        rpassword: ''
-    });
+    const { set: setToken } = useAccessToken();
+    const registerFetcher = useServer(Register);
 
-    const handleSubmit = (e: React.FormEvent) => {
-        e.preventDefault();
-        // if (loading) return;
+    const { 
+      register,
+      handleSubmit,
+      errors,
+      getValues,
+    } = useForm<Form>();
 
-        let valid = true;
-        // sanitize
-        const loginText = login.trim();
-        const passwordText = password.trim();
-        const rpasswordText = rpassword.trim();
+    const onSubmit = (data: Form) => {
+        registerFetcher.fetch({
+            username: data.username,
+            password: data.password,
+        });
+    }
 
-        const errors = {
-            email: '',
-            password: '',
-            rpassword: ''
-        }
-
-        // валидация
-        if (!(window as any).is.email(loginText)) {
-            errors.email = 'email не по формату';
-            valid = false;
-        }
-
-        if(passwordText.length < 6) {
-            errors.password = 'пароль не короче 6 символов';
-            valid = false;
-        }
-
-        if(rpasswordText !== passwordText) {
-            errors.rpassword = 'пароли должны совпадать';
-            valid = false;
-        }
-
-        if (valid) {
-            // вход через сервер
-        } else {
-            setErrors(errors);
-        }
+    const loading = registerFetcher.state.fetching;
+    const success = !loading && registerFetcher.state.answer.succeeded;
+    const error = !loading && (registerFetcher.state.answer.errorMessage || "");
+  
+    if (success) {
+        setToken(registerFetcher.state.answer.data?.token || "");
+        window.location.href = "/profile";
+        registerFetcher.reload();
     }
 
     return (
@@ -61,8 +51,8 @@ export const Registration: React.FC = () => {
             <div className="container">
                 <div className="title">Регистрация</div>
 
-                <div className="error"></div>
-                <form onSubmit={handleSubmit}>
+                <div className="error">{error}</div>
+                <form onSubmit={handleSubmit(onSubmit)}>
 
                     <div className="input-group">
                         <label>
@@ -70,49 +60,56 @@ export const Registration: React.FC = () => {
                                 type="text"
                                 placeholder=" "
                                 className="input-group__input"
-                                name="email"
-                                value={login}
-                                onChange={(e: React.ChangeEvent<HTMLInputElement>) => setLogin(e.target.value)} />
-                            <p className="input-group__title">Эл. почта</p>
+                                name="username"
+                                ref={register({ required: true, minLength: 4, maxLength: 20 })}
+                            />
+                            <p className="input-group__title">Логин</p>
                         </label>
                         <div className="input-group__error">
-                            {errors.email}
+                            {errors.username?.type === 'required' && 'Это поле обязательно'}
+                            {errors.username?.type === 'minLength' && 'Минимальная длинна поля - 4 символа'}
+                            {errors.username?.type === 'maxLength' && 'Максимальная длинна поля - 20 символа'}
                         </div>
                     </div>
 
                     <div className="input-group">
                         <label>
                             <input
-                                type="text"
+                                type="password"
                                 placeholder=" "
                                 className="input-group__input"
                                 name="password"
-                                value={password}
-                                onChange={(e: React.ChangeEvent<HTMLInputElement>) => setPassword(e.target.value)} />
+                                ref={register({ required: true, minLength: 4, maxLength: 20 })} 
+                            />
                             <p className="input-group__title">Пароль</p>
                         </label>
                         <div className="input-group__error">
-                            {errors.password}
+                            {errors.password?.type === 'required' && 'Это поле обязательно'}
+                            {errors.password?.type === 'minLength' && 'Минимальная длинна поля - 4 символа'}
+                            {errors.password?.type === 'maxLength' && 'Максимальная длинна поля - 20 символа'}
                         </div>
                     </div>
 
                     <div className="input-group">
                         <label>
                             <input
-                                type="text"
+                                type="password"
                                 placeholder=" "
                                 className="input-group__input"
-                                name="retrypassword"
-                                value={rpassword}
-                                onChange={(e: React.ChangeEvent<HTMLInputElement>) => setRpassword(e.target.value)} />
+                                name="confirmPassword"
+                                ref={register({ required: true, minLength: 4, maxLength: 20, validate: (value) => getValues().password === value, })} 
+                            />
                             <p className="input-group__title">Пароль ещё раз</p>
                         </label>
                         <div className="input-group__error">
-                            {errors.rpassword}
+                            {errors.confirmPassword?.type === 'required' && 'Это поле обязательно'}
+                            {errors.confirmPassword?.type === 'minLength' && 'Минимальная длинна поля - 4 символа'}
+                            {errors.confirmPassword?.type === 'maxLength' && 'Максимальная длинна поля - 20 символа'}
+                            {errors.confirmPassword?.type === 'validate' && 'Поля должны совпадать'}
                         </div>
                     </div>
 
-                    <button className="button button--app" type="submit">Регистрация</button>
+                    <button className="button button--app" disabled={loading} type="submit">Регистрация</button>
                 </form>
 
                 <div className="socials">
