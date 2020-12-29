@@ -36,9 +36,9 @@ export const Vaccine: React.FC<VaccineProps> = (props) => {
     <Layout title="" BackButtonCustom={<BackButton simpleBack text="Вернуться к заболеванию" />}>
       <PageLayout>
 
-        {!vaccine && 
-        <Box>
-          такая вацина не нашлась
+        {!vaccine &&
+          <Box>
+            такая вацина не нашлась
         </Box>
         }
         {vaccine && <Box fontSize={18}>
@@ -72,16 +72,18 @@ export const Vaccine: React.FC<VaccineProps> = (props) => {
 
 
         <AppButtonGroup floated>
-          <Link to='/vaccination/add' className={clases.linkButton}>
+          { Boolean(vaccine) && 
+            <Link to={{ pathname: "/vaccination/add", state: vaccine }} className={clases.linkButton}>
             <AppButton appColor="white">Я уже прививался</AppButton>
           </Link>
+          }
 
-          { vaccine && 
+          {vaccine &&
             <Link to={
-            { pathname: '/passport/take', state: { type: 'vaccine', data: vaccine } }
-          } className={clases.linkButton}>
-            <AppButton>Записаться</AppButton>
-          </Link>
+              { pathname: '/passport/take', state: { type: 'vaccine', data: vaccine } }
+            } className={clases.linkButton}>
+              <AppButton>Записаться</AppButton>
+            </Link>
           }
         </AppButtonGroup>
       </PageLayout>

@@ -37,6 +37,7 @@ const useStyles = makeStyles((theme) => ({
         justifyContent: 'center',
         padding: 5
     },
+
     paper: {
         backgroundColor: '#c4ffc5',
         boxShadow: theme.shadows[5],
@@ -45,15 +46,18 @@ const useStyles = makeStyles((theme) => ({
         position: 'relative',
         maxWidth: 580
     },
+
     closer: {
         position: 'absolute',
         right: 10,
         top: 15,
         color: '#a0a0a0'
     },
+
     card: {
         margin: '5px 0'
     },
+
     more: {
         color: '#08f',
         position: 'absolute',
@@ -65,14 +69,22 @@ const useStyles = makeStyles((theme) => ({
             verticalAlign: 'middle'
         }
     },
+
     title: {
         fontSize: 18,
         fontWeight: 500,
         textAlign: 'center',
         margin: '10px 0'
     },
+
     linkButton: {
         textDecoration: 'none'
+    },
+
+    vaccineLink: {
+        fontSize: 16,
+        fontWeight: 500,
+        letterSpacing: '1px'
     }
 }));
 
@@ -179,11 +191,12 @@ export const Diseas: React.FC<DiseasProps> = (props) => {
                                 <p id="transition-modal-description">
                                     {diseas.vaccines.map((vaccine) => (
                                         <Box key={vaccine.id} m={1}>
-                                            <Link 
-                                            to={{
-                                               pathname: `/passport/vaccine/${vaccine.id}`,
-                                               state: vaccine
-                                            }}
+                                            <Link
+                                                className={classes.vaccineLink}
+                                                to={{
+                                                    pathname: `/passport/vaccine/${vaccine.id}`,
+                                                    state: vaccine
+                                                }}
                                             >
                                                 {vaccine.name}
                                             </Link>
@@ -226,7 +239,13 @@ export const Diseas: React.FC<DiseasProps> = (props) => {
                 </div>
 
                 <AppButtonGroup floated>
-                    <Link to="/vaccination/add" className={classes.linkButton}><AppButton appColor="white"> Я привит </AppButton></Link>
+                    <Link 
+                    to="/vaccination/add" 
+                    className={classes.linkButton}>
+                        <AppButton appColor="white">
+                            Я привит
+                        </AppButton>
+                    </Link>
                     <Link
                         to={{
                             pathname: `/passport/take`,

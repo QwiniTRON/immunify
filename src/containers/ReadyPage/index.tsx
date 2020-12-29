@@ -6,7 +6,7 @@ import Select from '@material-ui/core/Select';
 import InputLabel from '@material-ui/core/InputLabel';
 import FormControl from '@material-ui/core/FormControl';
 import { useSelector } from 'react-redux';
-import { useHistory } from 'react-router-dom';
+import { useHistory, useLocation } from 'react-router-dom';
 import FormHelperText from '@material-ui/core/FormHelperText';
 import Box from '@material-ui/core/Box';
 import Autocomplete from '@material-ui/lab/Autocomplete';
@@ -39,11 +39,13 @@ type Vaccine = {
 export const ReadyPage: React.FC<ReadyPageProps> = (props) => {
     const currentUser = useSelector((state: RootState) => state.user.currentUser);
     const history = useHistory();
+    const routerData = useLocation<Vaccine | undefined>();
+    const arrivedVaccine = routerData.state;
 
     const [selectedDate, handleDateChange] = useState(new Date());
     const [vaccines, setVaccines] = useState<Vaccine[]>([]);
     const [stages, setStages] = useState<{ id: number, stage: number }[]>([]);
-    const [vaccine, setVaccine] = useState<Vaccine | null>(null);
+    const [vaccine, setVaccine] = useState<Vaccine | null>(arrivedVaccine ?? null);
     const [currentStage, setCurrentStage] = useState(0);
     const [errors, setErrors] = useState({
         'vaccine': '',
@@ -56,6 +58,9 @@ export const ReadyPage: React.FC<ReadyPageProps> = (props) => {
     const vaccinationRequest = useServer(CreateVaccination);
 
     useEffect(() => {
+        if(Boolean(arrivedVaccine)) {
+            stagesRequest.fetch({ vaccineId: Number(arrivedVaccine?.id) });
+        }
         vaccinesRequest.fetch(undefined);
 
         return vaccinesRequest.cancel;
