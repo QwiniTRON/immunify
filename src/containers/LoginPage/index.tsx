@@ -1,126 +1,126 @@
-import React, { useState } from 'react';
+import React, { useState, FC } from 'react';
 import googlelogo from '../../assets/google.png';
 import vklogo from '../../assets/vk.png';
 import facebooklogo from '../../assets/facebook.png';
 import { Link } from 'react-router-dom';
 
+import { useForm } from 'react-hook-form';
+
+import { useServer } from '../../hooks/useServer';
+import { useAccessToken } from '../../hooks/useAccessToken';
+
+import {
+  Login,
+} from '../../server';
+
 import './loginpage.scss';
 
-type LoginPageProps = {
-
+type Form = {
+  username: string,
+  password: string,
 }
 
+export const LoginPage: FC = () => {
+  const loginFetcher = useServer(Login);
+  const { set: setToken } = useAccessToken();
 
-export const LoginPage: React.FC<LoginPageProps> = (props) => {
-    const [login, setLogin] = useState('');
-    const [password, setPassword] = useState('');
-    const [errors, setErrors] = useState({
-        email: '',
-        password: ''
-    });
+  const { 
+    register,
+    handleSubmit,
+    errors,
+  } = useForm<Form>();
 
-    const handleSubmit = (e: React.FormEvent) => {
-        e.preventDefault();
-        // if (loading) return;
+  const onSubmit = (data: Form) => {
+    loginFetcher.fetch({
+      username: data.username,
+      password: data.password,
+    })
+  }
 
-        let valid = true;
-        // sanitize
-        const loginText = login.trim();
-        const passwordText = password.trim();
+  const loading = loginFetcher.state.fetching;
+  const success = !loading && loginFetcher.state.answer.succeeded;
+  const error = !loading && (loginFetcher.state.answer.errorMessage || "");
 
-        const errors = {
-            email: '',
-            password: ''
-        }
+  if (success) {
+    setToken(loginFetcher.state.answer.data?.token || "");
+    window.location.href = "/profile";
+    loginFetcher.reload();
+  }
 
-        // валидация
-        if (!(window as any).is.email(loginText)) {
-            errors.email = 'email не по формату';
-            valid = false;
-        }
+  return (
+    <div className="login-page">
+      <div className="container">
+        <h1 className="title">Вход</h1>
 
-        if(passwordText.length < 6) {
-            errors.password = 'пароль не короче 6 символов';
-            valid = false;
-        }
+        <main>
 
-        if (valid) {
-            // вход через сервер
-        } else {
-            setErrors(errors);
-        }
-    }
+          <div className="error">{error}</div>
+          <form onSubmit={handleSubmit(onSubmit)}>
 
-    return (
-        <div className="login-page">
-            <div className="container">
-                <h1 className="title">Вход</h1>
-
-                <main>
-
-                    <div className="error"></div>
-                    <form onSubmit={handleSubmit}>
-
-                        <div className="input-group">
-                            <label>
-                                <input
-                                    type="text"
-                                    placeholder=" "
-                                    className="input-group__input"
-                                    name="email"
-                                    value={login}
-                                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => setLogin(e.target.value)} />
-                                <p className="input-group__title">Эл. почта</p>
-                            </label>
-                            <div className="input-group__error">
-                                {errors.email}
-                            </div>
-                        </div>
-
-                        <div className="input-group">
-                            <label>
-                                <input
-                                    type="text"
-                                    placeholder=" "
-                                    className="input-group__input"
-                                    name="password"
-                                    value={password}
-                                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => setPassword(e.target.value)} /> 
-                                <p className="input-group__title">Пароль</p>
-                            </label>
-                            <div className="input-group__error">
-                                {errors.password}
-                            </div>
-                        </div>
-
-
-                        <div className="login__buttons">
-                            <button className="button button--app" type="submit">войти</button>
-                        </div>
-                    </form>
-
-
-                    <div className="socials">
-                        <div className="socials__title">вход через соцсети</div>
-
-                        <div className="socials__networks">
-                            <div className="socials__item">
-                                <img src={googlelogo} alt="google" />
-                            </div>
-                            <div className="socials__item">
-                                <img src={vklogo} alt="vk" />
-                            </div>
-                            <div className="socials__item">
-                                <img src={facebooklogo} alt="facebook" />
-                            </div>
-                        </div>
-
-                        <div className="socials__notice">
-                            Нет аккаунта? <Link className="socials__link" to="/registration">Зарегистрироваться</Link>
-                        </div>
-                    </div>
-                </main>
+            <div className="input-group">
+              <label>
+                <input
+                  type="text"
+                  placeholder=" "
+                  className="input-group__input"
+                  name="username"
+                  ref={register({ required: true, minLength: 4, maxLength: 20 })}
+                />
+                <p className="input-group__title">Имя пользователя</p>
+              </label>
+              <div className="input-group__error">
+                {errors.username?.type === 'required' && 'Это поле обязательно'}
+                {errors.username?.type === 'minLength' && 'Минимальная длинна поля - 4 символа'}
+                {errors.username?.type === 'maxLength' && 'Максимальная длинна поля - 20 символа'}
+              </div>
             </div>
-        </div>
-    );
+
+            <div className="input-group">
+              <label>
+                <input
+                  type="password"
+                  placeholder=" "
+                  className="input-group__input"
+                  name="password"
+                  ref={register({ required: true, minLength: 4, maxLength: 20 })}
+                /> 
+                <p className="input-group__title">Пароль</p>
+              </label>
+              <div className="input-group__error">
+                {errors.password?.type === 'required' && 'Это поле обязательно'}
+                {errors.password?.type === 'minLength' && 'Минимальная длинна поля - 4 символа'}
+                {errors.password?.type === 'maxLength' && 'Максимальная длинна поля - 20 символа'}
+              </div>
+            </div>
+
+
+            <div className="login__buttons">
+              <button className="button button--app" disabled={loading} type="submit">войти</button>
+            </div>
+          </form>
+
+
+          <div className="socials">
+            <div className="socials__title">вход через соцсети</div>
+
+            <div className="socials__networks">
+              <div className="socials__item">
+                <img src={googlelogo} alt="google" />
+              </div>
+              <div className="socials__item">
+                <img src={vklogo} alt="vk" />
+              </div>
+              <div className="socials__item">
+                <img src={facebooklogo} alt="facebook" />
+              </div>
+            </div>
+
+            <div className="socials__notice">
+                Нет аккаунта? <Link className="socials__link" to="/registration">Зарегистрироваться</Link>
+            </div>
+          </div>
+        </main>
+      </div>
+    </div>
+  );
 }

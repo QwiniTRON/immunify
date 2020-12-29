@@ -19,7 +19,9 @@ import { Layout } from '../../components/Layout/Layout';
 import { useIsEmptyFamily } from '../../hooks';
 import { BackButton } from '../../components/BackButton';
 import { Region as RegionType } from '../../type';
-import { useReactOidc } from '@axa-fr/react-oidc-context';
+
+import { useAccessToken } from '../../hooks/useAccessToken';
+
 import { claculateRisks } from '../../store/appData/action';
 import { useHistory } from 'react-router-dom';
 import { useTimerFunction } from '../../hooks/timerFunction';
@@ -34,7 +36,7 @@ const timeToBack = 1500;
 export const Region: React.FC<RegionProps> = (props) => {
     const dispatch = useDispatch();
     const history = useHistory();
-    const { oidcUser } = useReactOidc();
+    const { token } = useAccessToken();
 
     const regions = useSelector((state: RootState) => state.appData.regions) ?? [];
     const currentUser = useSelector((state: RootState) => state.user.currentUser);
@@ -62,7 +64,7 @@ export const Region: React.FC<RegionProps> = (props) => {
             .then((r: any) => {
                 setOpen(true);
                 performTimer(() => history.push(pathToBack), timeToBack);
-                dispatch(claculateRisks(oidcUser.access_token));
+                dispatch(claculateRisks(token));
             });
     }
 
