@@ -21,6 +21,7 @@ import { useTimerFunction } from '../../hooks/timerFunction';
 import { useHistory } from 'react-router-dom';
 
 import { useAccessToken } from '../../hooks/useAccessToken';
+import { AppButtonGroup } from '../../components';
 
 type ProfessionProps = {
 
@@ -80,18 +81,18 @@ export const Profession: React.FC<ProfessionProps> = (props) => {
                     }}
                 />
 
-                <div className="region-page__btns">
+                <AppButtonGroup floated>
                     <AppButton className="region-page__save" color="default">отмена</AppButton>
 
                     <AppButton className="region-page__save" onClick={handleEdit}>
                         сохранить
-                </AppButton>
-                </div>
+                    </AppButton>
+                </AppButtonGroup>
 
                 <Snackbar open={open} autoHideDuration={3000} onClose={() => setOpen(false)}>
                     <MuiAlert onClose={() => setOpen(false)} elevation={6} variant="filled">
                         данные сохранены.
-                </MuiAlert>
+                    </MuiAlert>
                 </Snackbar>
             </PageLayout>
         </Layout>

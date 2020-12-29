@@ -25,6 +25,7 @@ import { useAccessToken } from '../../hooks/useAccessToken';
 import { claculateRisks } from '../../store/appData/action';
 import { useHistory } from 'react-router-dom';
 import { useTimerFunction } from '../../hooks/timerFunction';
+import { AppButtonGroup } from '../../components';
 
 
 
@@ -123,10 +124,10 @@ export const Region: React.FC<RegionProps> = (props) => {
                 />
 
 
-                <div className="region-page__btns">
+                <AppButtonGroup floated>
                     <AppButton className="region-page__save" color="default">отмена</AppButton>
                     <AppButton className="region-page__save" onClick={handleEdit}>сохранить</AppButton>
-                </div>
+                </AppButtonGroup>
 
                 <Snackbar open={open} autoHideDuration={3000} onClose={() => setOpen(false)}>
                     <MuiAlert onClose={() => setOpen(false)} elevation={6} variant="filled">

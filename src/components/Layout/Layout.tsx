@@ -6,6 +6,7 @@ import BottomNavigation from '@material-ui/core/BottomNavigation';
 import BottomNavigationAction from '@material-ui/core/BottomNavigationAction';
 import { useHistory, useLocation } from 'react-router-dom';
 import { useSelector } from 'react-redux';
+import Background from '../../assets/backgroundgeneral.svg';
 
 import "./Layout.scss";
 import { RootState } from '../../store';
@@ -21,6 +22,7 @@ type LayoutProps = {
     BackButtonCustom?: any | React.ReactElement
     domainPage?: boolean
     clearScroll?: boolean
+    background?: boolean
 }
 
 const useStyles = makeStyles((theme) => ({
@@ -28,17 +30,25 @@ const useStyles = makeStyles((theme) => ({
         width: 48,
         height: 48
     },
+
     title: {
         fontSize: 18,
         padding: theme.spacing(0, 1),
         textAlign: 'center'
     },
+
     navIcon: {
     },
+
     layout: {
     },
+
     header__Green: {
         backgroundColor: '#E0F0BE'
+    },
+
+    layout__background: {
+        background: `url("${Background}") center/contain`
     }
 }));
 
@@ -51,7 +61,8 @@ export const Layout: React.FC<LayoutProps> = ({
     titleCurrentName,
     BackButtonCustom,
     domainPage,
-    clearScroll
+    clearScroll,
+    background
 }) => {
     const classes = useStyles();
     const history = useHistory();
@@ -78,7 +89,15 @@ export const Layout: React.FC<LayoutProps> = ({
 
 
 
-            <main className={"layout__content" + ' ' + (clearScroll ? 'layout__content--scrollcleared' : '')}>
+            <main
+                className={
+                    sif({
+                        ["layout__content"]: true,
+                        ['layout__content--scrollcleared']: Boolean(clearScroll),
+                        [classes.layout__background]: Boolean(background)
+                    })
+                }
+            >
                 {children}
             </main>
 

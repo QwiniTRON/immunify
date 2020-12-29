@@ -47,7 +47,7 @@ export const Profile: React.FC<ProfileProps> = (props) => {
   };
 
   return (
-    <Layout title="Профиль" domainPage>
+    <Layout title="Профиль" domainPage background>
       <PageLayout className="profile-page">
 
 
