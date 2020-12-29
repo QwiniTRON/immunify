@@ -45,18 +45,20 @@ const useStyles = makeStyles((theme) => ({
         padding: theme.spacing(2, 4, 3),
         borderRadius: 5,
         position: 'relative',
-        maxWidth: 580
+        maxWidth: 580,
+        minWidth: '60vw'
     },
 
     closer: {
         position: 'absolute',
-        right: 10,
-        top: 15,
+        right: 0,
+        top: 0,
         color: '#a0a0a0'
     },
 
     card: {
-        margin: '5px 0'
+        margin: '5px 0',
+        paddingBottom: 35
     },
 
     more: {
@@ -72,7 +74,7 @@ const useStyles = makeStyles((theme) => ({
     },
 
     title: {
-        fontSize: 18,
+        fontSize: 24,
         fontWeight: 500,
         textAlign: 'center',
         margin: '10px 0'
@@ -164,7 +166,7 @@ export const Diseas: React.FC<DiseasProps> = (props) => {
                             <div className={classes.paper}>
                                 <h2 id="transition-modal-title">Что это?</h2>
                                 <p id="transition-modal-description">{diseas.detailed}</p>
-                                <ClearIcon classes={{ root: classes.closer }} onClick={() => setOpenAbout(false)} />
+                                <ClearIcon fontSize="large" classes={{ root: classes.closer }} onClick={() => setOpenAbout(false)} />
                             </div>
                         </Fade>
                     </Modal>
@@ -205,6 +207,7 @@ export const Diseas: React.FC<DiseasProps> = (props) => {
                                     ))}
                                 </p>
                                 <ClearIcon
+                                    fontSize="large"
                                     classes={{ root: classes.closer }}
                                     onClick={() => setOpenVaccines(false)}
                                 />
@@ -233,7 +236,7 @@ export const Diseas: React.FC<DiseasProps> = (props) => {
                             <div className={classes.paper}>
                                 <h2 id="transition-modal-title">Признаки</h2>
                                 <p id="transition-modal-description">{diseas.signs}</p>
-                                <ClearIcon classes={{ root: classes.closer }} onClick={() => setOpenSigns(false)} />
+                                <ClearIcon fontSize="large" classes={{ root: classes.closer }} onClick={() => setOpenSigns(false)} />
                             </div>
                         </Fade>
                     </Modal>

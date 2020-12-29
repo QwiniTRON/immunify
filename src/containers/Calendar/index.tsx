@@ -19,6 +19,7 @@ import { GetHospitalByPatient } from '../../server/fetchers/hospitalVisit';
 import { RootState } from '../../store';
 import { Loader } from '../../components';
 import { AppLinkButton } from '../../components/UI/AppLinkButton';
+import { CircleLoader } from '../../components/UI/CircleLoader';
 
 type CalendarProps = {
 
@@ -63,6 +64,10 @@ const TakePlaceholder: React.FC<any> = (props) => {
             <Box fontSize={18} fontWeight={500} m="0 auto" width={0.5} mt={4}>
                 У Вас нет предстоящих записей
             </Box>
+
+            <AppLinkButton to="/profile" floated appColor="linear">
+                добавить
+            </AppLinkButton>
         </Box>
     );
 }
@@ -85,17 +90,12 @@ export const Calendar: React.FC<CalendarProps> = (props) => {
     useEffect(() => {
         if (success) {
             setVisits(visitsList?.state?.answer?.data as any);
-            visitsList.reload();
         }
     }, [success]);
 
     const handleTabChange = (event: any, newValue: any) => {
         setTabValue(newValue);
     };
-
-    if (!loading && visits.length === 0 && visitsList.state.answer.succeeded == true) {
-        return <TakePlaceholder />
-    }
 
     // сортируем записи по дате
     visits.sort((l, r) => Date.parse(l.date) - Date.parse(r.date));
@@ -105,61 +105,74 @@ export const Calendar: React.FC<CalendarProps> = (props) => {
         <Layout title="Календарь" domainPage clearScroll>
             <PageLayout className={classes.root}>
 
-                <Box mb={1}>
-                    <Tabs variant="fullWidth" indicatorColor="primary" value={tabValue} onChange={handleTabChange} aria-label="simple tabs example">
-                        <Tab label="Список" textColor="#000" />
-                        <Tab label="Календарь" textColor="#000" />
-                    </Tabs>
-                </Box>
 
-                <AppTabPanel value={tabValue} index={0} className={classes.content}>
-                    <Box p={1}>
-                        <Box component="h2" fontSize={24}>Вы записаны на прием</Box>
-
-                        {loading && <Loader />}
-
-                        {!loading && visits.map((v) => {
-                            const isExpired = (Date.parse(v.date) - Date.now()) < 0;
-
-                            return (
-                                <Box marginY={1} key={v.id}>
-                                    <InfoCard data={[
-                                        {
-                                            description: new Date(v.date).toLocaleString('ru', {
-                                                hour: '2-digit', minute: '2-digit',
-                                                day: '2-digit', year: 'numeric', month: 'short'
-                                            }),
-                                            title: v.hospital.name
-                                        }
-                                    ]}
-                                        detailText="Детали"
-                                        to={`/calendar/${v.id}`}
-                                        classes={{
-                                            root: isExpired ? classes.expiredVisit : ''
-                                        }}
-                                    />
-                                </Box>
-                            )
-                        })}
-
-                        <Link to={`/`}><Box color="#333" textAlign="center" margin={'10px auto'} width={0.8}>Добавьте события в календарь, чтобы не забыть об этом</Box></Link>
+                {loading &&
+                    <Box textAlign="center" mt={5}>
+                        <CircleLoader />
                     </Box>
-                </AppTabPanel>
+                }
+                {!loading && visits.length == 0 &&
+                    <TakePlaceholder />
+                }
+                {!loading && visits.length != 0 &&
+                    <>
+                        <Box mb={1}>
+                            <Tabs variant="fullWidth" indicatorColor="primary" value={tabValue} onChange={handleTabChange} aria-label="simple tabs example">
+                                <Tab label="Список" textColor="#000" />
+                                <Tab label="Календарь" textColor="#000" />
+                            </Tabs>
+                        </Box>
 
-                <AppTabPanel value={tabValue} index={1}>
-                    <Box textAlign="center">
-                        <EventAvailableIcon />
-                    </Box>
-                </AppTabPanel>
+                        <AppTabPanel value={tabValue} index={0} className={classes.content}>
+                            <Box p={1}>
+                                <Box component="h2" fontSize={24}>Вы записаны на прием</Box>
 
-                <AppButtonGroup floated>
-                    <AppButton appColor="white">
-                        Отменить
-                    </AppButton>
-                    <AppLinkButton className={classes.linkButton} to={`/vaccination/add`}>
-                        Я привит
-                    </AppLinkButton>
-                </AppButtonGroup>
+                                {loading && <Loader />}
+
+                                {!loading && visits.map((v) => {
+                                    const isExpired = (Date.parse(v.date) - Date.now()) < 0;
+
+                                    return (
+                                        <Box marginY={1} key={v.id}>
+                                            <InfoCard data={[
+                                                {
+                                                    description: new Date(v.date).toLocaleString('ru', {
+                                                        hour: '2-digit', minute: '2-digit',
+                                                        day: '2-digit', year: 'numeric', month: 'short'
+                                                    }),
+                                                    title: v.hospital.name
+                                                }
+                                            ]}
+                                                detailText="Детали"
+                                                to={`/calendar/${v.id}`}
+                                                classes={{
+                                                    root: isExpired ? classes.expiredVisit : ''
+                                                }}
+                                            />
+                                        </Box>
+                                    )
+                                })}
+
+                                <Link to={`/`}><Box color="#333" textAlign="center" margin={'10px auto'} width={0.8}>Добавьте события в календарь, чтобы не забыть об этом</Box></Link>
+                            </Box>
+                        </AppTabPanel>
+
+                        <AppTabPanel value={tabValue} index={1}>
+                            <Box textAlign="center">
+                                <EventAvailableIcon />
+                            </Box>
+                        </AppTabPanel>
+
+                        <AppButtonGroup floated>
+                            <AppButton appColor="white">
+                                Отменить
+                        </AppButton>
+                            <AppLinkButton className={classes.linkButton} to={`/vaccination/add`}>
+                                Я привит
+                            </AppLinkButton>
+                        </AppButtonGroup>
+                    </>
+                }
             </PageLayout>
         </Layout>
     );

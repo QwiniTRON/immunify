@@ -49,13 +49,11 @@ export const Quiz: React.FC<QuizProps> = (props) => {
     const history = useHistory();
     const { oidcUser } = useReactOidc();
 
-    const isEmptyFamily = useIsEmptyFamily();
-
     const [performTimer, cancelTimer] = useTimerFunction();
     const [open, setOpen] = useState(false);
     const currentUser = useSelector((state: RootState) => state.user.currentUser);
     const currentQuestionnarie = useSelector((state: RootState) => state.appData.questionnaire);
-    const pathToBack = isEmptyFamily ? '/profile' : `/profile/${currentUser?.name}`;
+    const pathToBack = `/profile/${currentUser?.name}`;
 
     const [quiz, setQuiz] = useState<QuizState>({
         userAnswers: currentUser?.data?.quiz?.answers || [],
@@ -71,7 +69,7 @@ export const Quiz: React.FC<QuizProps> = (props) => {
     }
     const quizQuestions = Questionnaire?.questions!;
     const quizProgress = quiz.userAnswers.length / quizQuestions?.length * 100;
-    const isNotCurrentAnswer = !Boolean(quiz.userAnswers[quiz.currentStep]) && !selectedAnswer;
+    const isNotCurrentAnswer = !Boolean(quiz.userAnswers[quiz.currentStep]) && !Boolean(Number(selectedAnswer));
     const currentQuestion = quizQuestions?.[quiz.currentStep];
 
 
@@ -143,12 +141,14 @@ export const Quiz: React.FC<QuizProps> = (props) => {
             });
     }
 
+
+
     return (
         <Layout title="" BackButtonCustom={<BackButton to={pathToBack} text="Вернуться в профиль" />} >
             <PageLayout className="quiz-page">
                 <LinearProgress variant="determinate" value={quizProgress} />
                 <p>вопрос {`${quiz.currentStep + 1}/${quizQuestions.length}`}</p>
-                {isNotCurrentAnswer && (<p className={classes.notice}>ответьте на этот вопрос</p>)}
+                {/* {isNotCurrentAnswer && (<p className={classes.notice}>ответьте на этот вопрос</p>)} */}
                 <h3 className="quiz-page__question">{currentQuestion.text}</h3>
 
                 <FormControl component="fieldset" color="primary">

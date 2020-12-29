@@ -35,8 +35,7 @@ export const Profession: React.FC<ProfessionProps> = (props) => {
 
     const professions = useSelector((state: RootState) => state.appData.professions);
     const currentUser = useSelector((state: RootState) => state.user.currentUser);
-    const isEmptyFamily = useIsEmptyFamily();
-    const pathToBack = isEmptyFamily ? '/profile' : `/profile/${currentUser?.name}`;
+    const pathToBack = `/profile/${currentUser?.name}`;
 
     const [performTimer, cancelTimer] = useTimerFunction();
     const [open, setOpen] = useState(false);

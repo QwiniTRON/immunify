@@ -38,8 +38,7 @@ export const Region: React.FC<RegionProps> = (props) => {
 
     const regions = useSelector((state: RootState) => state.appData.regions) ?? [];
     const currentUser = useSelector((state: RootState) => state.user.currentUser);
-    const isEmptyFamily = useIsEmptyFamily();
-    const pathToBack = isEmptyFamily ? '/profile' : `/profile/${currentUser?.name}`;
+    const pathToBack = `/profile/${currentUser?.name}`;
 
     const [performTimer, cancelTimer] = useTimerFunction();
     const [open, setOpen] = useState(false);

@@ -11,6 +11,6 @@ interface AppLinkButtonProps extends AppButtonProps {
 
 export const AppLinkButton: React.FC<AppLinkButtonProps> = (props) => {
     return (
-        <AppButton component={Link} {...props} />
+        <AppButton {...props} component={Link} />
     )
 }

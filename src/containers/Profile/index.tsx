@@ -50,45 +50,39 @@ export const Profile: React.FC<ProfileProps> = (props) => {
     <Layout title="Профиль" domainPage>
       <PageLayout className="profile-page">
 
-        {user?.family.length == 0 ?
-          <UserData />
-          :
-          (
-            <>
-              <p className="family-page__description">Введите данные о членах вашей семьи, чтобы застраховать их от возможных осложнений</p>
-              {
-                dataStatus == 'error' ? <CardLink
-                  title="Заполнить данные"
-                  subTitle="Для выбранного пациента введены не все данные"
-                  to={`/profile/${currentUser?.name}`}
-                  Icon={<AccountBoxIcon color="primary" fontSize="large" />}
-                /> :
-                  <Box>С данными всё в порядке</Box>
-              }
 
-              <Box fontSize={18} p={1}>Список пациентов:</Box>
-              <UserCard
-                active={user == currentUser}
-                progress={UserModel.getCompleatedStatus(user as User)}
-                title={String(user?.name)}
-                to={`/profile/${user?.name}`}
-                avatarLetters={String(user?.name)[0]} />
 
-              {user?.family.map((u) => {
-                return (
-                  <UserCard
-                    key={u.name}
-                    active={u == currentUser}
-                    progress={UserModel.getCompleatedStatus(u)}
-                    title={String(u?.name)}
-                    to={`/profile/${u?.name}`}
-                    avatarLetters={String(u?.name)[0]} />
-                )
-              })}
-
-            </>
-          )
+        <p className="family-page__description">Введите данные о членах вашей семьи, чтобы застраховать их от возможных осложнений</p>
+        {
+          dataStatus == 'error' ? <CardLink
+            title="Заполнить данные"
+            subTitle="Для выбранного пациента введены не все данные"
+            to={`/profile/${currentUser?.name}`}
+            Icon={<AccountBoxIcon color="primary" fontSize="large" />}
+          /> :
+            <Box>С данными всё в порядке</Box>
         }
+
+        <Box fontSize={18} p={1}>Список пациентов:</Box>
+        <UserCard
+          active={user == currentUser}
+          progress={UserModel.getCompleatedStatus(user as User)}
+          title={String(user?.name)}
+          to={`/profile/${user?.name}`}
+          avatarLetters={String(user?.name)[0]} />
+
+        {user?.family.map((u) => {
+          return (
+            <UserCard
+              key={u.name}
+              active={u == currentUser}
+              progress={UserModel.getCompleatedStatus(u)}
+              title={String(u?.name)}
+              to={`/profile/${u?.name}`}
+              avatarLetters={String(u?.name)[0]} />
+          )
+        })}
+
 
         <AppButtonGroup floated>
           <AppButton className="family-page__add" onClick={() => history.push(`/profile/add`)} >добавить</AppButton>

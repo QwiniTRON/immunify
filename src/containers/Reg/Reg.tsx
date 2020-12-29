@@ -49,6 +49,7 @@ const Reg: React.FC<RegProps> = ({
     appDataInit
 }) => {
     const clasess = useStyle();
+    const history = useHistory();
     const { oidcUser } = useReactOidc();
 
     const addReq = useServer(CreatePatient);
@@ -76,8 +77,8 @@ const Reg: React.FC<RegProps> = ({
             register(name, selectedDate?.getTime(), sex, addReq.state?.answer?.data?.id)
                 .then((r: any) => {
                     appDataInit(oidcUser.access_token).then(() => {
-                        // history.push('/profile');
                     });
+                    history.push(`/profile/${name.trim()}`);
                 })
                 .catch((e: any) => {
                     console.log(e);
