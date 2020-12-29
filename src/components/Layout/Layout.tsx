@@ -5,18 +5,13 @@ import { makeStyles } from '@material-ui/core/styles';
 import BottomNavigation from '@material-ui/core/BottomNavigation';
 import BottomNavigationAction from '@material-ui/core/BottomNavigationAction';
 import { useHistory, useLocation } from 'react-router-dom';
-import InsertInvitationIcon from '@material-ui/icons/InsertInvitation';
-import ListAltIcon from '@material-ui/icons/ListAlt';
-import PostAddIcon from '@material-ui/icons/PostAdd';
-import SupervisorAccountIcon from '@material-ui/icons/SupervisorAccount';
 import { useSelector } from 'react-redux';
 
 import "./Layout.scss";
 import { RootState } from '../../store';
 import { BackButton } from '../BackButton';
 import { sif } from '../../utils/Styels';
-
-// import { CalendarIcon, PassportIcon, ProfileIcon, TakeIcon } from '../UI/Icons/Icons';
+import { FamilyIcon, DoneIcon, ListIcon, PasportIcon } from '../../components/UI/Icons/Icons';
 
 type LayoutProps = {
     title: string
@@ -65,7 +60,7 @@ export const Layout: React.FC<LayoutProps> = ({
 
     // определяем в какой мы находимся сущности(разделе)
     const parentRoute = '/' + locationData.pathname.split('/')[1];
-    
+
 
     return (
         <div className={"layout " + classes.layout}>
@@ -83,7 +78,7 @@ export const Layout: React.FC<LayoutProps> = ({
 
 
 
-            <main className={"layout__content" + ' ' + (clearScroll? 'layout__content--scrollcleared' : '')}>
+            <main className={"layout__content" + ' ' + (clearScroll ? 'layout__content--scrollcleared' : '')}>
                 {children}
             </main>
 
@@ -101,8 +96,8 @@ export const Layout: React.FC<LayoutProps> = ({
                         classes={{
                             root: classes.navIcon,
                         }}
-                        label="профиль"
-                        icon={<SupervisorAccountIcon />}
+                        label="семья"
+                        icon={<FamilyIcon />}
                         value={`/profile`}
                     />
 
@@ -110,8 +105,8 @@ export const Layout: React.FC<LayoutProps> = ({
                         classes={{
                             root: classes.navIcon,
                         }}
-                        label="пасспорт"
-                        icon={<ListAltIcon />}
+                        label="паспорт"
+                        icon={<PasportIcon />}
                         value={`/passport`}
                     />
 
@@ -120,7 +115,7 @@ export const Layout: React.FC<LayoutProps> = ({
                             root: classes.navIcon,
                         }}
                         label="запись"
-                        icon={<PostAddIcon />}
+                        icon={<ListIcon />}
                         value={`/calendar`}
                     />
 
@@ -129,7 +124,7 @@ export const Layout: React.FC<LayoutProps> = ({
                             root: classes.navIcon,
                         }}
                         label="статус"
-                        icon={<InsertInvitationIcon />}
+                        icon={<DoneIcon />}
                         value={`/vaccination`}
                     />
                 </BottomNavigation>
