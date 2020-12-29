@@ -34,7 +34,6 @@ export const Patient: React.FC<PatientProps> = (props) => {
 
   useLayoutEffect(() => {
     void async function () {
-      console.log(123);
       
       await dispatch(changeCurrentUser(id));
 

@@ -160,7 +160,7 @@ const AddMember: React.FC<AddMemberProps> = ({
 
                             <AppButton
                                 floated
-                                disabled={loading || !Boolean(name)! && Boolean(selectedDate) && !Boolean(sex)}
+                                disabled={loading || (!Boolean(name) || !Boolean(selectedDate) || !Boolean(sex))}
                                 type="submit">
                                 Начать
                             </AppButton>
