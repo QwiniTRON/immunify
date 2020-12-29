@@ -18,6 +18,7 @@ import { useServer } from '../../hooks/useServer';
 import { GetHospitalByPatient } from '../../server/fetchers/hospitalVisit';
 import { RootState } from '../../store';
 import { Loader } from '../../components';
+import { AppLinkButton } from '../../components/UI/AppLinkButton';
 
 type CalendarProps = {
 
@@ -155,11 +156,9 @@ export const Calendar: React.FC<CalendarProps> = (props) => {
                     <AppButton appColor="white">
                         Отменить
                     </AppButton>
-                    <Link className={classes.linkButton} to={`/vaccination/add`}>
-                        <AppButton>
-                            Я привит
-                        </AppButton>
-                    </Link>
+                    <AppLinkButton className={classes.linkButton} to={`/vaccination/add`}>
+                        Я привит
+                    </AppLinkButton>
                 </AppButtonGroup>
             </PageLayout>
         </Layout>

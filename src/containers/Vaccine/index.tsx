@@ -10,6 +10,7 @@ import { Divider } from '@material-ui/core';
 import { BackButton } from '../../components/BackButton';
 import { Link, useLocation, useRouteMatch } from 'react-router-dom';
 import { useServer } from '../../hooks/useServer';
+import { AppLinkButton } from '../../components/UI/AppLinkButton';
 
 
 
@@ -72,19 +73,25 @@ export const Vaccine: React.FC<VaccineProps> = (props) => {
 
 
         <AppButtonGroup floated>
-          { Boolean(vaccine) && 
-            <Link to={{ pathname: "/vaccination/add", state: vaccine }} className={clases.linkButton}>
-            <AppButton appColor="white">Я уже прививался</AppButton>
-          </Link>
+          {Boolean(vaccine) &&
+            <AppLinkButton
+              to={{ pathname: "/vaccination/add", state: vaccine }}
+              className={clases.linkButton}
+              appColor="white"
+              disabled={!Boolean(vaccine)}
+            >
+              Я уже прививался
+            </AppLinkButton>
           }
 
-          {vaccine &&
-            <Link to={
-              { pathname: '/passport/take', state: { type: 'vaccine', data: vaccine } }
-            } className={clases.linkButton}>
-              <AppButton>Записаться</AppButton>
-            </Link>
-          }
+
+          <AppLinkButton to={
+            { pathname: '/passport/take', state: { type: 'vaccine', data: vaccine } }
+          } className={clases.linkButton}
+            disabled={!Boolean(vaccine)} >
+            Записаться
+          </AppLinkButton>
+
         </AppButtonGroup>
       </PageLayout>
     </Layout>

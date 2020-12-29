@@ -19,6 +19,7 @@ import { BackButton } from '../../components/BackButton';
 import { useServer } from '../../hooks/useServer';
 import { GetDetailedDisease, Vaccine } from '../../server';
 import { version } from 'react-dom';
+import { AppLinkButton } from '../../components/UI/AppLinkButton';
 
 
 
@@ -239,22 +240,24 @@ export const Diseas: React.FC<DiseasProps> = (props) => {
                 </div>
 
                 <AppButtonGroup floated>
-                    <Link 
-                    to="/vaccination/add" 
-                    className={classes.linkButton}>
-                        <AppButton appColor="white">
-                            Я привит
-                        </AppButton>
-                    </Link>
-                    <Link
+                    <AppLinkButton
+                        disabled={loading}
+                        to="/vaccination/add"
+                        className={classes.linkButton}
+                        appColor="white"
+                    >
+                        Я привит
+                    </AppLinkButton>
+                    <AppLinkButton
+                        disabled={loading}
                         to={{
                             pathname: `/passport/take`,
                             state: { type: 'diseas', data: diseas }
                         }}
                         className={classes.linkButton}
                     >
-                        <AppButton>Записаться</AppButton>
-                    </Link>
+                        Записаться
+                    </AppLinkButton>
                 </AppButtonGroup>
             </PageLayout>
         </Layout>

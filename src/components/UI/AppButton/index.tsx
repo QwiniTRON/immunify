@@ -1,10 +1,10 @@
-import react from 'react';
+import React from 'react';
 import Button from '@material-ui/core/Button';
 import { makeStyles } from '@material-ui/core';
 
 import { sif } from '../../../utils/Styels';
 
-type AppButtonProps = {
+export type AppButtonProps = {
     [p: string]: any
     floated?: boolean
     appColor?: 'linear' | 'white'

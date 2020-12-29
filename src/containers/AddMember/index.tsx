@@ -157,7 +157,11 @@ const AddMember: React.FC<AddMemberProps> = ({
                                 </AppRadioGroup>
                             </Box>
 
-                            <AppButton floated disabled={loading} type="submit">
+
+                            <AppButton
+                                floated
+                                disabled={loading || !Boolean(name)! && Boolean(selectedDate) && !Boolean(sex)}
+                                type="submit">
                                 Начать
                             </AppButton>
                         </form>
