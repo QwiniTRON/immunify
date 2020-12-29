@@ -40,7 +40,7 @@ type Clinic = { id: number, name: string }
 
 export const ChooseClinic: React.FC<ChooseClinicProps> = (props) => {
   const clasess = useStyles();
-  const routeData: ChooseClinicRouteState | undefined  = useLocation<ChooseClinicRouteState>().state;
+  const routeData: ChooseClinicRouteState | undefined = useLocation<ChooseClinicRouteState>().state;
 
   const clinicsReq = useServer(GetHospitals);
   const loading = clinicsReq.state.fetching;
@@ -66,10 +66,10 @@ export const ChooseClinic: React.FC<ChooseClinicProps> = (props) => {
 
 
   let takeTarget = '';
-  if(routeData.type == 'diseas') {
+  if (routeData?.type == 'diseas') {
     takeTarget = `Запись на болезнь ${routeData.data.name}`;
   }
-  if(routeData.type == 'vaccine') {
+  if (routeData?.type == 'vaccine') {
     takeTarget = `Запись на вакцину ${routeData.data.name}`;
   }
 

@@ -29,7 +29,7 @@ const VaccinationPlaceholder: React.FC = () => {
         У Вас нет отмеченных вакцинаций
       </Box>
 
-      <Link to="/profile">
+      <Link to="/vaccination/add">
         <AppButton floated appColor="linear">
           Добавить
         </AppButton>
@@ -167,11 +167,17 @@ export const Vaccination: React.FC<VaccinationProps> = (props) => {
             vaccinesToShow)
         }
 
+        <Link to="/vaccination/add">
+          <AppButton floated appColor="linear">
+            Добавить
+          </AppButton>
+        </Link>
+
       </PageLayout>
     </Layout>
   );
 };
 
 function arraysEqual(a1: any, a2: any): boolean {
-  return JSON.stringify(a1) === JSON.stringify(a2);
+  return a1.toString() === a2.toString();
 }

@@ -55,11 +55,13 @@ const App: React.FC<AppProps> = function ({
 
   useEffect(() => {
     void async function () {
+      const userReq = await userInit();
+
       if (oidcUser !== null) {
-        const userReq = await userInit();
         const appDataReq = await appDataInit(oidcUser.access_token!);
-        setIsINIT(true);
       }
+      
+      setIsINIT(true);
     }()
   }, [oidcUser]);
 

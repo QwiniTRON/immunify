@@ -77,6 +77,14 @@ const useStyles = makeStyles((theme) => ({
     border: '2px solid #000',
     boxShadow: theme.shadows[5],
     padding: theme.spacing(2, 4, 3)
+  },
+
+  linkButton: {
+    textDecoration: 'none'
+  },
+
+  expiredVisit: {
+    backgroundColor: '#eee'
   }
 }));
 
@@ -84,7 +92,7 @@ const useStyles = makeStyles((theme) => ({
 const TimeToRedirect = 3000;
 
 export const LastAppointment: React.FC<LastAppointmentProps> = (props) => {
-  const clases = useStyles(props);
+  const classes = useStyles(props);
   const history = useHistory();
   const appointmentId = useRouteMatch<LastAppointmentParams>().params.id;
 
@@ -180,11 +188,10 @@ export const LastAppointment: React.FC<LastAppointmentProps> = (props) => {
     }
   }, [successUpdate]);
 
-
   if (successDelete) {
     return (
       <Layout title="" BackButtonCustom={<BackButton text="Вернуться к списку записей" to={`/calendar`} />}>
-        <PageLayout className={clases.root}>
+        <PageLayout className={classes.root}>
           <Box fontSize={24} fontWeight={500} textAlign="center">
             Запись удалена
           </Box>
@@ -210,7 +217,7 @@ export const LastAppointment: React.FC<LastAppointmentProps> = (props) => {
   if (successUpdate) {
     return (
       <Layout title="" BackButtonCustom={<BackButton text="Вернуться к списку записей" to={`/calendar`} />}>
-        <PageLayout className={clases.root}>
+        <PageLayout className={classes.root}>
           <Box fontSize={24} fontWeight={500} textAlign="center">
             Запись обновлена
           </Box>
@@ -232,10 +239,12 @@ export const LastAppointment: React.FC<LastAppointmentProps> = (props) => {
     );
   }
 
+  const isExpired = (Date.parse(detail?.date ?? '') - Date.now()) < 0;
+
 
   return (
     <Layout title="" BackButtonCustom={<BackButton text="Вернуться к списку записей" to={`/calendar`} />}>
-      <PageLayout className={clases.root}>
+      <PageLayout className={classes.root}>
         {(loading || loadingDelete || loadingUpdate) && <Loader />}
 
         <Box component="h2" fontSize={24}>
@@ -243,7 +252,7 @@ export const LastAppointment: React.FC<LastAppointmentProps> = (props) => {
         </Box>
         <Divider />
 
-        {!loading && <div className={clases.content}>
+        {!loading && <div className={classes.content}>
 
           <Box fontWeight={500}>
             {detail?.hospital.name}
@@ -251,10 +260,10 @@ export const LastAppointment: React.FC<LastAppointmentProps> = (props) => {
 
           <Box mt={4}>
             <Box>
-              <CallIcon color="primary" fontSize="large" className={clases.phoneIcon} /> +7 (495) 342-85-01
+              <CallIcon color="primary" fontSize="large" className={classes.phoneIcon} /> +7 (495) 342-85-01
             </Box>
             <Box>
-              <CallIcon color="primary" fontSize="large" className={clases.phoneIcon} /> +7 (495) 342-85-02
+              <CallIcon color="primary" fontSize="large" className={classes.phoneIcon} /> +7 (495) 342-85-02
             </Box>
           </Box>
 
@@ -281,7 +290,9 @@ export const LastAppointment: React.FC<LastAppointmentProps> = (props) => {
           }
 
           {!isEdit &&
-            <Paper elevation={3}>
+            <Paper elevation={3} classes={{
+              root: isExpired ? classes.expiredVisit : ''
+            }}>
               <Box p={2}>
                 <Box fontWeight={500}>{detail?.hospital.name}</Box>
                 <Box fontWeight={500}>{new Date(String(detail?.date)).toLocaleString('ru', {
@@ -291,28 +302,42 @@ export const LastAppointment: React.FC<LastAppointmentProps> = (props) => {
               </Box>
             </Paper>}
 
-          {!isEdit && <div className={clases.notationLink}>
+          {!isEdit && <div className={classes.notationLink}>
             <Link to={`/`}>Добавить событие в календарь</Link>
           </div>}
         </div>}
 
-        <AppButtonGroup floated>
-          <AppButton appColor="white" disabled={loading || loadingDelete || loadingUpdate} onClick={cancelHandle}>
-            {isEdit ? 'отмена' : 'Отменить'}
-          </AppButton>
-          {!isEdit && <AppButton disabled={loading || loadingDelete || loadingUpdate} onClick={() => setIsEdit(true)}>
-            Изменить
-          </AppButton>}
 
-          {isEdit && <AppButton disabled={loading || loadingDelete || loadingUpdate} onClick={editHandle}>
-            сохранить
-          </AppButton>}
-        </AppButtonGroup>
+        {isExpired &&
+          <AppButtonGroup floated>
+            <Link className={classes.linkButton} to="/passport/take">
+              <AppButton>
+                я привит
+              </AppButton>
+            </Link>
+          </AppButtonGroup>
+        }
 
+        {!isExpired &&
+          <AppButtonGroup floated>
+            <AppButton appColor="white" disabled={loading || loadingDelete || loadingUpdate} onClick={cancelHandle}>
+              {isEdit ? 'отмена' : 'Отменить'}
+            </AppButton>
+            {!isEdit && <AppButton disabled={loading || loadingDelete || loadingUpdate} onClick={() => setIsEdit(true)}>
+              Изменить
+            </AppButton>
+            }
+
+            {isEdit && <AppButton disabled={loading || loadingDelete || loadingUpdate} onClick={editHandle}>
+              сохранить
+            </AppButton>
+            }
+          </AppButtonGroup>
+        }
         <Modal
           aria-labelledby="transition-modal-title"
           aria-describedby="transition-modal-description"
-          className={clases.modal}
+          className={classes.modal}
           open={deleteOpen}
           onClose={() => setDeleteOpen(false)}
           closeAfterTransition
@@ -322,7 +347,7 @@ export const LastAppointment: React.FC<LastAppointmentProps> = (props) => {
           }}
         >
           <Fade in={deleteOpen}>
-            <div className={clases.paper}>
+            <div className={classes.paper}>
               <h2 id="transition-modal-title">Вы уверены что хотите отменить заявку?</h2>
 
               <Box display="flex" justifyContent="space-between" mt={2}>

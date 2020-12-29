@@ -39,7 +39,7 @@ const useStyles = makeStyles({
         flexBasis: 1,
         paddingBottom: 60
     },
-    
+
     root: {
         display: 'flex',
         flexDirection: 'column'
@@ -47,6 +47,10 @@ const useStyles = makeStyles({
 
     linkButton: {
         textDecoration: 'none'
+    },
+
+    expiredVisit: {
+        backgroundColor: '#eee'
     }
 });
 
@@ -63,7 +67,7 @@ const TakePlaceholder: React.FC<any> = (props) => {
 }
 
 export const Calendar: React.FC<CalendarProps> = (props) => {
-    const clasess = useStyles();
+    const classes = useStyles();
     const currentUser = useSelector((state: RootState) => state.user.currentUser);
 
     const visitsList = useServer(GetHospitalByPatient);
@@ -88,9 +92,17 @@ export const Calendar: React.FC<CalendarProps> = (props) => {
         setTabValue(newValue);
     };
 
+    if (!loading && visits.length === 0 && visitsList.state.answer.succeeded == true) {
+        return <TakePlaceholder />
+    }
+
+    // сортируем записи по дате
+    visits.sort((l, r) => Date.parse(l.date) - Date.parse(r.date));
+
+
     return (
         <Layout title="Календарь" domainPage clearScroll>
-            <PageLayout className={clasess.root}>
+            <PageLayout className={classes.root}>
 
                 <Box mb={1}>
                     <Tabs variant="fullWidth" indicatorColor="primary" value={tabValue} onChange={handleTabChange} aria-label="simple tabs example">
@@ -99,28 +111,35 @@ export const Calendar: React.FC<CalendarProps> = (props) => {
                     </Tabs>
                 </Box>
 
-                <AppTabPanel value={tabValue} index={0} className={clasess.content}>
+                <AppTabPanel value={tabValue} index={0} className={classes.content}>
                     <Box p={1}>
                         <Box component="h2" fontSize={24}>Вы записаны на прием</Box>
 
                         {loading && <Loader />}
 
-                        {!loading && visits.map((v) => (
-                            <Box marginY={1} key={v.id}>
-                                <InfoCard data={[
-                                    {
-                                        description: new Date(v.date).toLocaleString('ru', {
-                                            hour: '2-digit', minute: '2-digit',
-                                            day: '2-digit', year: 'numeric', month: 'short'
-                                        }),
-                                        title: v.hospital.name
-                                    }
-                                ]}
-                                    detailText="Детали"
-                                    to={`/calendar/${v.id}`}
-                                />
-                            </Box>
-                        ))}
+                        {!loading && visits.map((v) => {
+                            const isExpired = (Date.parse(v.date) - Date.now()) < 0;
+
+                            return (
+                                <Box marginY={1} key={v.id}>
+                                    <InfoCard data={[
+                                        {
+                                            description: new Date(v.date).toLocaleString('ru', {
+                                                hour: '2-digit', minute: '2-digit',
+                                                day: '2-digit', year: 'numeric', month: 'short'
+                                            }),
+                                            title: v.hospital.name
+                                        }
+                                    ]}
+                                        detailText="Детали"
+                                        to={`/calendar/${v.id}`}
+                                        classes={{
+                                            root: isExpired ? classes.expiredVisit : ''
+                                        }}
+                                    />
+                                </Box>
+                            )
+                        })}
 
                         <Link to={`/`}><Box color="#333" textAlign="center" margin={'10px auto'} width={0.8}>Добавьте события в календарь, чтобы не забыть об этом</Box></Link>
                     </Box>
@@ -136,7 +155,7 @@ export const Calendar: React.FC<CalendarProps> = (props) => {
                     <AppButton appColor="white">
                         Отменить
                     </AppButton>
-                    <Link className={clasess.linkButton} to={`/vaccination/add`}>
+                    <Link className={classes.linkButton} to={`/vaccination/add`}>
                         <AppButton>
                             Я привит
                         </AppButton>

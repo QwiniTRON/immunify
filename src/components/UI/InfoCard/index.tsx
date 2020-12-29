@@ -3,6 +3,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
 import Box from '@material-ui/core/Box';
 import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos';
+import {} from '@material-ui/core';
 import { Link } from 'react-router-dom';
 
 
@@ -14,6 +15,8 @@ type InfoCardProps = {
   data: InfoCardData[]
   detailText: string
   to: string
+
+  [p: string]: any
 }
 
 
@@ -43,9 +46,10 @@ const useStyles = makeStyles({
 export const InfoCard: React.FC<InfoCardProps> = ({
   data,
   detailText,
-  to
+  to,
+  ...props
 }) => {
-  const clasess = useStyles();
+  const clasess = useStyles(props);
 
   return (
     <Paper className={clasess.root} elevation={3}>
