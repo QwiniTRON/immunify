@@ -88,7 +88,9 @@ export const VaccineCard: React.FC<VaccineCardProps> = ({
   status
 }) => {
   const clases = useStyles();
-  const [componentRef, expandHandle, isOpen, height] = useExpanded(70);
+
+  const optimalHeight = vaccine?.name?.length > 35? 110 : 70 ;
+  const [componentRef, expandHandle, isOpen, height] = useExpanded(optimalHeight);
   let StatusIcon = <DoneIcon className={clases.statusIcon} />
   if (status == 'bad') StatusIcon = <div className={s(clases.badIcon, clases.statusIcon)}>!</div>
 

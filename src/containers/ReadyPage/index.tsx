@@ -129,7 +129,7 @@ export const ReadyPage: React.FC<ReadyPageProps> = (props) => {
 
     // после ввода просто делаем переадресация на риски
     return (
-        <Layout title="" BackButtonCustom={<BackButton text="Вернуться к заболеванию" />}>
+        <Layout title="" BackButtonCustom={<BackButton simpleBack text="Вернуться к заболеванию" />}>
             <PageLayout className="ready-page">
                 <p className="ready-page__text">Добавьте даные о вакцинах</p>
                 {vaccinesRequest.state.fetching &&

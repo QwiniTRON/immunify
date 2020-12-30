@@ -13,6 +13,9 @@ import { GetVaccinationByPatient, PatientVaccinations } from '../../server';
 import { RootState } from '../../store';
 import { Link } from 'react-router-dom';
 import { AppButton, Loader } from '../../components';
+import { CircleLoader } from '../../components/UI/CircleLoader';
+import { AppLinkButton } from '../../components/UI/AppLinkButton';
+import { makeStyles } from '@material-ui/core/styles';
 
 
 
@@ -28,17 +31,19 @@ const VaccinationPlaceholder: React.FC = () => {
       <Box fontSize={24} fontWeight={500} textAlign="center" width={0.8} m="16px auto">
         У Вас нет отмеченных вакцинаций
       </Box>
-
-      <Link to="/vaccination/add">
-        <AppButton floated appColor="linear">
-          Добавить
-        </AppButton>
-      </Link>
     </Box>
   );
 }
 
+const useStyles = makeStyles({
+  page: {
+    padding: '15px 15px 65px 15px'
+  }
+});
+
 export const Vaccination: React.FC<VaccinationProps> = (props) => {
+  const classes = useStyles();
+
   const vaccinations = useServer(GetVaccinationByPatient);
   const currentUser = useSelector((state: RootState) => state.user.currentUser);
 
@@ -157,21 +162,23 @@ export const Vaccination: React.FC<VaccinationProps> = (props) => {
 
   return (
     <Layout title="Прошедшие вакцинации" domainPage>
-      <PageLayout>
+      <PageLayout className={classes.page}>
 
-        {vaccinations.state.fetching && <Box m={3}><Loader /></Box>}
-        {!vaccinations.state.fetching && (
-          vaccinesToShow.length == 0 ?
-            <VaccinationPlaceholder />
-            :
-            vaccinesToShow)
+        {vaccinations.state.fetching && <Box m="15px auto"><CircleLoader /></Box>}
+        {!vaccinations.state.fetching &&
+          <>
+            {
+              vaccinesToShow.length == 0 ?
+                <VaccinationPlaceholder />
+                :
+                vaccinesToShow
+            }
+
+            <AppLinkButton to="/vaccination/add" floated appColor="linear">
+              Добавить
+            </AppLinkButton>
+          </>
         }
-
-        <Link to="/vaccination/add">
-          <AppButton floated appColor="linear">
-            Добавить
-          </AppButton>
-        </Link>
 
       </PageLayout>
     </Layout>

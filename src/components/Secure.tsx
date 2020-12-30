@@ -1,4 +1,5 @@
 import React, { FC } from 'react';
+import { Redirect, useHistory, useLocation } from 'react-router-dom';
 
 import { useAccessToken } from '../hooks/useAccessToken';
 
@@ -10,14 +11,9 @@ type Props = {
 
 export const Secure: FC<Props> = ({ children, validation, redirect }: Props) => {
   const { token } = useAccessToken();
+  const validationResult = validation(token);
 
-  if (redirect !== undefined && redirect !== null && !validation(token)) {
-    window.location.href = redirect!;
-  }
+  const validWay = validationResult ? children : <Redirect to={String(redirect)} />
 
-  return (
-    <div>
-      { validation(token) && children }
-    </div>
-  );
+  return validWay;
 }

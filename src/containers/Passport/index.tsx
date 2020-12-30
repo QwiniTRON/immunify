@@ -10,6 +10,7 @@ import { PageLayout } from '../../components/UI/PageLayout';
 import { RootState } from '../../store';
 import { UserModel } from '../../models/User';
 import { AppButton } from '../../components/UI/AppButton';
+import { AppLinkButton } from '../../components/UI/AppLinkButton';
 
 
 
@@ -30,11 +31,9 @@ const PassportPlaceholder: React.FC<any> = (props) => {
                 Заполните данные о себе, чтобы изучить личный иммунный паспорт
             </Box>
 
-            <Link to={`/profile`}>
-                <AppButton appColor="linear" floated>
-                    Добавить
-                </AppButton>
-            </Link>
+            <AppLinkButton to={`/profile`} appColor="linear" floated>
+                Добавить
+            </AppLinkButton>
         </Box>
     );
 }

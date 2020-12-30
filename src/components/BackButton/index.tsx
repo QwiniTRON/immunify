@@ -15,14 +15,16 @@ const useStyles = makeStyles({
     root: {
         textDecoration: 'none',
         color: '#333',
-        cursor: 'pointer'
+        cursor: 'pointer',
+        display: 'flex',
+        alignItems: 'center'
     },
+
     text: {
-        verticalAlign: 'super'
     },
+
     icon: {
-        color: '#aeaeae',
-        paddingTop: 3
+        color: '#aeaeae'
     }
 });
 
@@ -36,16 +38,17 @@ export const BackButton: React.FC<BackButtonProps> = ({
 
     const locationData = useLocation();
     const history = useHistory();
-    
+
 
     const pathNames = locationData.pathname.split('/').slice(1);
     const pathToBack = '/' + pathNames.slice(0, -1).join('/');
 
     if (simpleBack) {
-        return (<div className={classes.root} onClick={() => history.goBack()}>
-            <ChevronLeftIcon className={classes.icon} />
-            <span className={classes.text}> {text || 'назад'}</span>
-        </div>)
+        return (
+            <div className={classes.root} onClick={() => history.goBack()}>
+                <ChevronLeftIcon className={classes.icon} />
+                <span className={classes.text}> {text || 'назад'}</span>
+            </div>)
     }
 
     if (pathToBack == '/' && !Boolean(to)) return (<SubstituteComponent></SubstituteComponent>);

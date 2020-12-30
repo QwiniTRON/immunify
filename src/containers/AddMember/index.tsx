@@ -160,6 +160,7 @@ const AddMember: React.FC<AddMemberProps> = ({
 
                             <AppButton
                                 floated
+                                appColor="linear"
                                 disabled={loading || (!Boolean(name) || !Boolean(selectedDate) || !Boolean(sex))}
                                 type="submit">
                                 Начать
