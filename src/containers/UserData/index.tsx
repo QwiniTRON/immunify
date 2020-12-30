@@ -9,6 +9,7 @@ import Box from '@material-ui/core/Box';
 
 import { RootState } from '../../store';
 import { Divider } from '../../components';
+import { sif } from '../../utils';
 
 
 type UserDataProps = {
@@ -19,6 +20,16 @@ type UserDataProps = {
 const useStyle = makeStyles((theme) => ({
     appcard: {
         margin: "20px 5px"
+    },
+
+    svgIcon: {
+        color: '#dadada',
+        stroke: 'currentColor !important',
+        fill: 'currentColor'
+    },
+
+    svgIcon__active: {
+        color: '#A8E3F1'
     }
 }));
 
@@ -28,50 +39,54 @@ export const UserData: React.FC<UserDataProps> = (props) => {
 
     const currentUser = useSelector((state: RootState) => state.user.currentUser);
 
-    const quizStatus = currentUser?.data?.quiz?.isDone ? 'success' : 'error';
-    const quizText = quizStatus === 'success' ? 'пройдено' : 'не пройдено';
+    const quizStatus = Boolean(currentUser?.data?.quiz?.isDone);
 
-    const professionStatus = currentUser?.data?.profession ? 'success' : 'error';
-    const professionText = professionStatus === 'success' ? 'пройдено' : 'не указано';
+    const quizTitle = quizStatus ? 'Опрос пройден' : 'Пройти опрос';
+    const quizText = quizStatus ? new Date(Number(currentUser?.data?.quiz?.lastDate)).toLocaleDateString('ru') :
+        'Ответьте на несколько вопросов, чтобы узнать о возможных рисках';
+    const quizIconClasses = sif({ [classes.svgIcon]: true, [classes.svgIcon__active]: quizStatus });
 
-    const regionStatus = Boolean(currentUser?.data?.region?.main) ? 'success' : 'error';
-    const regionText = regionStatus === 'success' ? 'пройдено' : 'не указано';
+    const professionStatus = Boolean(currentUser?.data?.profession);
+    const professionTitle = 'Профессия';
+    const professionText = professionStatus ? currentUser?.data?.profession?.name :
+        'Укажите род деятельности, чтобы узнать возможный профессиональный риск';
+    const professionIconClasses = sif({ [classes.svgIcon]: true, [classes.svgIcon__active]: professionStatus });
+
+    const regionStatus = Boolean(currentUser?.data?.region?.main);
+    const regionTitle = "Регион";
+    const regionText = regionStatus ? currentUser?.data?.region?.main?.name :
+        'Укажите регион проживания, чтобы узнать эпидемиологическую обстановку';
+    const regionIconClasses = sif({ [classes.svgIcon]: true, [classes.svgIcon__active]: regionStatus });
 
     return (
         <>
             <Box component="h2">Профиль</Box>
             <Divider />
-            
+
             <div className={classes.appcard}>
                 <CardLink
-                    title="Пройти опрос"
-                    subTitle="Ответьте на несколько вопросов, чтобы узнать о возможных рисках"
+                    title={quizTitle}
+                    subTitle={quizText}
                     to={`/profile/${currentUser?.name}/quiz`}
-                    Icon={<ListIcon fontSize="large" />}
-                    status={quizStatus}
-                    statusLabel={quizText}
+                    Icon={<ListIcon fontSize="large" className={quizIconClasses} />}
                 />
             </div>
 
             <div className={classes.appcard}>
                 <CardLink
-                    title="Выбрать профессию"
-                    subTitle="Укажите род деятельности, чтобы узнать возможный профессиональный риск"
+                    title={professionTitle}
+                    subTitle={professionText}
                     to={`/profile/${currentUser?.name}/profession`}
-                    Icon={<CaseIcon fontSize="large" />}
-                    status={professionStatus}
-                    statusLabel={professionText}
+                    Icon={<CaseIcon fontSize="large" className={professionIconClasses} />}
                 />
             </div>
 
             <div className={classes.appcard}>
                 <CardLink
-                    title="Указать регион"
-                    subTitle="Укажите регион проживания, чтобы узнать эпидемиологическую обстановку"
+                    title={regionTitle}
+                    subTitle={regionText}
                     to={`/profile/${currentUser?.name}/region`}
-                    Icon={<PlanetIcon fontSize="large" />}
-                    status={regionStatus}
-                    statusLabel={regionText}
+                    Icon={<PlanetIcon fontSize="large" className={regionIconClasses} />}
                 />
             </div>
         </>

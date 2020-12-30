@@ -34,24 +34,34 @@ const useStyle = makeStyles((theme) => ({
     arrow: {
         marginLeft: 10
     },
+
+    customIcon: {
+        marginRight: 15
+    },
+
     arrowSvg: {
         color: '#ACACAC'
     },
+
     title: {
-        fontSize: 24
+        fontSize: 18
     },
+
     status: {
         position: 'absolute',
         top: 2,
         right: 5,
         color: theme.palette.error.main
     },
+
     statusCuccess: {
         color: theme.palette.success.main
     },
+
     statusIcon: {
         paddingBottom: 3
     },
+
     statusLabel: {
         verticalAlign: "top"
     }
@@ -75,12 +85,19 @@ export const CardLink: React.FC<CardLinkProps> = ({
             <Paper classes={{
                 root: classes.root
             }}>
+                {Boolean(Icon) &&
+                    <div className={classes.customIcon}>
+                        {Icon}
+                    </div>
+                }
+
                 <div>
                     <p className={classes.title}>{title}</p>
                     <p>{subTitle}</p>
                 </div>
+
                 <div className={classes.arrow}>
-                    {Icon ? Icon : <ArrowForwardIosIcon className={classes.arrowSvg} />}
+                    <ArrowForwardIosIcon className={classes.arrowSvg} />
                 </div>
 
                 {isStatus &&
