@@ -1,14 +1,14 @@
 import React, { useEffect, useRef } from 'react';
 
 export const useTimerFunction = () => {
-    let { current: timer } = useRef<number>(null);
+    let timerRef = useRef<number>();
 
     const cancel = () => {
-        window.clearTimeout(timer!);
+        window.clearTimeout(timerRef.current!);
     }
 
     const perform = (func: Function, time: number) => {
-        timer = window.setTimeout(() => {
+        timerRef.current = window.setTimeout(() => {
             func?.();
         }, time);
     }

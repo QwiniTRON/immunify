@@ -18,7 +18,6 @@ body {
     font-family: $fontFamily;
     line-height: $lineHeigth;
     color: $textColor;
-    overflow: hidden;
 }
 
 h1,
@@ -61,11 +60,3 @@ p {
 .error {
     color: $errorColor;
 }
-
-
-
-
-
-
-
-// login/registration

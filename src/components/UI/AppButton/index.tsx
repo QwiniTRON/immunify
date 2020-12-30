@@ -38,7 +38,8 @@ const ButtonColors = {
 const useStyles = makeStyles((theme) => ({
     root: (props: AppButtonProps) => ({
         borderRadius: 45,
-        ...ButtonColors[props.appColor ?? 'default']
+        ...ButtonColors[props.appColor ?? 'default'],
+        textAlign: 'center'
     }),
     floated: {
         position: 'fixed',

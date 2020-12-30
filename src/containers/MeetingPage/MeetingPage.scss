@@ -2,6 +2,8 @@
     --main-color: #9bc83f;
     --link-color: #67cdfd;
 
+    overflow: auto;
+
     h1,
     h2,
     h3,
@@ -53,6 +55,9 @@
     .title {
         text-align: center;
         font-size: 36px;
+        width: 200px;
+        margin: 0 auto;
+        margin-top: 50px;
     }
     /* /title */
 
@@ -180,6 +185,7 @@
     }
 
     .auth__container {
+        padding-bottom: 30px;
         background: url("") no-repeat, url("../../assets/fon2.png") no-repeat, url("../../assets/fon3.png") no-repeat,
             url("../../assets/fon4.png") no-repeat, url("../../assets/fon5.png") no-repeat;
         background-position: 5% 100%, 15% 35%, 35% 80%, 68% 18%, 84% 72%;

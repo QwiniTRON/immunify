@@ -26,6 +26,7 @@ import { BackButton } from '../../components/BackButton';
 import { useIsEmptyFamily } from '../../hooks';
 import { QuizData } from '../../models/User';
 import { useTimerFunction } from '../../hooks/timerFunction';
+import { AppButtonGroup } from '../../components';
 
 
 
@@ -165,25 +166,25 @@ export const Quiz: React.FC<QuizProps> = (props) => {
                     </RadioGroup>
                 </FormControl>
 
-                <div className="region-page__btns">
+                <AppButtonGroup floated>
+
                     <AppButton
                         onClick={backQuestion}
-                        className="region-page__save"
                         disabled={quiz.currentStep === 0}
                         color="default">назад</AppButton>
 
                     {!(quiz.currentStep + 1 === quizQuestions.length) && <AppButton
                         onClick={nextQuestion}
-                        className="region-page__save"
                         disabled={isNotCurrentAnswer || quiz.currentStep + 1 === quizQuestions.length}
                         color="primary">далее</AppButton>}
 
                     {quiz.currentStep + 1 === quizQuestions.length && <AppButton
                         onClick={finishQuiz}
-                        className="region-page__save"
                         disabled={isNotCurrentAnswer}
+                        appColor="linear"
                         color="primary">завершить</AppButton>}
-                </div>
+                </AppButtonGroup>
+
 
                 <Snackbar open={open} autoHideDuration={3000} onClose={() => setOpen(false)}>
                     <MuiAlert onClose={() => setOpen(false)} elevation={6} variant="filled">
