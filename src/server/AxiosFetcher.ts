@@ -15,15 +15,7 @@ export class AxiosFetcher<TRequest, TData> {
     this.canceller = client.canceler;
 
     this.Fetch = async (request: TRequest): Promise<StorageAnswer<TData>> => {
-      try {
-        return (await fetchFunc(this.httpClient, request)).data;
-      } catch (e) {
-        return {
-          succeeded: false,
-          errorMessage: e.Message,
-          data: undefined as any,
-        };
-      }
+      return (await fetchFunc(this.httpClient, request)).data;
     };
   }
 
