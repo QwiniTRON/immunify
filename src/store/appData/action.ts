@@ -7,7 +7,7 @@ import {
   AppDataAction
 } from '../types';
 import { AxiosFetcher, CalculateRisk, GetQuestionnaire } from '../../server';
-import { getYearOffestNow } from '../../utils';
+import { getYearOffsetNow } from '../../utils';
 import { updateMember } from '../user/action';
 
 
@@ -66,7 +66,7 @@ export function appDataInit(authOidc: string) {
 
     if (!currentUser) return;
 
-    const currentUserAge = getYearOffestNow(Number(currentUser?.age));
+    const currentUserAge = getYearOffsetNow(Number(currentUser?.age));
     const currentUserMale = currentUser?.sex == 'man' ? 'М' : 'Ж';
 
     const appDataReq = await fetcher.Fetch({ age: currentUserAge, male: currentUserMale });

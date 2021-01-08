@@ -46,10 +46,6 @@ const useStyles = makeStyles((theme) => ({
     header__Green: {
         backgroundColor: '#E0F0BE'
     },
-
-    layout__background: {
-        background: `url("${Background}") center/contain`
-    }
 }));
 
 
@@ -94,7 +90,7 @@ export const Layout: React.FC<LayoutProps> = ({
                     sif({
                         ["layout__content"]: true,
                         ['layout__content--scrollcleared']: Boolean(clearScroll),
-                        [classes.layout__background]: Boolean(background)
+                        ['layout__background']: Boolean(background)
                     })
                 }
             >

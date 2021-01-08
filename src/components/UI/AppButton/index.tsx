@@ -40,15 +40,16 @@ const useStyles = makeStyles((theme) => ({
         borderRadius: 45,
         ...ButtonColors[props.appColor ?? 'default'],
         textAlign: 'center',
-        padding: 15
+        padding: 12
     }),
     floated: {
         position: 'fixed',
         bottom: 75,
-        left: 0,
-        right: 0,
         margin: '0 auto',
-        zIndex: 10
+        zIndex: 10,
+        left: '50%',
+        transform: 'translateX(-50%)',
+        minWidth: 160
     }
 }));
 

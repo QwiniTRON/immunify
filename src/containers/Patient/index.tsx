@@ -14,7 +14,7 @@ import { useServer } from '../../hooks/useServer';
 import { GetQuestionnaire } from '../../server';
 import { RootState } from '../../store';
 import {setData} from '../../store/appData/action';
-import { getYearOffestNow } from '../../utils';
+import { getYearOffsetNow } from '../../utils';
 
 
 type MemberInfoParams = {
@@ -39,7 +39,7 @@ export const Patient: React.FC<PatientProps> = (props) => {
 
       const currentState: RootState = store.getState();
       const currentUser = currentState.user.currentUser;
-      const currentUserAge = getYearOffestNow(Number(currentUser?.age));
+      const currentUserAge = getYearOffsetNow(Number(currentUser?.age));
       const currentUserMale = currentUser?.sex == 'man' ? 'М' : 'Ж';
 
       appDataRequest.fetch({ age: currentUserAge, male: currentUserMale });

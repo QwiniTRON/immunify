@@ -14,6 +14,11 @@
     .layout__content {
         flex-grow: 1;
         overflow: auto;
+        background: #FAFAFA;
+    }
+
+    .layout__background {
+        background: url("../../assets/backgroundgeneral.svg") center/contain;
     }
 
     .layout__content--scrollcleared {
