@@ -90,7 +90,6 @@ const App: React.FC<AppProps> = function ({
     <SplashScreen />
   </div>;
 
-
   return (
     <div className="App">
       <Route render={({ location }) => (

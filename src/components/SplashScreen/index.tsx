@@ -29,7 +29,7 @@ export const SplashScreen: React.FC<SplashScreenProps> = (props) => {
     const classes = useStyles();
 
     return (
-        <div>
+        <div className="app-splashscreen">
             <div className={classes.content}>
                 <img className={classes.img} src={logo} alt="app logo" />
                 <div>
