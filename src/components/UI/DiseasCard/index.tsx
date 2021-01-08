@@ -1,6 +1,7 @@
 import React from 'react';
 import Paper from '@material-ui/core/Paper';
 import { makeStyles } from '@material-ui/core/styles';
+import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos';
 
 import { s } from '../../../utils/Styels';
 import { Link } from 'react-router-dom';
@@ -18,57 +19,61 @@ const useStyels = makeStyles({
     rootLink: {
         textDecoration: 'none'
     },
+
     root: {
-        padding: 5,
-        margin: '5px 0'
+        padding: 8,
+        margin: '5px 0',
+        borderRadius: 10
     },
+
+    head: {
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        marginBottom: 15
+    },
+
+    headArrow: {
+        color: '#acacac',
+        fontSize: 14
+    },
+
     title: {
         fontSize: 18,
         fontWeight: 500
     },
+
     line: {
         display: 'flex',
-        marginBottom: 10
+        alignItems: 'flex-start',
+        fontSize: 18,
+        fontWeight: 400,
+        borderTop: "1px solid #eee",
     },
-    lineRisk: {
-        height: 3,
-        flexGrow: 1,
-        marginRight: 5
+
+    line__bnone: {
+        borderTop: 'none'
     },
-    lineRiskLast: {
-        marginRight: 0
+
+    indicator: {
+        height: 12,
+        width: 12,
+        borderRadius: 6,
+        margin: "7px 10px 10px 10px"
     },
-    riskCalculated: {
-        float: 'right'
-    },
+
     green: {
         backgroundColor: '#3BCF1A'
     },
+
     red: {
         backgroundColor: '#FF003D'
     },
+
     yellow: {
         backgroundColor: '#FFB800'
-    },
-    greenT: {
-        color: '#3BCF1A'
-    },
-    redT: {
-        color: '#FF003D'
-    },
-    yellowT: {
-        color: '#FFB800'
     }
 });
-
-const riskLabels = {
-    [RiskStage.Low]: 'низкий',
-    [RiskStage.Medium]: 'умеренный',
-    [RiskStage.High]: 'высокий',
-    [RiskCoefficient.None]: 'не опасная',
-    [RiskCoefficient.Low]: 'умеренная',
-    [RiskCoefficient.High]: 'высокий'
-}
 
 const riskBackgroundColors = {
     [RiskStage.Low]: 'green',
@@ -77,14 +82,6 @@ const riskBackgroundColors = {
     [RiskCoefficient.None]: 'green',
     [RiskCoefficient.Low]: 'yellow',
     [RiskCoefficient.High]: 'red'
-}
-const riskColors = {
-    [RiskStage.Low]: 'greenT',
-    [RiskStage.Medium]: 'yellowT',
-    [RiskStage.High]: 'redT',
-    [RiskCoefficient.None]: 'greenT',
-    [RiskCoefficient.Low]: 'yellowT',
-    [RiskCoefficient.High]: 'redT'
 }
 
 export const DiseasCard: React.FC<DiseasCardProps> = ({
@@ -101,25 +98,31 @@ export const DiseasCard: React.FC<DiseasCardProps> = ({
     return (
         <Link className={classes.rootLink} to={to}>
             <Paper classes={{ root: classes.root }}>
-                <p className={classes.title}>{name}</p>
+                <div className={classes.head}>
+                    <p className={classes.title}>{name}</p>
+
+                    <ArrowForwardIosIcon classes={{ root: classes.headArrow }} />
+                </div>
+
+                <div className={s(classes.line, classes.line__bnone)}>
+                    <div
+                        className={s(classes.indicator, (classes as any)[riskBackgroundColors[personRisk]])}
+                    ></div>
+                    Персональный риск
+                </div>
+
                 <div className={classes.line}>
-                    <div className={classes.lineRisk + ' ' + (classes as any)[riskBackgroundColors[personRisk]]}></div>
-
-                    <div className={classes.lineRisk + ' ' + (classes as any)[riskBackgroundColors[profRisk]]}></div>
-
-                    <div className={s(classes.lineRisk, classes.lineRiskLast, (classes as any)[riskBackgroundColors[epicRisk]])}></div>
-
-                </div>
-                <div>Личная защита <span className={s(classes.riskCalculated, (classes as any)[riskColors[personRisk]])}>
-                    {riskLabels[personRisk]}</span>
+                    <div
+                        className={s(classes.indicator, (classes as any)[riskBackgroundColors[profRisk]])}
+                    ></div>
+                    Профессиональный риск
                 </div>
 
-                <div>Проф. риск <span className={s(classes.riskCalculated, (classes as any)[riskColors[profRisk]])}>
-                    {riskLabels[profRisk]}</span>
-                </div>
-
-                <div>Эпид обстановка <span className={s(classes.riskCalculated, (classes as any)[riskColors[epicRisk]])}>
-                    {(riskLabels)[epicRisk]}</span>
+                <div className={classes.line}>
+                    <div
+                        className={s(classes.indicator, (classes as any)[riskBackgroundColors[epicRisk]])}
+                    ></div>
+                    Эпидемиологическая обстановка
                 </div>
             </Paper>
         </Link>

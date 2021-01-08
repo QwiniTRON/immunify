@@ -51,9 +51,13 @@ export const Passport: React.FC<PassportProps> = (props) => {
 
                     {compleatedStatus &&
                         <>
+                            <Box fontSize={24} fontWeight={500} component="h1" >
+                                {currentUser?.name}
+                            </Box>
+
                             <Box fontSize={18}>Вы ещё не защищены от этих заболеваний</Box>
                             {currentUser?.Risks.map((risk) => (
-                                <Box key={risk.diseaseId} marginY={2}>
+                                <Box key={risk.diseaseId} marginY={1}>
                                     <DiseasCard
                                         to={`/passport/${risk.diseaseId}`}
                                         name={risk.disease}
