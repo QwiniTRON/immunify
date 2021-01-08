@@ -2,10 +2,13 @@ import React, { useEffect, useState } from 'react';
 import Box from '@material-ui/core/Box';
 import { makeStyles } from '@material-ui/core/styles';
 import CallIcon from '@material-ui/icons/Call';
-import { DateTimePicker, MuiPickersUtilsProvider } from '@material-ui/pickers';
+import { DatePicker, MuiPickersUtilsProvider, TimePicker } from '@material-ui/pickers';
 import DateFnsUtils from '@date-io/date-fns';
 import ruLocale from "date-fns/locale/ru";
+import DateRangeIcon from '@material-ui/icons/DateRange';
 import { useSelector } from 'react-redux';
+import ApartmentIcon from '@material-ui/icons/Apartment';
+import TimerIcon from '@material-ui/icons/Timer';
 
 import { BackButton } from '../../components/BackButton';
 import { Layout } from '../../components/Layout/Layout';
@@ -16,8 +19,8 @@ import { useHistory, useRouteMatch } from 'react-router-dom';
 import { GetDetailedHospital } from '../../server/fetchers/hospital/Detailed';
 import { CreateVisit } from '../../server/fetchers/hospitalVisit';
 import { useServer } from '../../hooks/useServer';
-import { Loader } from '../../components';
 import { RootState } from '../../store';
+import { CircleLoader } from '../../components/UI/CircleLoader';
 
 
 type AppointmentParams = {
@@ -41,17 +44,74 @@ const useStyles = makeStyles({
 
   phoneIcon: {
     verticalAlign: 'middle',
-    marginRight: 10
+    marginRight: 10,
+    color: '#A8E3F1'
   },
 
   content: {
     paddingBottom: 60
+  },
+
+  timeInputContainer: {
+    position: 'relative'
+  },
+
+  timeInput: {
+    backgroundColor: '#fff',
+    borderRadius: 3,
+    border: '1px solid #dadada',
+    padding: 10,
+    fontSize: 18,
+    width: '100%',
+
+    "&::placeholder": {
+      color: '#dadada'
+    }
+  },
+
+  timeIcon: {
+    position: 'absolute',
+    right: 5,
+    top: "-5px",
+    fontSize: 30,
+    color: '#acacac',
+
+    '& svg': {
+      fontSize: 30,
+    }
   }
 });
 
 
+const DatePickerInput: React.FC = (props) => {
+  const classes = useStyles();
+
+  return (
+    <label className={classes.timeInputContainer}>
+      <input className={classes.timeInput} {...props as any} />
+      <div className={classes.timeIcon}>
+        <DateRangeIcon />
+      </div>
+    </label>
+  )
+}
+
+const TimePickerInput: React.FC = (props) => {
+  const classes = useStyles();
+
+  return (
+    <label className={classes.timeInputContainer}>
+      <input className={classes.timeInput} {...props as any} />
+      <div className={classes.timeIcon}>
+        <TimerIcon />
+      </div>
+    </label>
+  )
+}
+
+
 export const Appointment: React.FC<AppointmentProps> = (props) => {
-  const clases = useStyles();
+  const classes = useStyles();
   const history = useHistory();
   const currentUser = useSelector((state: RootState) => state.user.currentUser);
 
@@ -66,14 +126,15 @@ export const Appointment: React.FC<AppointmentProps> = (props) => {
   const [clinicDetails, setClinicDetails] = useState<ClinicDetailed | null>(null);
 
   const [selectedDate, handleDateChange] = useState(new Date());
+  const [selectedTime, handleTimeChange] = useState(new Date());
   const [error, setErrors] = useState({
     date: ''
   });
 
 
   const handleCreateVaisit = () => {
-    if(!selectedDate) {
-      return setErrors({date: 'укажите дату и время приёма'});
+    if (!selectedDate) {
+      return setErrors({ date: 'укажите дату и время приёма' });
     }
 
     const useTimeZoneOffset = 60000 * selectedDate.getTimezoneOffset();
@@ -105,55 +166,83 @@ export const Appointment: React.FC<AppointmentProps> = (props) => {
 
   return (
     <Layout title="" BackButtonCustom={<BackButton text="Вернуться к списку центров" simpleBack />}>
-      <PageLayout className={clases.root}>
+      <PageLayout className={classes.root}>
 
         <Box component="h2" fontSize={24}>
-          Записаться на прием
+          Запишитесь на прием
         </Box>
         <Divider />
 
-        {detailLoading && <Loader />}
+        {detailLoading && <Box textAlign="center"><CircleLoader /></Box>}
 
         {!detailLoading &&
-          <div className={clases.content}>
+          <div className={classes.content}>
 
+            <Box fontSize={18} fontWeight={500}>Контакты:</Box>
 
             <Box fontWeight={500}>
               {clinicDetails?.name}
             </Box>
-            <Box>
-              {clinicDetails?.regionName}
-            </Box>
 
             <Box mt={4}>
               <Box>
-                <CallIcon color="primary" fontSize="large" className={clases.phoneIcon} /> +7 (495) 342-85-01
+                <ApartmentIcon fontSize="large" className={classes.phoneIcon} /> {clinicDetails?.regionName}
               </Box>
               <Box>
-                <CallIcon color="primary" fontSize="large" className={clases.phoneIcon} /> +7 (495) 342-85-02
+                <CallIcon fontSize="large" className={classes.phoneIcon} /> +7 (495) 342-85-01
+              </Box>
+              <Box>
+                <CallIcon fontSize="large" className={classes.phoneIcon} /> +7 (495) 342-85-02
               </Box>
             </Box>
 
 
 
-            <Box mt={6} mb={4}>
+            <Box mt={6} mb={1}>
               Моя запись:
             </Box>
-            <MuiPickersUtilsProvider utils={DateFnsUtils} locale={ruLocale}>
-              <DateTimePicker
-                label="дата последней вакцинации"
-                value={selectedDate}
-                onChange={handleDateChange as any}
-                fullWidth
-                cancelLabel="отмена"
-                inputVariant="outlined"
-                disablePast
-                ampm={false}
-                helperText={error.date}
-                error={Boolean(error.date)}
-                
-              />
-            </MuiPickersUtilsProvider>
+
+            <Box display="flex">
+              <Box flexGrow={1} mr={2}>
+                <Box fontWeight={300}>Дата:</Box>
+
+
+                <MuiPickersUtilsProvider utils={DateFnsUtils} locale={ruLocale}>
+                  <DatePicker
+                    label=""
+                    value={selectedDate}
+                    placeholder="укажите"
+                    onChange={handleDateChange as any}
+                    cancelLabel="отмена"
+                    inputVariant="outlined"
+                    disablePast
+                    helperText={error.date}
+                    error={Boolean(error.date)}
+                    TextFieldComponent={DatePickerInput}
+                    clearable
+                  />
+                </MuiPickersUtilsProvider>
+              </Box>
+
+              <Box flexGrow={1}>
+                <Box fontWeight={300}>Время:</Box>
+
+
+                <MuiPickersUtilsProvider utils={DateFnsUtils} locale={ruLocale}>
+                  <TimePicker
+                    label=""
+                    placeholder="укажите"
+                    value={selectedTime}
+                    onChange={handleTimeChange as any}
+                    ampm={false}
+                    minutesStep={5}
+                    inputVariant="outlined"
+                    TextFieldComponent={TimePickerInput}
+                  />
+                </MuiPickersUtilsProvider>
+              </Box>
+            </Box>
+
           </div>
         }
 

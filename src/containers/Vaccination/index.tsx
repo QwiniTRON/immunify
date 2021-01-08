@@ -11,8 +11,6 @@ import { useServer } from '../../hooks/useServer';
 
 import { GetVaccinationByPatient, PatientVaccinations } from '../../server';
 import { RootState } from '../../store';
-import { Link } from 'react-router-dom';
-import { AppButton, Loader } from '../../components';
 import { CircleLoader } from '../../components/UI/CircleLoader';
 import { AppLinkButton } from '../../components/UI/AppLinkButton';
 import { makeStyles } from '@material-ui/core/styles';

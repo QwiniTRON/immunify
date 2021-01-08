@@ -46,6 +46,10 @@ const useStyles = makeStyles((theme) => ({
     header__Green: {
         backgroundColor: '#E0F0BE'
     },
+
+    layout__hideNav: {
+        paddingBottom: 0
+    }
 }));
 
 
@@ -70,18 +74,26 @@ export const Layout: React.FC<LayoutProps> = ({
 
 
     return (
-        <div className={"layout " + classes.layout}>
-            {!hideHeader && <header className={sif({ ["layout__header"]: true, [classes.header__Green]: Boolean(domainPage) })}>
-                {BackButtonCustom ? BackButtonCustom : <BackButton />}
+        <div className={sif({
+                "layout": true,
+                [classes.layout]: true,
+                [classes.layout__hideNav]: Boolean(hideNav)
+            })}>
+            {!hideHeader &&
+                <header className={sif({
+                    ["layout__header"]: true,
+                    [classes.header__Green]: Boolean(domainPage)
+                })}>
+                    {BackButtonCustom ? BackButtonCustom : <BackButton />}
 
-                <Typography className={classes.title} variant="h3">
-                    {titleCurrentName ? currentUser?.name : title}
-                </Typography>
+                    <Typography className={classes.title} variant="h3">
+                        {titleCurrentName ? currentUser?.name : title}
+                    </Typography>
 
-                <Avatar className={classes.avatar}>
-                    {currentUser ? currentUser.name[0] + currentUser.name.slice(-1) : "😎"}
-                </Avatar>
-            </header>}
+                    <Avatar className={classes.avatar}>
+                        {currentUser ? currentUser.name[0] + currentUser.name.slice(-1) : "😎"}
+                    </Avatar>
+                </header>}
 
 
 

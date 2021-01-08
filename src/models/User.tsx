@@ -120,7 +120,7 @@ export class UserModel {
     static getCurrentUserDataStatus() {
         const user: User = store.getState().user.currentUser!;
         let userDataStatus = false;
-        if (UserModel.getCompleatedStatus(user) >= 80) {
+        if (UserModel.getCompleatedStatus(user) >= 50) {
             userDataStatus = true;
         }
         
@@ -130,9 +130,9 @@ export class UserModel {
     static getCompleatedStatus(user: User) {
         let procent = 0;
 
-        if (Boolean(user.data?.profession)) procent += 10;
-        if (Boolean(user.data?.region?.main)) procent += 10;
-        if (user.data?.quiz?.isDone == true) procent += 80;
+        if (Boolean(user.data?.profession)) procent += 25;
+        if (Boolean(user.data?.region?.main)) procent += 25;
+        if (user.data?.quiz?.isDone == true) procent += 50;
 
         return procent;
     }

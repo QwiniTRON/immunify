@@ -33,7 +33,7 @@ const ButtonColors = {
             backgroundColor: 'rgba(155, 200, 63, 0.1)',
         }
     },
-    'default': {}
+    'default': {color: '#fff'}
 }
 const useStyles = makeStyles((theme) => ({
     root: (props: AppButtonProps) => ({

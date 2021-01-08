@@ -13,7 +13,7 @@ import { BackButton } from '../../components/BackButton';
 import { useLocation } from 'react-router-dom';
 import { GetHospitals } from '../../server/fetchers/hospital';
 import { useServer } from '../../hooks/useServer';
-import { Loader } from '../../components';
+import { Divider, Loader } from '../../components';
 
 
 
@@ -65,26 +65,24 @@ export const ChooseClinic: React.FC<ChooseClinicProps> = (props) => {
   };
 
 
-  let takeTarget = '';
-  if (routeData?.type == 'diseas') {
-    takeTarget = `Запись на болезнь ${routeData.data.name}`;
-  }
-  if (routeData?.type == 'vaccine') {
-    takeTarget = `Запись на вакцину ${routeData.data.name}`;
-  }
+  // let takeTarget = '';
+  // if (routeData?.type == 'diseas') {
+  //   takeTarget = `Запись на болезнь ${routeData.data.name}`;
+  // }
+  // if (routeData?.type == 'vaccine') {
+  //   takeTarget = `Запись на вакцину ${routeData.data.name}`;
+  // }
 
 
   return (
     <Layout title="" clearScroll BackButtonCustom={<BackButton to={`/passport`} text="Вернуться к списку центров" />} >
       <PageLayout className={clasess.root}>
 
-        <Box component="h2" fontSize={24} fontWeight={500}>
-          {takeTarget}
-        </Box>
-
-        <Box component="h2" fontSize={18} fontWeight={500} marginY={1}>
+        <Box component="h2" fontSize={24} fontWeight={500} marginY={1}>
           Выберите медцентр
         </Box>
+
+        <Divider />
 
         <Box mb={1}>
           <Tabs variant="fullWidth" indicatorColor="primary" value={tabValue} onChange={handleTabChange} aria-label="simple tabs example">
@@ -100,9 +98,9 @@ export const ChooseClinic: React.FC<ChooseClinicProps> = (props) => {
             {!loading && clinics.map((c) => (
               <Box marginY={2}>
                 <InfoCard data={[
-                  { description: '', title: c.name }
+                  { description: 'Москва, улица Перерва, дом 53', title: c.name }
                 ]}
-                  detailText="Детали"
+                  detailText="Позвонить и записаться"
                   to={`/passport/appointment/${c.id}`}
                 />
               </Box>
