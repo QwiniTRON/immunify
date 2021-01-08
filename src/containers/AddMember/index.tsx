@@ -8,6 +8,8 @@ import { useHistory } from 'react-router-dom';
 import ruLocale from "date-fns/locale/ru";
 import { DatePicker, MuiPickersUtilsProvider } from '@material-ui/pickers';
 import DateFnsUtils from '@date-io/date-fns';
+import ManImg from '../../assets/man.png';
+import WomanImg from '../../assets/woman.png';
 
 import { AppButton } from '../../components/UI/AppButton';
 import { addMember } from '../../store/user/action';
@@ -15,11 +17,12 @@ import { RootState } from '../../store';
 import { Layout } from '../../components/Layout/Layout';
 import { AppRadioGroup } from '../../components/UI/AppRadioGroup';
 import { AppRadioButton } from '../../components/UI/AppRadioButton';
-import { s } from '../../utils/Styels';
 import { BackButton } from '../../components/BackButton';
 import { useServer } from '../../hooks/useServer';
 import { CreatePatient } from '../../server';
 import { Loader } from '../../components/UI/Loader';
+import { s } from '../../utils';
+import { Divider } from '../../components';
 
 type AddMemberProps = {
 
@@ -31,22 +34,33 @@ const useStyle = makeStyles({
     sexLabel: {
         fontSize: 14
     },
+
     root: {
         height: 'auto'
     },
-    sexInput: {
-        fontSize: 36,
-        flexGrow: 1
+
+    genderImg: {
+        maxWidth: '100%'
     },
-    _sexInputMarginRight: {
-        marginRight: 15
+
+    startButton: {
+        maxWidth: 290,
+        width: '100%',
+        padding: 20,
+        borderRadius: 20,
+        bottom: 35
+    },
+
+    title: {
+        marginTop: 0,
+        fontSize: 24
     }
 });
 
 const AddMember: React.FC<AddMemberProps> = ({
     addMember
 }) => {
-    const clasess = useStyle();
+    const classes = useStyle();
     const history = useHistory();
 
     const addReq = useServer(CreatePatient);
@@ -110,19 +124,48 @@ const AddMember: React.FC<AddMemberProps> = ({
     }
 
     return (
-        <Layout title="" BackButtonCustom={<BackButton text="вернуться в профиль" />}>
-            <div className={"reg " + clasess.root}>
+        <Layout title="" BackButtonCustom={<BackButton text="вернуться в профиль" />} hideNav={true}>
+            <div className={"reg " + classes.root}>
                 <div className="reg__container">
-                    <h1 className="reg__title">
-                        Добавление члена семьи
+                    <h1 className={s(classes.title)}>
+                        Новый пациент
                     </h1>
+
+                    <Divider />
 
                     {loading ? <Loader /> :
 
                         <form className="reg__form" onSubmit={handleSubmit}>
+
+                            <Typography color="error">{errors.sex}</Typography>
+                            <Box display="flex" justifyContent="space-evenly" marginBottom={3}>
+                                <AppRadioGroup onChange={(value: string) => {
+                                    setSex(value);
+                                }}
+                                    value={sex}
+                                >
+                                    <AppRadioButton value="man"
+                                        text="Мужчина"
+                                        component={
+                                            (
+                                                <img src={ManImg} className={classes.genderImg} />
+                                            )
+                                        }
+                                    />
+                                    <AppRadioButton value="woman"
+                                        text="Женщина"
+                                        component={
+                                            (
+                                                <img src={WomanImg} className={classes.genderImg} />
+                                            )
+                                        }
+                                    />
+                                </AppRadioGroup>
+                            </Box>
+
                             <Typography color="error">{errors.name}</Typography>
                             <TextField
-                                label="как зовут"
+                                label="Введите имя"
                                 variant="outlined"
                                 className="reg__input"
                                 id="name-input"
@@ -144,22 +187,9 @@ const AddMember: React.FC<AddMemberProps> = ({
                                 />
                             </MuiPickersUtilsProvider>
 
-                            <Box fontSize={16} fontWeight="bold" mb={1}>пол</Box>
-                            <Typography color="error">{errors.sex}</Typography>
-                            <Box display="flex" justifyContent="space-between">
-                                <AppRadioGroup onChange={(value: string) => {
-                                    setSex(value);
-                                }}
-                                    value={sex}
-                                >
-                                    <AppRadioButton value="man" text="М" classes={{ root: s(clasess.sexInput, clasess._sexInputMarginRight) }} />
-                                    <AppRadioButton value="woman" text="Ж" classes={{ root: clasess.sexInput }} />
-                                </AppRadioGroup>
-                            </Box>
-
-
                             <AppButton
                                 floated
+                                className={classes.startButton}
                                 appColor="linear"
                                 disabled={loading || (!Boolean(name) || !Boolean(selectedDate) || !Boolean(sex))}
                                 type="submit">

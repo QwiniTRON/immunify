@@ -8,6 +8,8 @@ import { useHistory } from 'react-router-dom';
 import ruLocale from "date-fns/locale/ru";
 import { DatePicker, MuiPickersUtilsProvider } from '@material-ui/pickers';
 import DateFnsUtils from '@date-io/date-fns';
+import ManImg from '../../assets/man.png';
+import WomanImg from '../../assets/woman.png';
 
 import './reg.scss';
 
@@ -16,13 +18,12 @@ import { register } from '../../store/user/action';
 import { RootState } from '../../store';
 import { AppRadioGroup } from '../../components/UI/AppRadioGroup';
 import { AppRadioButton } from '../../components/UI/AppRadioButton';
-import { s } from '../../utils/Styels';
-import { AppDatePicker } from '../../components/UI/appDatePicker';
 import { CreatePatient } from '../../server';
 import { useServer } from '../../hooks/useServer';
 import { appDataInit } from '../../store/appData/action';
 
 import { useAccessToken } from '../../hooks/useAccessToken';
+import { Divider } from '../../components';
 
 
 type RegProps = {
@@ -34,12 +35,9 @@ const useStyle = makeStyles({
     sexLabel: {
         fontSize: 14
     },
-    sexInput: {
-        fontSize: 36,
-        flexGrow: 1
-    },
-    _sexInputMarginRight: {
-        marginRight: 15
+
+    genderImg: {
+        maxWidth: '100%'
     }
 });
 
@@ -136,13 +134,15 @@ const Reg: React.FC<RegProps> = ({
         }
     }
 
-
     return (
         <div className="reg">
             <div className="reg__container">
                 <h1 className="reg__title">
                     Ваши данные
                 </h1>
+
+                <Divider />
+
                 <p className="reg__desc">
                     Узнайте каким рискам
                     вы подвержены и устраните их
@@ -150,8 +150,35 @@ const Reg: React.FC<RegProps> = ({
 
                 <form className="reg__form" onSubmit={handleSubmit}>
 
+                    <Typography color="error">{errors.sex}</Typography>
+                    <Box display="flex" justifyContent="space-evenly" marginBottom={3}>
+                        <AppRadioGroup onChange={(value: string) => {
+                            setInputTouches(Object.assign({}, inputTouches, { sex: true }));
+                            setSex(value);
+                        }}
+                            value={sex}
+                        >
+                            <AppRadioButton value="man"
+                                text="Мужчина"
+                                component={
+                                    (
+                                        <img src={ManImg} className={clasess.genderImg} />
+                                    )
+                                }
+                            />
+                            <AppRadioButton value="woman"
+                                text="Женщина"
+                                component={
+                                    (
+                                        <img src={WomanImg} className={clasess.genderImg} />
+                                    )
+                                }
+                            />
+                        </AppRadioGroup>
+                    </Box>
+
                     <TextField
-                        label="как вас зовут?"
+                        label="введите имя"
                         id="name-field"
                         variant="outlined"
                         className="reg__input"
@@ -182,21 +209,6 @@ const Reg: React.FC<RegProps> = ({
                                 onFocus={() => setInputTouches(Object.assign({}, inputTouches, { age: true }))}
                             />
                         </MuiPickersUtilsProvider>
-                        {/* <AppDatePicker value={Number(age)} changeHandle={(value) => setAge(String(value))} /> */}
-                    </Box>
-
-                    <Box color="#acacac" marginBottom={1}>Выберите свой пол:</Box>
-                    <Typography color="error">{errors.sex}</Typography>
-                    <Box display="flex" justifyContent="space-between">
-                        <AppRadioGroup onChange={(value: string) => {
-                            setInputTouches(Object.assign({}, inputTouches, { sex: true }));
-                            setSex(value);
-                        }}
-                            value={sex}
-                        >
-                            <AppRadioButton value="man" text="М" classes={{ root: s(clasess.sexInput, clasess._sexInputMarginRight) }} />
-                            <AppRadioButton value="woman" text="Ж" classes={{ root: clasess.sexInput }} />
-                        </AppRadioGroup>
                     </Box>
 
                     <AppButton disabled={loading || !isValid} type="submit" className="reg_start" appColor="linear">

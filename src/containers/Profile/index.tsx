@@ -86,13 +86,6 @@ export const Profile: React.FC<ProfileProps> = (props) => {
 
         <AppButtonGroup floated>
           <AppButton className="family-page__add" onClick={() => history.push(`/profile/add`)} >добавить</AppButton>
-          {user?.family.length == 0 ?
-            <AppButton appColor="linear" onClick={() => history.push(`/passport`)} disabled={!idUserDataCompleate}>
-              Иммунный паспорт
-            </AppButton>
-            :
-            null
-          }
         </AppButtonGroup>
 
       </PageLayout>

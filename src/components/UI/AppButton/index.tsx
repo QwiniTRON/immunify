@@ -39,7 +39,8 @@ const useStyles = makeStyles((theme) => ({
     root: (props: AppButtonProps) => ({
         borderRadius: 45,
         ...ButtonColors[props.appColor ?? 'default'],
-        textAlign: 'center'
+        textAlign: 'center',
+        padding: 15
     }),
     floated: {
         position: 'fixed',
@@ -47,7 +48,6 @@ const useStyles = makeStyles((theme) => ({
         left: 0,
         right: 0,
         margin: '0 auto',
-        maxWidth: 160,
         zIndex: 10
     }
 }));
