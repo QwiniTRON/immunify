@@ -75,10 +75,10 @@ export const Layout: React.FC<LayoutProps> = ({
 
     return (
         <div className={sif({
-                "layout": true,
-                [classes.layout]: true,
-                [classes.layout__hideNav]: Boolean(hideNav)
-            })}>
+            "layout": true,
+            [classes.layout]: true,
+            [classes.layout__hideNav]: Boolean(hideNav)
+        })}>
             {!hideHeader &&
                 <header className={sif({
                     ["layout__header"]: true,
@@ -111,51 +111,52 @@ export const Layout: React.FC<LayoutProps> = ({
 
 
 
-            {!hideNav && <div className="layout__navigation">
-                <BottomNavigation
-                    value={parentRoute}
-                    onChange={(event, newValue) => {
-                        history.push(newValue);
-                    }}
-                    showLabels
-                >
-                    <BottomNavigationAction
-                        classes={{
-                            root: classes.navIcon,
+            {!hideNav &&
+                <div className="layout__navigation">
+                    <BottomNavigation
+                        value={parentRoute}
+                        onChange={(event, newValue) => {
+                            history.push(newValue);
                         }}
-                        label="семья"
-                        icon={<FamilyIcon />}
-                        value={`/profile`}
-                    />
+                        showLabels
+                    >
+                        <BottomNavigationAction
+                            classes={{
+                                root: classes.navIcon,
+                            }}
+                            label="семья"
+                            icon={<FamilyIcon />}
+                            value={`/profile`}
+                        />
 
-                    <BottomNavigationAction
-                        classes={{
-                            root: classes.navIcon,
-                        }}
-                        label="паспорт"
-                        icon={<PasportIcon />}
-                        value={`/passport`}
-                    />
+                        <BottomNavigationAction
+                            classes={{
+                                root: classes.navIcon,
+                            }}
+                            label="паспорт"
+                            icon={<PasportIcon />}
+                            value={`/passport`}
+                        />
 
-                    <BottomNavigationAction
-                        classes={{
-                            root: classes.navIcon,
-                        }}
-                        label="запись"
-                        icon={<ListIcon />}
-                        value={`/calendar`}
-                    />
+                        <BottomNavigationAction
+                            classes={{
+                                root: classes.navIcon,
+                            }}
+                            label="запись"
+                            icon={<ListIcon />}
+                            value={`/calendar`}
+                        />
 
-                    <BottomNavigationAction
-                        classes={{
-                            root: classes.navIcon,
-                        }}
-                        label="статус"
-                        icon={<DoneIcon />}
-                        value={`/vaccination`}
-                    />
-                </BottomNavigation>
-            </div>}
+                        <BottomNavigationAction
+                            classes={{
+                                root: classes.navIcon,
+                            }}
+                            label="статус"
+                            icon={<DoneIcon />}
+                            value={`/vaccination`}
+                        />
+                    </BottomNavigation>
+                </div>}
         </div>
     );
 };

@@ -128,27 +128,44 @@ export const Appointment: React.FC<AppointmentProps> = (props) => {
   const [selectedDate, handleDateChange] = useState(new Date());
   const [selectedTime, handleTimeChange] = useState(new Date());
   const [error, setErrors] = useState({
-    date: ''
+    date: '',
+    time: ''
   });
 
 
+  /**
+   * создание визита на приём 
+   */
   const handleCreateVaisit = () => {
     if (!selectedDate) {
-      return setErrors({ date: 'укажите дату и время приёма' });
+      return setErrors({ date: 'укажите дату и время приёма', time: '' });
+    }
+    if (!selectedTime) {
+      return setErrors({ date: '', time: 'укажите время для приёма' });
     }
 
-    const useTimeZoneOffset = 60000 * selectedDate.getTimezoneOffset();
+    const userTimeZoneOffset = 60000 * selectedDate.getTimezoneOffset();
+    const timeToVisit = new Date(selectedDate);
+    timeToVisit.setHours(selectedTime.getHours());
+    timeToVisit.setMinutes(selectedTime.getMinutes());
+    
     createAppointmentReq.fetch({
       patientId: Number(currentUser?.id),
       hospitalId: Number(clinicId),
-      date: new Date(selectedDate.getTime() - useTimeZoneOffset)
+      date: new Date(timeToVisit.getTime() - userTimeZoneOffset)
     });
   }
 
+  /**
+   * загрузка данных по клинике
+   */
   useEffect(() => {
     clinicReq.fetch({ id: Number(clinicId) });
   }, []);
 
+  /**
+   * установка получение данных пол клинике
+   */
   useEffect(() => {
     if (detailSuccess) {
       setClinicDetails(clinicReq.state.answer.data as ClinicDetailed);
@@ -156,6 +173,9 @@ export const Appointment: React.FC<AppointmentProps> = (props) => {
     }
   }, [detailSuccess]);
 
+  /**
+   * обработка успешно созданной заявки
+   */
   useEffect(() => {
     if (createSuccess) {
       history.push(`/calendar/${createAppointmentReq.state.answer.data?.id}`);
@@ -205,8 +225,6 @@ export const Appointment: React.FC<AppointmentProps> = (props) => {
             <Box display="flex">
               <Box flexGrow={1} mr={2}>
                 <Box fontWeight={300}>Дата:</Box>
-
-
                 <MuiPickersUtilsProvider utils={DateFnsUtils} locale={ruLocale}>
                   <DatePicker
                     label=""
@@ -226,8 +244,6 @@ export const Appointment: React.FC<AppointmentProps> = (props) => {
 
               <Box flexGrow={1}>
                 <Box fontWeight={300}>Время:</Box>
-
-
                 <MuiPickersUtilsProvider utils={DateFnsUtils} locale={ruLocale}>
                   <TimePicker
                     label=""
@@ -238,6 +254,8 @@ export const Appointment: React.FC<AppointmentProps> = (props) => {
                     minutesStep={5}
                     inputVariant="outlined"
                     TextFieldComponent={TimePickerInput}
+                    helperText={error.time}
+                    error={Boolean(error.time)}
                   />
                 </MuiPickersUtilsProvider>
               </Box>

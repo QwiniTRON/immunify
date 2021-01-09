@@ -17,6 +17,7 @@ const useStyles = makeStyles({
             margin: '0 10px'
         }
     },
+    
     floated: {
         position: 'fixed',
         bottom: 65,
@@ -24,7 +25,11 @@ const useStyles = makeStyles({
         right: 0,
         maxWidth: 600,
         margin: '0 auto',
-        zIndex: 10
+        zIndex: 10,
+
+        ['@media (max-height:319px)']: {
+            bottom: 15
+        }
     }
 });
 

@@ -4,6 +4,7 @@ import { makeStyles } from '@material-ui/core';
 
 import { sif } from '../../../utils/Styels';
 
+
 export type AppButtonProps = {
     [p: string]: any
     floated?: boolean
@@ -49,7 +50,11 @@ const useStyles = makeStyles((theme) => ({
         zIndex: 10,
         left: '50%',
         transform: 'translateX(-50%)',
-        minWidth: 160
+        minWidth: 160,
+
+        ['@media (max-width:319px)']: {
+            bottom: 15
+        }
     }
 }));
 
@@ -63,6 +68,7 @@ export const AppButton: React.FC<AppButtonProps> = (props) => {
             classes={{
                 root: sif({ [classes.root]: true, [classes.floated]: Boolean(props.floated) })
             }}
+            className='app-button'
             {...props}>
             {props.children}
         </Button>
