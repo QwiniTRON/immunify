@@ -519,7 +519,13 @@ export const LastAppointment: React.FC<LastAppointmentProps> = (props) => {
                   <DateRangeIcon />
                   <div>В календарь</div>
                 </IconButton>
-                <IconButton classes={{ label: classes.menuButton }} color="primary">
+                <IconButton
+                  classes={{ label: classes.menuButton }}
+                  color="primary"
+                  onClick={() => history.push(
+                    '/calendar/mark',
+                    detail
+                  )}>
                   <AddIcon />
                   <div>Я привился</div>
                 </IconButton>

@@ -23,7 +23,7 @@ import { useServer } from '../../hooks/useServer';
 
 import { GetVaccines, GetAvailableStages, CreateVaccination } from '../../server';
 import { RootState } from '../../store';
-import { Loader } from '../../components';
+import { Divider, Loader } from '../../components';
 
 
 
@@ -35,6 +35,7 @@ type Vaccine = {
     id: string
     name: string
 }
+
 
 export const ReadyPage: React.FC<ReadyPageProps> = (props) => {
     const currentUser = useSelector((state: RootState) => state.user.currentUser);
@@ -57,8 +58,9 @@ export const ReadyPage: React.FC<ReadyPageProps> = (props) => {
     const stagesRequest = useServer(GetAvailableStages);
     const vaccinationRequest = useServer(CreateVaccination);
 
+    // загружаем все известные вакцины
     useEffect(() => {
-        if(Boolean(arrivedVaccine)) {
+        if (Boolean(arrivedVaccine)) {
             stagesRequest.fetch({ vaccineId: Number(arrivedVaccine?.id) });
         }
         vaccinesRequest.fetch(undefined);
@@ -66,11 +68,16 @@ export const ReadyPage: React.FC<ReadyPageProps> = (props) => {
         return vaccinesRequest.cancel;
     }, []);
 
+
     const loading = vaccinesRequest.state.fetching || stagesRequest.state.fetching || vaccinationRequest.state.fetching;
     const successVaccines = !loading && vaccinesRequest.state.answer.succeeded;
     const successStages = !loading && stagesRequest.state.answer.succeeded;
     const successVaccination = !loading && vaccinationRequest.state.answer.succeeded;
 
+
+    /**
+     * валидация
+     */
     const validate = () => {
         let isValid = true;
         const clearedErrors = {
@@ -81,7 +88,7 @@ export const ReadyPage: React.FC<ReadyPageProps> = (props) => {
         if (!vaccine) {
             clearedErrors['vaccine'] = 'сначала выбирите вакцину';
             isValid = false;
-            return [isValid, clearedErrors]; 
+            return [isValid, clearedErrors];
         }
         if (!currentStage) {
             clearedErrors['stage'] = 'выбирите какая вакцина по счёту';
@@ -97,10 +104,13 @@ export const ReadyPage: React.FC<ReadyPageProps> = (props) => {
         return [isValid, clearedErrors];
     }
 
+    /**
+     * сохранение пройденных заявок
+     */
     const saveHandle = () => {
         const [isValid, errors] = validate();
 
-        if(!isValid) {
+        if (!isValid) {
             return setErrors(errors as any);
         }
 
@@ -122,16 +132,19 @@ export const ReadyPage: React.FC<ReadyPageProps> = (props) => {
         stagesRequest.reload();
     }
 
+    // после ввода просто делаем переадресация на риски
     if (successVaccination) {
         history.push(`/vaccination`);
         vaccinationRequest.reload();
     }
 
-    // после ввода просто делаем переадресация на риски
     return (
         <Layout title="" BackButtonCustom={<BackButton simpleBack text="Вернуться к заболеванию" />}>
             <PageLayout className="ready-page">
-                <p className="ready-page__text">Добавьте даные о вакцинах</p>
+                <Box fontSize={24} fontWeight={500}>Прошедшие вакцинации</Box>
+
+                <Divider />
+
                 {vaccinesRequest.state.fetching &&
                     <Box m={3}><Loader /></Box>}
 
@@ -154,7 +167,7 @@ export const ReadyPage: React.FC<ReadyPageProps> = (props) => {
                             onChange={(event, newValue) => {
                                 stagesRequest.cancel();
                                 stagesRequest.fetch({ vaccineId: Number(newValue?.id) });
-                                setErrors(Object.assign({}, errors, {'vaccine': ''}));
+                                setErrors(Object.assign({}, errors, { 'vaccine': '' }));
                                 setVaccine(newValue);
                             }}
                         />

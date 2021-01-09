@@ -39,7 +39,6 @@ export const BackButton: React.FC<BackButtonProps> = ({
     const locationData = useLocation();
     const history = useHistory();
 
-
     const pathNames = locationData.pathname.split('/').slice(1);
     const pathToBack = '/' + pathNames.slice(0, -1).join('/');
 

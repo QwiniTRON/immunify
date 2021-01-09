@@ -38,6 +38,7 @@ import { MeetingPage } from './containers/MeetingPage';
 import { useAccessToken } from './hooks/useAccessToken';
 
 import { Secure } from './components';
+import { MarkVaccine } from './containers/MarkVaccine';
 
 type AppProps = {
   user: any
@@ -81,7 +82,7 @@ const App: React.FC<AppProps> = function ({
       if (token.length > 0) {
         await appDataInit(token);
       }
-      
+
       setIsINIT(true);
     }()
   }, [token]);
@@ -179,6 +180,12 @@ const App: React.FC<AppProps> = function ({
               <Route path={`/profile/:id`} exact>
                 <ApplicationSecure>
                   <Patient />
+                </ApplicationSecure>
+              </Route>
+
+              <Route path={`/calendar/mark`} exact>
+                <ApplicationSecure>
+                  <MarkVaccine />
                 </ApplicationSecure>
               </Route>
 
