@@ -74,6 +74,7 @@ export const useServer = <TRequest, TData>(
           data: undefined as any,
         });
         setToken('');
+        window.location.href = "/";
       });
   };
 
