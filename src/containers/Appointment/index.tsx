@@ -63,6 +63,7 @@ const useStyles = makeStyles({
     padding: 10,
     fontSize: 18,
     width: '100%',
+    paddingRight: 40,
 
     "&::placeholder": {
       color: '#dadada'
@@ -216,7 +217,7 @@ export const Appointment: React.FC<AppointmentProps> = (props) => {
               </Box>
             </Box>
 
-
+            <Divider />
 
             <Box mt={6} mb={1}>
               Моя запись:
