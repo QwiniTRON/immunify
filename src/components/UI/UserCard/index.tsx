@@ -70,7 +70,7 @@ const useStyles = makeStyles((theme) => ({
     },
 
     active: {
-        // border: `1px solid #43C4F8`
+        color: '#67CDFD'
     }
 }));
 
@@ -93,7 +93,9 @@ export const UserCard: React.FC<UserCardProps> = ({
                         <Avatar classes={{ root: classes.avatarImg }}>{avatarLetters}</Avatar>
                     </div>
                     <div className={classes.text}>
-                        <p className={classes.title}>{title}</p>
+                        <p className={sif({ [classes.title]: true, [classes.active]: Boolean(active) })}>
+                            {title}
+                        </p>
                         <p className={classes.age}>{subtitle}</p>
                     </div>
                     <div>
