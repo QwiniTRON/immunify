@@ -66,96 +66,35 @@ export const Vaccination: React.FC<VaccinationProps> = (props) => {
   const copiedVaccines: PatientVaccinations = JSON.parse(JSON.stringify(vaccines));
 
   const vaccinesToShow = copiedVaccines.map((vaccine, index) => {
-    let array: {
-      stage: number;
-      date: string;
-      durationStartInMonths: number;
-      durationEndInMonths: number;
-    }[][] = [];
+    console.log(vaccine);
+    
+    const lastVaccination = vaccine.passedStages[vaccine.passedStages.length - 1];
 
-    const firstVaccine = vaccine.passedStages[0];
+    let startDate = new Date(lastVaccination.date);
+    startDate = new Date(startDate.setMonth(startDate.getMonth() + lastVaccination.durationStartInMonths));
 
-    let date = new Date(firstVaccine.date);
+    let endDate = new Date(lastVaccination.date);
+    endDate = new Date(endDate.setMonth(endDate.getMonth() + lastVaccination.durationEndInMonths));
 
-    date = new Date(date.setMonth(date.getMonth() + firstVaccine.durationStartInMonths));
+    let color: 'green' | 'red' | 'yellow' = 'green';
 
-    // Get quence 3, 2, 1 or 2, 1
-    for (let index = 0; index < vaccine.totalStages.length; index++) {
-      const ar1 = vaccine.totalStages.slice(index, vaccine.totalStages.length);
+    const currentDate = new Date();
 
-      for (let j = 0; j < vaccine.passedStages.length; j++) {
-        const secondArray = vaccine.passedStages.slice(j, j + ar1.length);
-        const secondArrayStages = secondArray.map((el) => el.stage);
-
-        if (arraysEqual(ar1, secondArrayStages)) {
-          array.push(secondArray);
-
-          for (let k = j; k < j + ar1.length; k++) {
-            vaccine.passedStages[k] = -1 as any;
-          }
-        }
-      }
+    if (currentDate >= startDate) {
+      if (currentDate <= endDate) color = 'yellow';
+      else color = 'red';
     }
-
-    // Get signle 1 or 2 or 3
-    for (let index = 0; index < vaccine.totalStages.length; index++) {
-      const elem = vaccine.totalStages[index];
-
-      for (let j = 0; j < vaccine.passedStages.length; j++) {
-        const secondElem = vaccine.passedStages[j];
-
-        if (elem === secondElem.stage) {
-          array.push([secondElem]);
-
-          vaccine.passedStages[j] = -1 as any;
-        }
-      }
-    }
-
-    array.forEach((item) => {
-      const needToAdd = vaccine.totalStages
-        .filter((x) => !item.map((el) => el.stage).includes(x));
-
-      needToAdd.forEach((stage) => {
-        item.push({ stage, date: 'none', durationStartInMonths: -1, durationEndInMonths: -1 })
-      });
-
-      item = item.sort((a, b) => a.stage - b.stage);
-    });
-
-
-    const sorted = array.sort((a, b) => {
-      let aMaxDate = new Date(0);
-      let bMaxDate = new Date(0);
-
-      const aAr = a.map((el) => new Date(el.date));
-      const bAr = b.map((el) => new Date(el.date));
-
-      aAr.forEach(x => {
-        if (!isNaN(x.getTime()) && x > aMaxDate) aMaxDate = x;
-      });
-
-      bAr.forEach(x => {
-        if (!isNaN(x.getTime()) && x > bMaxDate) bMaxDate = x;
-      });
-
-      return aMaxDate.getTime() - bMaxDate.getTime();
-    });
 
     return (
       <Box marginY={1} key={vaccine.id + vaccine.name + index.toString()}>
         <VaccineCard
           vaccine={{
             id: vaccine.id,
-            date: `Следующая вакцинация не поздее ${date.toLocaleDateString('ru-RU')}`,
-            for: vaccine.detailed,
+            date: `Следующая вакцинация не поздее ${startDate.toLocaleDateString('ru-RU')}`,
             name: vaccine.name,
-            stadies: sorted.map((el, index) => el.map((stady) => ({
-              name: index > 0 ? `R${stady.stage}` : `V${stady.stage}`,
-              isVaccined: stady.durationStartInMonths !== -1
-            })))
+            detailed: vaccine.detailed
           }}
-          status={new Date() >= date ? "bad" : "ok"}
+          status={color}
         />
       </Box>
     );
@@ -169,7 +108,7 @@ export const Vaccination: React.FC<VaccinationProps> = (props) => {
         {!vaccinations.state.fetching &&
           <>
             {
-              vaccinesToShow.length == 0 ?
+              vaccinesToShow.length === 0 ?
                 <VaccinationPlaceholder />
                 :
                 vaccinesToShow
