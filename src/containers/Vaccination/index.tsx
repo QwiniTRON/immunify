@@ -69,7 +69,8 @@ export const Vaccination: React.FC<VaccinationProps> = (props) => {
     let array: {
       stage: number;
       date: string;
-      durationBeforeNextInMonths: number;
+      durationStartInMonths: number;
+      durationEndInMonths: number;
     }[][] = [];
 
     const firstVaccine = vaccine.passedStages[0];
@@ -116,7 +117,7 @@ export const Vaccination: React.FC<VaccinationProps> = (props) => {
         .filter((x) => !item.map((el) => el.stage).includes(x));
 
       needToAdd.forEach((stage) => {
-        item.push({ stage, date: 'none', durationBeforeNextInMonths: -1 })
+        item.push({ stage, date: 'none', durationStartInMonths: -1, durationEndInMonths: -1 })
       });
 
       item = item.sort((a, b) => a.stage - b.stage);
@@ -151,7 +152,7 @@ export const Vaccination: React.FC<VaccinationProps> = (props) => {
             name: vaccine.name,
             stadies: sorted.map((el, index) => el.map((stady) => ({
               name: index > 0 ? `R${stady.stage}` : `V${stady.stage}`,
-              isVaccined: stady.durationBeforeNextInMonths !== -1
+              isVaccined: stady.durationStartInMonths !== -1
             })))
           }}
           status={new Date() >= date ? "bad" : "ok"}
