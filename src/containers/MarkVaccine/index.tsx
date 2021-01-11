@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import { BackButton, Layout, PageLayout } from '../../components';
+import { AppButton, BackButton, Layout, PageLayout } from '../../components';
 import { useHistory, useLocation } from 'react-router-dom';
 import FormHelperText from '@material-ui/core/FormHelperText';
 import Box from '@material-ui/core/Box';
@@ -81,6 +81,8 @@ const VaccinePicker: React.FC<VaccinePicker> = ({
 
     const successStages = !stagesRequest.state.fetching && stagesRequest.state.answer.succeeded;
 
+    const stageError = status.vaccine && !status.stage;
+
     if (successStages) {
         setStages(stagesRequest.state.answer.data || []);
         stagesRequest.reload();
@@ -115,7 +117,7 @@ const VaccinePicker: React.FC<VaccinePicker> = ({
                 <FormControl
                     variant="outlined"
                     fullWidth
-                    error={!Boolean(status.stage)}
+                    error={stageError}
                     disabled={!Boolean(status.vaccine)}>
 
                     <InputLabel htmlFor="filled-age-native-simple">какая по счёту</InputLabel>
@@ -132,7 +134,7 @@ const VaccinePicker: React.FC<VaccinePicker> = ({
                             </option>
                         ))}
                     </Select>
-                    <FormHelperText>{Boolean(status.stage) || 'укажите стадию'}</FormHelperText>
+                    <FormHelperText>{stageError && 'укажите стадию'}</FormHelperText>
                 </FormControl>
             </Box>
         </div>
@@ -156,15 +158,13 @@ export const MarkVaccine: React.FC<MarkVaccineProps> = (props) => {
             stage: undefined
         }
     ]);
+    const [error, setError] = useState('');
 
     const vaccinesRequest = useServer(GetVaccines);
-    const stagesRequest = useServer(GetAvailableStages);
     const vaccinationRequest = useServer(CreateVaccination);
 
     const loading = vaccinesRequest.state.fetching || vaccinationRequest.state.fetching;
     const successVaccines = !loading && vaccinesRequest.state.answer.succeeded;
-
-    const successVaccination = !loading && vaccinationRequest.state.answer.succeeded;
 
 
     // загружаем все известные вакцины
@@ -178,7 +178,6 @@ export const MarkVaccine: React.FC<MarkVaccineProps> = (props) => {
         setVaccines((vaccinesRequest.state.answer.data || []) as any);
         vaccinesRequest.reload();
     }
-
 
     /**
      * добавление новой записи пройденной вакцинации
@@ -203,7 +202,6 @@ export const MarkVaccine: React.FC<MarkVaccineProps> = (props) => {
         }, []));
     }
 
-
     /**
      * изменить состояние вакцинации
      * 
@@ -211,10 +209,31 @@ export const MarkVaccine: React.FC<MarkVaccineProps> = (props) => {
      * @param {number} markIdx индекс вакцинации
      */
     const editMark = (newMark: MarkedVaccine, markIdx: number) => {
-        setMarkedVaccines(markedVaccines.map((mark, idx) => {
+        const newState = markedVaccines.map((mark, idx) => {
             if (markIdx == idx) return newMark;
             return mark;
-        }));
+        })
+
+        const isInvalidVaccine = chekMarksValid(newState);
+
+        if (!isInvalidVaccine) setError('');
+
+        setMarkedVaccines(newState);
+    }
+
+    /**
+     * сохранение пройденных прививок
+     */
+    const saveHandle = () => {
+        const isInvalidVaccine = chekMarksValid(markedVaccines);
+
+        if (isInvalidVaccine) {
+            setError('пожалуйста заполните все поля');
+        } else {
+            setError('');
+        }
+
+        // отправка
     }
 
     // если нет переданного визита, то просто переносим пользователя на календарь
@@ -230,6 +249,8 @@ export const MarkVaccine: React.FC<MarkVaccineProps> = (props) => {
                     {!loading &&
                         <div>
                             <Box mb={2} fontSize={24} fontWeight={500}>Проведенные вакцинации</Box>
+
+                            {error}
 
                             {
                                 markedVaccines.map((mark, idx) => {
@@ -258,10 +279,12 @@ export const MarkVaccine: React.FC<MarkVaccineProps> = (props) => {
                             }
 
 
-
                             <div>
                                 <Box fontSize={16} fontWeight={300} textAlign="center" mb={1}>
-                                    Мне сделали несколько прививок?
+                                    {markedVaccines.length > 1 ?
+                                        "добавить ещё" : "Мне сделали несколько прививок?"
+                                    }
+
                                 </Box>
 
                                 <div className={classes.commandLine}>
@@ -271,10 +294,19 @@ export const MarkVaccine: React.FC<MarkVaccineProps> = (props) => {
                                     </div>
                                 </div>
                             </div>
+
+                            <AppButton floated onClick={saveHandle}>
+                                Сохранить
+                            </AppButton>
                         </div>
                     }
                 </Box>
             </PageLayout>
         </Layout>
     );
+}
+
+
+function chekMarksValid(marks: MarkedVaccine[]): boolean {
+    return marks.some((mark) => !mark.stage || !mark.vaccine);
 }
