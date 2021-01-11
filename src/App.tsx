@@ -5,27 +5,19 @@ import { connect } from 'react-redux';
 
 import { userInit } from './store/user/action';
 import { appDataInit } from './store/appData/action';
-import { Layout } from './components/Layout/Layout';
 import { Reg } from './containers/Reg/Reg';
 import { Calendar } from './containers/Calendar';
 import { Profile } from './containers/Profile';
-import { Take } from './containers/Take';
 import { Passport } from './containers/Passport';
-import { Family } from './containers/Family';
-import { UserData } from './containers/UserData';
 import { Region } from './containers/Region';
 import { Profession } from './containers/Profession';
 import { Quiz } from './containers/Quiz';
 import { Diseas } from './containers/Diseas';
 import { ReadyPage } from './containers/ReadyPage';
 import { RootState } from './store';
-import { RegSuccess } from './containers/RegSuccess';
 import { AddMember } from './containers/AddMember';
 import { SplashScreen } from './components/SplashScreen';
-import { MemberInfo } from './containers/MemberInfo';
-import { MainPage } from './containers/MainPage';
 import { LoginPage } from './containers/LoginPage';
-import { BackButton } from './components/BackButton';
 import { Patient } from './containers/Patient';
 import { Vaccine } from './containers/Vaccine';
 import { ChooseClinic } from './containers/ChooseClinic';
@@ -39,6 +31,8 @@ import { useAccessToken } from './hooks/useAccessToken';
 
 import { Secure } from './components';
 import { MarkVaccine } from './containers/MarkVaccine';
+import { VaccinationDetails } from './containers/VaccinationDetails';
+
 
 type AppProps = {
   user: any
@@ -75,6 +69,8 @@ const App: React.FC<AppProps> = function ({
   const isAuth = Boolean(user);
   const { token } = useAccessToken();
 
+
+  // инициализация приложения
   useEffect(() => {
     void async function () {
       await userInit();
@@ -87,9 +83,12 @@ const App: React.FC<AppProps> = function ({
     }()
   }, [token]);
 
+
+  // режим загрузки
   if (!isINIT) return <div className="App">
     <SplashScreen />
   </div>;
+
 
   return (
     <div className="App">
@@ -198,6 +197,12 @@ const App: React.FC<AppProps> = function ({
               <Route path={`/vaccination/add`} exact>
                 <ApplicationSecure>
                   <ReadyPage />
+                </ApplicationSecure>
+              </Route>
+
+              <Route path={`/vaccination/:id`} exact>
+                <ApplicationSecure>
+                  <VaccinationDetails />
                 </ApplicationSecure>
               </Route>
 

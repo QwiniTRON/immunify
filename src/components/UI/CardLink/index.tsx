@@ -73,7 +73,8 @@ export const CardLink: React.FC<CardLinkProps> = ({
     to,
     status,
     statusLabel,
-    Icon
+    Icon,
+    children
 }) => {
     const classes = useStyle();
     let StatusIcon = (<ClearIcon className={classes.statusIcon} />);
@@ -94,6 +95,7 @@ export const CardLink: React.FC<CardLinkProps> = ({
                 <div>
                     <p className={classes.title}>{title}</p>
                     <p>{subTitle}</p>
+                    {children}
                 </div>
 
                 <div className={classes.arrow}>
@@ -109,7 +111,8 @@ export const CardLink: React.FC<CardLinkProps> = ({
                     >
                         <span className={classes.statusLabel}>{statusLabel}</span>
                         {StatusIcon}
-                    </div>}
+                    </div>
+                }
             </Paper>
         </Link>
     );

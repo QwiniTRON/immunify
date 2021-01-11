@@ -122,6 +122,7 @@ export const Vaccination: React.FC<VaccinationProps> = (props) => {
       item = item.sort((a, b) => a.stage - b.stage);
     });
 
+
     const sorted = array.sort((a, b) => {
       let aMaxDate = new Date(0);
       let bMaxDate = new Date(0);
@@ -144,6 +145,7 @@ export const Vaccination: React.FC<VaccinationProps> = (props) => {
       <Box marginY={1} key={vaccine.id + vaccine.name + index.toString()}>
         <VaccineCard
           vaccine={{
+            id: vaccine.id,
             date: `Следующая вакцинация не поздее ${date.toLocaleDateString('ru-RU')}`,
             for: vaccine.detailed,
             name: vaccine.name,

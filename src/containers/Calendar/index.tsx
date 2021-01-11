@@ -11,6 +11,7 @@ import { GetHospitalByPatient } from '../../server/fetchers/hospitalVisit';
 import { RootState } from '../../store';
 import { AppLinkButton } from '../../components/UI/AppLinkButton';
 import { VisitCard } from '../../components/UI/VisitCard';
+import { CircleLoader } from '../../components/UI/CircleLoader';
 
 type CalendarProps = {
 
@@ -74,8 +75,16 @@ export const Calendar: React.FC<CalendarProps> = (props) => {
     return (
         <Layout title="Календарь" domainPage clearScroll>
             <PageLayout className={classes.root}>
-                { }
-                {!loading &&
+                { loading &&
+                    <Box textAlign="center"><CircleLoader /></Box>
+                }
+
+                {
+                    !loading && visits.length == 0 &&
+                    <TakePlaceholder /> 
+                }   
+
+                {!loading && visits.length > 0 &&
                     <Box p="20px">
                         <Box mb={2} fontSize={24} fontWeight={500}>Вы записаны на прием</Box>
 

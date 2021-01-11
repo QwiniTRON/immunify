@@ -67,15 +67,15 @@ const useStyles = makeStyles({
 type VaccinePicker = {
     vaccines: Vaccine[]
     status: MarkedVaccine
+    editHandle: Function
 }
 
 const VaccinePicker: React.FC<VaccinePicker> = ({
     vaccines,
-    status
+    status,
+    editHandle
 }) => {
-    const [currentStage, setCurrentStage] = useState(0);
     const [stages, setStages] = useState<{ id: number, stage: number }[]>([]);
-    const [vaccine, setVaccine] = useState<Vaccine | null>(null);
 
     const stagesRequest = useServer(GetAvailableStages);
 
@@ -93,20 +93,20 @@ const VaccinePicker: React.FC<VaccinePicker> = ({
                 <Autocomplete
                     options={vaccines}
                     getOptionLabel={(option) => option.name}
-                    value={vaccine}
+                    value={status.vaccine}
                     fullWidth
                     renderInput={(params) =>
                         <TextField
                             {...params}
-                            helperText={status.vaccineId || 'нужно указать вакцину'}
-                            error={Boolean(status.vaccineId)}
+                            helperText={Boolean(status.vaccine) || 'нужно указать вакцину'}
+                            error={!Boolean(status.vaccine)}
                             label="укажите вакцину"
                             variant="outlined" />
                     }
                     onChange={(event, newValue) => {
                         stagesRequest.cancel();
                         stagesRequest.fetch({ vaccineId: Number(newValue?.id) });
-                        setVaccine(newValue);
+                        editHandle(Object.assign(status, { vaccine: newValue }));
                     }}
                 />
             </Box>
@@ -115,15 +115,15 @@ const VaccinePicker: React.FC<VaccinePicker> = ({
                 <FormControl
                     variant="outlined"
                     fullWidth
-                    error={Boolean(status.stage)}
-                    disabled={!Boolean(vaccine)}>
+                    error={!Boolean(status.stage)}
+                    disabled={!Boolean(status.vaccine)}>
 
                     <InputLabel htmlFor="filled-age-native-simple">какая по счёту</InputLabel>
                     <Select
                         native
                         label="какая по счёту"
-                        value={currentStage}
-                        onChange={(e) => setCurrentStage(Number(e.target.value))}
+                        value={status.stage}
+                        onChange={(e) => editHandle(Object.assign(status, { stage: e.target.value }))}
                     >
                         <option aria-label="None" value="" />
                         {stages.map((stage) => (
@@ -132,7 +132,7 @@ const VaccinePicker: React.FC<VaccinePicker> = ({
                             </option>
                         ))}
                     </Select>
-                    <FormHelperText>{status.stage || 'укажите стадию'}</FormHelperText>
+                    <FormHelperText>{Boolean(status.stage) || 'укажите стадию'}</FormHelperText>
                 </FormControl>
             </Box>
         </div>
@@ -140,7 +140,7 @@ const VaccinePicker: React.FC<VaccinePicker> = ({
 }
 
 type MarkedVaccine = {
-    vaccineId?: number
+    vaccine?: Vaccine
     stage?: number
 }
 
@@ -152,7 +152,7 @@ export const MarkVaccine: React.FC<MarkVaccineProps> = (props) => {
     const [vaccines, setVaccines] = useState<Vaccine[]>([]);
     const [markedVaccines, setMarkedVaccines] = useState<MarkedVaccine[]>([
         {
-            vaccineId: undefined,
+            vaccine: undefined,
             stage: undefined
         }
     ]);
@@ -180,6 +180,44 @@ export const MarkVaccine: React.FC<MarkVaccineProps> = (props) => {
     }
 
 
+    /**
+     * добавление новой записи пройденной вакцинации
+     */
+    const addMark = () => {
+        setMarkedVaccines(markedVaccines.concat({
+            vaccine: undefined,
+            stage: undefined
+        }));
+    }
+
+    /**
+     *  удаление прохождения из итогов
+     * 
+     * @param {number} markIdx индекс вакцинации
+     */
+    const deleteMark = (markIdx: number) => {
+        setMarkedVaccines(markedVaccines.reduce((result: MarkedVaccine[], mark, idx) => {
+            if (markIdx != idx) result.push(mark);
+
+            return result;
+        }, []));
+    }
+
+
+    /**
+     * изменить состояние вакцинации
+     * 
+     * @param {newMark} newMark новое состояние прохождения
+     * @param {number} markIdx индекс вакцинации
+     */
+    const editMark = (newMark: MarkedVaccine, markIdx: number) => {
+        setMarkedVaccines(markedVaccines.map((mark, idx) => {
+            if (markIdx == idx) return newMark;
+            return mark;
+        }));
+    }
+
+    // если нет переданного визита, то просто переносим пользователя на календарь
     if (Boolean(visit) == false) history.push('/calendar');
 
 
@@ -193,18 +231,44 @@ export const MarkVaccine: React.FC<MarkVaccineProps> = (props) => {
                         <div>
                             <Box mb={2} fontSize={24} fontWeight={500}>Проведенные вакцинации</Box>
 
-                            <div className={classes.commandLine}>
-                                <div className={classes.line} />
-                                <div className={s(classes.addButton, classes.button__red)}>
-                                    <RemoveIcon />
-                                </div>
-                            </div>
-                            <VaccinePicker status={markedVaccines[0]} vaccines={vaccines} />
+                            {
+                                markedVaccines.map((mark, idx) => {
+                                    return (
+                                        <div key={idx}>
+                                            {idx > 0 &&
+                                                (
+                                                    <div
+                                                        className={classes.commandLine}
+                                                        onClick={() => deleteMark(idx)}>
+                                                        <div className={classes.line} />
+                                                        <div className={s(classes.addButton, classes.button__red)}>
+                                                            <RemoveIcon />
+                                                        </div>
+                                                    </div>
+                                                )
+                                            }
+                                            <VaccinePicker
+                                                status={mark}
+                                                vaccines={vaccines}
+                                                editHandle={(newState: MarkedVaccine) => editMark(newState, idx)}
+                                            />
+                                        </div>
+                                    );
+                                })
+                            }
 
-                            <div className={classes.commandLine}>
-                                <div className={classes.line} />
-                                <div className={classes.addButton}>
-                                    <AddIcon />
+
+
+                            <div>
+                                <Box fontSize={16} fontWeight={300} textAlign="center" mb={1}>
+                                    Мне сделали несколько прививок?
+                                </Box>
+
+                                <div className={classes.commandLine}>
+                                    <div className={classes.line} />
+                                    <div className={classes.addButton} onClick={addMark}>
+                                        <AddIcon />
+                                    </div>
                                 </div>
                             </div>
                         </div>
