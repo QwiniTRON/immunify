@@ -9,9 +9,11 @@ export type PatientVaccinations = {
   name: string,
   detailed: string,
   passedStages: {
+    revaccination: boolean,
     stage: number,
     date: string,
-    durationBeforeNextInMonths: number,
+    durationStartInMonths: number,
+    durationEndInMonths: number,
   }[],
   totalStages: number[],
 }[];
