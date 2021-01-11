@@ -1,20 +1,16 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import Box from '@material-ui/core/Box';
 import { makeStyles } from '@material-ui/core/styles';
 import IconButton from '@material-ui/core/IconButton';
 import AddIcon from '@material-ui/icons/Add';
-import { Divider } from '@material-ui/core';
 
-import { AppButtonGroup } from '../../components/UI/ButtonGroup';
-import { AppButton } from '../../components/UI/AppButton';
 import { Layout } from '../../components/Layout/Layout';
 import { PageLayout } from '../../components/UI/PageLayout';
 import { BackButton } from '../../components/BackButton';
-import { Link, useHistory, useLocation, useRouteMatch } from 'react-router-dom';
-import { useServer } from '../../hooks/useServer';
+import { Link, useHistory, useLocation } from 'react-router-dom';
 import { AppLinkButton } from '../../components/UI/AppLinkButton';
-
-
+import { useServer } from '../../hooks/useServer';
+import { GetVaccineById } from '../../server';
 
 type VaccineRouteParams = {
   id: string
@@ -37,10 +33,41 @@ const useStyles = makeStyles({
   },
 });
 
+type VaccineType = {
+  id: number, 
+  name: string, 
+  detailedShort: string, 
+  detailedFull: string,
+}
+
 export const Vaccine: React.FC<VaccineProps> = (props) => {
   const classes = useStyles();
   const history = useHistory();
-  const vaccine = useLocation<{ id: string, name: string }>().state;
+  const vaccineId = useLocation<{ id: number }>().state;
+  const [vaccine, setVaccine] = useState<VaccineType>({
+    id: 0,
+    name: '',
+    detailedFull: '',
+    detailedShort: '',
+  });
+
+  const fetcher = useServer(GetVaccineById);
+  
+  useEffect(() => {
+    fetcher.fetch({ id: vaccineId.id });
+
+    return fetcher.cancel;
+  }, []);
+
+  const loading = fetcher.state.fetching;
+  const success = !loading && fetcher.state.answer.succeeded;
+
+  useEffect(() => {
+    if (success) {
+      setVaccine(fetcher.state.answer.data!);
+      fetcher.reload();
+    }
+  }, [success])
 
 
   /**
@@ -81,7 +108,7 @@ export const Vaccine: React.FC<VaccineProps> = (props) => {
             </Box>
 
             <Box mb={2}>
-              Mark down
+              {vaccine.detailedFull}
             </Box>
 
             <Box mt={3}>

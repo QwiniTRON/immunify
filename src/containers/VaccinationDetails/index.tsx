@@ -76,7 +76,6 @@ const useStyles = makeStyles({
 export const VaccinationDetails: React.FC<VaccinationDetailsProps> = (props) => {
   const classes = useStyles();
 
-
   return (
     <Layout title="" BackButtonCustom={<BackButton to="/vaccination" text="Вернуться к вакцинациям" />}>
       <PageLayout>
