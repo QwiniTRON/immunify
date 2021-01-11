@@ -5,19 +5,18 @@ type Request = {
 }
 
 type Response = {
-  id: number
-  name: string
-  detailed: string
-  signs: string
-  vaccines: Vaccine[]
+  id: number,
+  name: string,
+  detailedShort: string,
+  detailedFull: string,
+  vaccines: Vaccine[],
 };
 
 export type Vaccine = {
-  id: number;
-  name: string;
-  detailed: string;
-  contraindications: string;
-  for: string;
+  id: number,
+  name: string,
+  detailedShort: string,
+  detailedFull: string,
 };
 
 export const GetDetailedDisease: FetchFunc<Request, Response> = (client, request) =>

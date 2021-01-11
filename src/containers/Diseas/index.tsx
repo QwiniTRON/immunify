@@ -59,10 +59,10 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 type Diseas = {
-    detailed: string
+    detailedShort: string
+    detailedFull: string
     id: number
     name: string
-    signs: string
     vaccines: Vaccine[]
 }
 
@@ -137,7 +137,7 @@ export const Diseas: React.FC<DiseasProps> = (props) => {
                         </Box>
 
                         <Box mb={2}>
-                            Mark down
+                            {diseas?.detailedFull}
                         </Box>
 
                         <Box>
