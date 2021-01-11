@@ -7,6 +7,7 @@ type Request = {
 type Response = {
   id: number,
   stage: number,
+  revaccination: boolean,
 }[];
 
 export const GetAvailableStages: FetchFunc<Request, Response> = (client, request) =>

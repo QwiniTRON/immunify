@@ -65,16 +65,6 @@ export const useServer = <TRequest, TData>(
       .then((result) => {
         setFetching(false);
         setAnswer(result);
-      })
-      .catch((e) => {
-        setFetching(false);
-        setAnswer({
-          succeeded: false,
-          errorMessage: e,
-          data: undefined as any,
-        });
-        setToken('');
-        window.location.href = "/";
       });
   };
 
