@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import { AppButton, BackButton, Layout, PageLayout } from '../../components';
+import { AppButton, BackButton, Layout, Loader, PageLayout } from '../../components';
 import { useHistory, useLocation } from 'react-router-dom';
 import FormHelperText from '@material-ui/core/FormHelperText';
 import Box from '@material-ui/core/Box';
@@ -13,13 +13,24 @@ import AddIcon from '@material-ui/icons/Add';
 import RemoveIcon from '@material-ui/icons/Remove';
 
 import { useServer } from '../../hooks/useServer';
-import { GetVaccines, GetAvailableStages, CreateVaccination } from '../../server';
+import { GetVaccines, GetAvailableStages, CreateManyVaccination } from '../../server';
 import { CircleLoader } from '../../components/UI/CircleLoader';
 import { s } from '../../utils';
+import { useSelector } from 'react-redux';
+import { RootState } from '../../store';
 
 
 type MarkVaccineProps = {
 
+}
+
+type Visit = {
+    date: string
+    hospital: {
+        id: number,
+        name: string
+    }
+    id: number
 }
 
 type Vaccine = {
@@ -32,6 +43,10 @@ const useStyles = makeStyles({
         position: 'relative',
         height: 30,
         paddingTop: 14
+    },
+
+    pageContent: {
+        paddingBottom: 75
     },
 
     addButton: {
@@ -60,7 +75,7 @@ const useStyles = makeStyles({
     line: {
         height: 1,
         backgroundColor: '#DADADA'
-    }
+    },
 });
 
 
@@ -80,6 +95,7 @@ const VaccinePicker: React.FC<VaccinePicker> = ({
     const stagesRequest = useServer(GetAvailableStages);
 
     const successStages = !stagesRequest.state.fetching && stagesRequest.state.answer.succeeded;
+    const loading = stagesRequest.state.fetching;
 
     const stageError = status.vaccine && !status.stage;
 
@@ -87,7 +103,6 @@ const VaccinePicker: React.FC<VaccinePicker> = ({
         setStages(stagesRequest.state.answer.data || []);
         stagesRequest.reload();
     }
-
 
     return (
         <div>
@@ -114,28 +129,36 @@ const VaccinePicker: React.FC<VaccinePicker> = ({
             </Box>
 
             <Box marginY={3}>
-                <FormControl
-                    variant="outlined"
-                    fullWidth
-                    error={stageError}
-                    disabled={!Boolean(status.vaccine)}>
+                {loading &&
+                    <Box marginY={3} height="59px">
+                        <Loader />
+                    </Box>
+                }
 
-                    <InputLabel htmlFor="filled-age-native-simple">какая по счёту</InputLabel>
-                    <Select
-                        native
-                        label="какая по счёту"
-                        value={status.stage}
-                        onChange={(e) => editHandle(Object.assign(status, { stage: e.target.value }))}
-                    >
-                        <option aria-label="None" value="" />
-                        {stages.map((stage) => (
-                            <option value={stage.id} key={stage.id}>
-                                {stage.stage}
-                            </option>
-                        ))}
-                    </Select>
-                    <FormHelperText>{stageError && 'укажите стадию'}</FormHelperText>
-                </FormControl>
+                {!loading &&
+                    <FormControl
+                        variant="outlined"
+                        fullWidth
+                        error={stageError}
+                        disabled={!Boolean(status.vaccine)}>
+
+                        <InputLabel htmlFor="filled-age-native-simple">какая по счёту</InputLabel>
+                        <Select
+                            native
+                            label="какая по счёту"
+                            value={status.stage?.id}
+                            onChange={(e) => editHandle(Object.assign(status, { stage: stages.find(stage => stage.id == e.target.value) }))}
+                        >
+                            <option aria-label="None" value="" />
+                            {stages.map((stage) => (
+                                <option value={stage.id} key={stage.id}>
+                                    {stage.stage}
+                                </option>
+                            ))}
+                        </Select>
+                        <FormHelperText>{stageError && 'укажите стадию'}</FormHelperText>
+                    </FormControl>
+                }
             </Box>
         </div>
     );
@@ -143,13 +166,14 @@ const VaccinePicker: React.FC<VaccinePicker> = ({
 
 type MarkedVaccine = {
     vaccine?: Vaccine
-    stage?: number
+    stage?: { id: number, stage: number }
 }
 
 export const MarkVaccine: React.FC<MarkVaccineProps> = (props) => {
     const classes = useStyles();
-    const visit = useLocation().state;
+    const visit: Visit | undefined = useLocation().state as Visit;
     const history = useHistory();
+    const currentUser = useSelector((state: RootState) => state.user.currentUser);
 
     const [vaccines, setVaccines] = useState<Vaccine[]>([]);
     const [markedVaccines, setMarkedVaccines] = useState<MarkedVaccine[]>([
@@ -161,9 +185,11 @@ export const MarkVaccine: React.FC<MarkVaccineProps> = (props) => {
     const [error, setError] = useState('');
 
     const vaccinesRequest = useServer(GetVaccines);
-    const vaccinationRequest = useServer(CreateVaccination);
+    const vaccinationRequest = useServer(CreateManyVaccination);
 
-    const loading = vaccinesRequest.state.fetching || vaccinationRequest.state.fetching;
+    const loading = vaccinesRequest.state.fetching;
+    const vaccinationCreateLoading = vaccinationRequest.state.fetching;
+    const successVaccination = !vaccinationRequest.state.fetching && vaccinationRequest.state.answer.succeeded;
     const successVaccines = !loading && vaccinesRequest.state.answer.succeeded;
 
 
@@ -177,6 +203,10 @@ export const MarkVaccine: React.FC<MarkVaccineProps> = (props) => {
     if (successVaccines) {
         setVaccines((vaccinesRequest.state.answer.data || []) as any);
         vaccinesRequest.reload();
+    }
+
+    if (successVaccination) {
+        history.push('/vaccination');
     }
 
     /**
@@ -228,25 +258,34 @@ export const MarkVaccine: React.FC<MarkVaccineProps> = (props) => {
         const isInvalidVaccine = chekMarksValid(markedVaccines);
 
         if (isInvalidVaccine) {
-            setError('пожалуйста заполните все поля');
-        } else {
-            setError('');
+            return setError('пожалуйста заполните все поля');
         }
 
-        // отправка
+        setError('');
+
+        const stagesIds = markedVaccines.map((mark) => Number(mark?.stage?.id));
+
+
+        vaccinationRequest.fetch({
+            hospitalVisitId: visit.hospital.id,
+            patientId: Number(currentUser?.id),
+            stagesIds: stagesIds
+        });
     }
 
     // если нет переданного визита, то просто переносим пользователя на календарь
     if (Boolean(visit) == false) history.push('/calendar');
 
+    // console.log(markedVaccines, visit);
+
 
     return (
         <Layout title="" BackButtonCustom={<BackButton simpleBack />}>
             <PageLayout>
-                <Box p="20px">
-                    {loading && <Box textAlign="center"><CircleLoader /></Box>}
+                <Box p="20px" className={classes.pageContent}>
+                    {loading || vaccinationCreateLoading && <Box textAlign="center"><CircleLoader /></Box>}
 
-                    {!loading &&
+                    {!loading && !vaccinationCreateLoading &&
                         <div>
                             <Box mb={2} fontSize={24} fontWeight={500}>Проведенные вакцинации</Box>
 

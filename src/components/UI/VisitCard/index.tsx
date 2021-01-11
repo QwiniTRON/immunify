@@ -97,7 +97,7 @@ export const VisitCard: React.FC<VisitCardProps> = ({ visit }) => {
 
                     </div>
 
-                    <Divider />
+                    <Divider color="gray" />
                     <Box display="flex" fontSize={18} alignItems="center">
                         <TargetIcon className={classes.ticketIcon} />
                         <div>
@@ -106,7 +106,7 @@ export const VisitCard: React.FC<VisitCardProps> = ({ visit }) => {
                         </div>
                     </Box>
 
-                    <Divider />
+                    <Divider color="gray" />
                     <Box display="flex" fontSize={18} alignItems="center"   >
                         <SyringeIcon className={classes.ticketIcon} />
 

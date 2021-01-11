@@ -92,7 +92,7 @@ export const Profile: React.FC<ProfileProps> = (props) => {
             )
           })}
 
-          <AppLinkButton className={s("family-page__add", classes.addButton)} to="/profile/add" >добавить</AppLinkButton>
+          <AppLinkButton className={s("family-page__add", classes.addButton)} to="/profile/add" >Добавить пользователя</AppLinkButton>
         </Box>
 
       </PageLayout>

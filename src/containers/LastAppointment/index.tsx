@@ -386,7 +386,7 @@ export const LastAppointment: React.FC<LastAppointmentProps> = (props) => {
         <Box component="h2" fontSize={24}>
           Запись на прием
         </Box>
-        <Divider />
+        <Divider color="gray" />
 
         {!loading && <div className={classes.content}>
 
@@ -408,7 +408,7 @@ export const LastAppointment: React.FC<LastAppointmentProps> = (props) => {
             </Box>
           </Box>
 
-          <Divider />
+          <Divider color="gray" />
 
           <Box mt={1} mb={3} fontWeight={500}>
             Моя запись:
@@ -504,7 +504,7 @@ export const LastAppointment: React.FC<LastAppointmentProps> = (props) => {
                 </div>
 
               </div>
-              <Divider />
+              <Divider color="gray" />
 
               <Box display="flex" justifyContent="space-between">
                 <IconButton

@@ -192,7 +192,7 @@ export const Appointment: React.FC<AppointmentProps> = (props) => {
         <Box component="h2" fontSize={24}>
           Запишитесь на прием
         </Box>
-        <Divider />
+        <Divider color="gray" />
 
         {detailLoading && <Box textAlign="center"><CircleLoader /></Box>}
 
@@ -217,7 +217,7 @@ export const Appointment: React.FC<AppointmentProps> = (props) => {
               </Box>
             </Box>
 
-            <Divider />
+            <Divider color="gray" />
 
             <Box mt={6} mb={1}>
               Моя запись:
