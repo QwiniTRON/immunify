@@ -75,14 +75,14 @@ export const Calendar: React.FC<CalendarProps> = (props) => {
     return (
         <Layout title="Календарь" domainPage clearScroll>
             <PageLayout className={classes.root}>
-                { loading &&
+                {loading &&
                     <Box textAlign="center"><CircleLoader /></Box>
                 }
 
                 {
                     !loading && visits.length == 0 &&
-                    <TakePlaceholder /> 
-                }   
+                    <TakePlaceholder />
+                }
 
                 {!loading && visits.length > 0 &&
                     <Box p="20px">
@@ -90,8 +90,10 @@ export const Calendar: React.FC<CalendarProps> = (props) => {
 
                         {
                             (visits.map(
-                                (visit) => (
-                                    <VisitCard visit={visit} />
+                                (visit, idx) => (
+                                    <Box marginY={2} key={idx}>
+                                        <VisitCard visit={visit} />
+                                    </Box>
                                 ))
                             )
                         }
