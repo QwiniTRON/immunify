@@ -78,7 +78,13 @@ export const Calendar: React.FC<CalendarProps> = (props) => {
                 { loading &&
                     <Box textAlign="center"><CircleLoader /></Box>
                 }
-                {!loading &&
+
+                {
+                    !loading && visits.length == 0 &&
+                    <TakePlaceholder /> 
+                }   
+
+                {!loading && visits.length > 0 &&
                     <Box p="20px">
                         <Box mb={2} fontSize={24} fontWeight={500}>Вы записаны на прием</Box>
 
