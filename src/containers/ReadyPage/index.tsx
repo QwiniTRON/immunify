@@ -191,6 +191,7 @@ export const ReadyPage: React.FC<ReadyPageProps> = (props) => {
                             name: 'region',
                             id: 'filled-age-native-simple',
                         }}
+                        disabled={!Boolean(vaccine)}
                     >
                         <option aria-label="None" value="" />
                         {stages.map((stage) => (
