@@ -3,14 +3,11 @@ import Box from '@material-ui/core/Box';
 import { makeStyles } from '@material-ui/core/styles';
 import IconButton from '@material-ui/core/IconButton';
 import AddIcon from '@material-ui/icons/Add';
-import { Divider } from '@material-ui/core';
 
-import { AppButtonGroup } from '../../components/UI/ButtonGroup';
-import { AppButton } from '../../components/UI/AppButton';
 import { Layout } from '../../components/Layout/Layout';
 import { PageLayout } from '../../components/UI/PageLayout';
 import { BackButton } from '../../components/BackButton';
-import { Link, useHistory, useLocation, useRouteMatch } from 'react-router-dom';
+import { Link, useHistory, useLocation } from 'react-router-dom';
 import { useServer } from '../../hooks/useServer';
 import { AppLinkButton } from '../../components/UI/AppLinkButton';
 
@@ -42,7 +39,7 @@ export const Vaccine: React.FC<VaccineProps> = (props) => {
   const history = useHistory();
   const vaccine = useLocation<{ id: string, name: string }>().state;
 
-
+  
   /**
   * обработка клика кнопки "я привит"
   */
@@ -56,10 +53,10 @@ export const Vaccine: React.FC<VaccineProps> = (props) => {
       <PageLayout>
 
         {!vaccine &&
-          <Box>
+          <Box textAlign="center">
             такая вацина не нашлась
 
-            <Box><Link to="/passport">имунный паспорт</Link></Box>
+            <Box marginY={2} color="#000"><Link to="/passport">имунный паспорт</Link></Box>
           </Box>
         }
 
