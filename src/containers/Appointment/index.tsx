@@ -30,7 +30,8 @@ type AppointmentParams = {
 type AppointmentProps = {}
 
 type ClinicDetailed = {
-  coordinate: string
+  latitude: string
+  longitude: string
   id: number
   name: string
   regionName: string
