@@ -10,14 +10,13 @@ import { useServer } from '../../hooks/useServer';
 import { useAccessToken } from '../../hooks/useAccessToken';
 
 import { GoogleLogin, GoogleLoginResponse, GoogleLoginResponseOffline } from 'react-google-login';
+import FacebookLogin from 'react-facebook-login/dist/facebook-login-render-props';
 
 import {
   Login,
   ExternalLogin,
   ExternalAuth,
 } from '../../server';
-
-import { GeneratePassword } from '../../utils';
 
 import './loginpage.scss';
 
@@ -76,9 +75,18 @@ export const LoginPage: FC = () => {
     }
   }
   
-  const failureResponse = (response: GoogleLoginResponse): void => {
+  const failureResponseGoogle = (response: GoogleLoginResponse): void => {
     // Show error maybe?
     console.log(response.profileObj.googleId);
+  }
+
+  const facebookCallback = (userInfo: any): void => {
+      if (userInfo.userID !== undefined) {
+        externalLoginFetcher.fetch({
+          externalAuth: ExternalAuth.Facebook,
+          identity: userInfo.userID,
+        });
+      }
   }
 
   return (
@@ -143,7 +151,7 @@ export const LoginPage: FC = () => {
                   clientId="830770546293-pu13vb9rsqgbh1u4oklhg47p3humh3gr.apps.googleusercontent.com"
                   buttonText="Login"
                   onSuccess={responseGoogle}
-                  onFailure={failureResponse}
+                  onFailure={failureResponseGoogle}
                   render={props => (
                     <button {...props} style={{ background: 'none', border: 'none' }}>
                       <img src={googlelogo} alt="google" />
@@ -156,7 +164,15 @@ export const LoginPage: FC = () => {
                 <img src={vklogo} alt="vk" />
               </div>
               <div className="socials__item">
-                <img src={facebooklogo} alt="facebook" />
+                <FacebookLogin
+                  appId="438469453977207"
+                  callback={facebookCallback}
+                  render={(renderProps: any) => (
+                    <button onClick={renderProps.onClick} style={{ background: 'none', border: 'none' }}>
+                      <img src={facebooklogo} alt="facebook" />
+                    </button>
+                  )}
+                />
               </div>
             </div>
 

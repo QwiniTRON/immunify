@@ -4,6 +4,7 @@ import vklogo from '../../assets/vk.png';
 import facebooklogo from '../../assets/facebook.png';
 import { Link } from 'react-router-dom';
 import { GoogleLogin, GoogleLoginResponse, GoogleLoginResponseOffline } from 'react-google-login';
+import FacebookLogin from 'react-facebook-login/dist/facebook-login-render-props';
 
 import { useServer } from '../../hooks/useServer';
 import { useAccessToken } from '../../hooks/useAccessToken';
@@ -63,14 +64,7 @@ export const Registration: React.FC = () => {
       }
   
       if (isGoogleResponse(response)) {
-        GeneratePassword(response.googleId).then(pass => {
-            console.log({
-                username: response.googleId + 'Google',
-                password: pass,
-                externalAuth: ExternalAuth.Google,
-                identity: response.googleId,
-            });
-            
+        GeneratePassword(response.googleId).then(pass => {            
             externalFetcher.fetch({
                 username: response.googleId + 'Google',
                 password: pass,
@@ -81,9 +75,22 @@ export const Registration: React.FC = () => {
       }
     }
     
-    const failureResponse = (response: GoogleLoginResponse): void => {
+    const failureResponseGoogle = (response: GoogleLoginResponse): void => {
       // Show error maybe?
       console.log(response.profileObj.googleId);
+    }
+
+    const facebookCallback = (userInfo: any): void => {
+        if (userInfo.userID !== undefined) {
+            GeneratePassword(userInfo.userID).then(pass => {
+                externalFetcher.fetch({
+                    username: userInfo.userID + 'Facebook',
+                    password: pass,
+                    externalAuth: ExternalAuth.Facebook,
+                    identity: userInfo.userID,
+                });
+            })
+        }
     }
 
     return (
@@ -161,7 +168,7 @@ export const Registration: React.FC = () => {
                             clientId="830770546293-pu13vb9rsqgbh1u4oklhg47p3humh3gr.apps.googleusercontent.com"
                             buttonText="Login"
                             onSuccess={responseGoogle}
-                            onFailure={failureResponse}
+                            onFailure={failureResponseGoogle}
                             render={props => (
                                 <button {...props} style={{ background: 'none', border: 'none' }}>
                                     <img src={googlelogo} alt="google" />
@@ -174,7 +181,15 @@ export const Registration: React.FC = () => {
                             <img src={vklogo} alt="vk" />
                         </div>
                         <div className="socials__item">
-                            <img src={facebooklogo} alt="facebook" />
+                            <FacebookLogin
+                                appId="438469453977207"
+                                callback={facebookCallback}
+                                render={(renderProps: any) => (
+                                    <button onClick={renderProps.onClick} style={{ background: 'none', border: 'none' }}>
+                                        <img src={facebooklogo} alt="facebook" />
+                                    </button>
+                                )}
+                            />
                         </div>
                     </div>
 
