@@ -82,3 +82,13 @@
         transform: rotate(360deg);
     }
 }
+
+$loaderColors: #51ebe3, #6fff37, rgb(102, 255, 127), #51ebe3, #67cdfd, rgb(102, 255, 127), #6fff37, #67cdfd;
+
+.lds-roller.circleLoader__linear {
+    @for $i from 1 to 9 {
+        div:nth-child(#{$i}):after {
+            background-color: #{nth($loaderColors, $i)};
+        }
+    }
+}

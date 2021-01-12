@@ -1,11 +1,6 @@
-import react, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import Modal from '@material-ui/core/Modal';
-import Backdrop from '@material-ui/core/Backdrop';
-import Fade from '@material-ui/core/Fade';
 import Box from '@material-ui/core/Box';
-import ClearIcon from '@material-ui/icons/Clear';
-import ArrowRightAltIcon from '@material-ui/icons/ArrowRightAlt';
 import { Link, useHistory, useRouteMatch } from 'react-router-dom';
 import IconButton from '@material-ui/core/IconButton';
 import AddIcon from '@material-ui/icons/Add';
@@ -13,16 +8,12 @@ import AddIcon from '@material-ui/icons/Add';
 import './diseas.scss';
 
 import { PageLayout } from '../../components/UI/PageLayout';
-import { AppButton } from '../../components/UI/AppButton';
-import { Loader } from '../../components/UI/Loader';
 import { Layout } from '../../components/Layout/Layout';
-import { AppButtonGroup } from '../../components/UI/ButtonGroup';
 import { BackButton } from '../../components/BackButton';
 import { useServer } from '../../hooks/useServer';
 import { GetDetailedDisease, Vaccine } from '../../server';
-import { version } from 'react-dom';
 import { AppLinkButton } from '../../components/UI/AppLinkButton';
-import { CircleLoader } from '../../components/UI/CircleLoader';
+import { CircleLoader, CircleLoaderColors } from '../../components/UI/CircleLoader';
 
 
 
@@ -116,7 +107,7 @@ export const Diseas: React.FC<DiseasProps> = (props) => {
         <Layout title="" BackButtonCustom={<BackButton text="Вернуться к иммунному паспорту" />} >
             <PageLayout className="diseas-page">
 
-                {loading && <Box textAlign="center"><CircleLoader /></Box>}
+                {loading && <Box textAlign="center"><CircleLoader color={CircleLoaderColors.linear} /></Box>}
 
                 {!loading &&
                     <>
