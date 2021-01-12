@@ -11,6 +11,7 @@ import { useAccessToken } from '../../hooks/useAccessToken';
 
 import { GoogleLogin, GoogleLoginResponse, GoogleLoginResponseOffline } from 'react-google-login';
 import FacebookLogin from 'react-facebook-login/dist/facebook-login-render-props';
+import VkLogin from 'react-vkontakte-login';
 
 import {
   Login,
@@ -89,6 +90,15 @@ export const LoginPage: FC = () => {
       }
   }
 
+  const vkCallback = (userInfo: any): void => {
+    if (userInfo.session !== undefined) {
+      externalLoginFetcher.fetch({
+        externalAuth: ExternalAuth.VK,
+        identity: userInfo.session.user.id,
+      });
+    }
+  }
+
   return (
     <div className="login-page">
       <div className="container">
@@ -161,7 +171,15 @@ export const LoginPage: FC = () => {
                 />
               </div>
               <div className="socials__item">
-                <img src={vklogo} alt="vk" />
+                <VkLogin 
+                  apiId="7707005"
+                  callback={vkCallback}
+                  render={(renderProps: any) => (
+                    <button {...renderProps} style={{ background: 'none', border: 'none' }}>
+                      <img src={vklogo} alt="vk" />
+                    </button>
+                  )}
+                />
               </div>
               <div className="socials__item">
                 <FacebookLogin

@@ -14,6 +14,7 @@ import { Register, ExternalRegister, ExternalAuth } from '../../server';
 import './Registration.scss';
 import { useForm } from 'react-hook-form';
 import { GeneratePassword } from '../../utils';
+import VkLogin from 'react-vkontakte-login';
 
 type Form = {
   username: string,
@@ -91,6 +92,19 @@ export const Registration: React.FC = () => {
                 });
             })
         }
+    }
+
+    const vkCallback = (userInfo: any): void => {
+      if (userInfo.session !== undefined) {
+        GeneratePassword(userInfo.session.user.id).then(pass => {
+            externalFetcher.fetch({
+                username: userInfo.userID + 'VK',
+                password: pass,
+                externalAuth: ExternalAuth.VK,
+                identity: userInfo.session.user.id,
+            });
+        })
+      }
     }
 
     return (
@@ -178,7 +192,15 @@ export const Registration: React.FC = () => {
                         />
                         </div>
                         <div className="socials__item">
-                            <img src={vklogo} alt="vk" />
+                            <VkLogin 
+                                apiId="7707005"
+                                callback={vkCallback}
+                                render={(renderProps: any) => (
+                                    <button {...renderProps} style={{ background: 'none', border: 'none' }}>
+                                    <img src={vklogo} alt="vk" />
+                                    </button>
+                                )}
+                            />
                         </div>
                         <div className="socials__item">
                             <FacebookLogin
