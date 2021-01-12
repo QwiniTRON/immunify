@@ -1,11 +1,16 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import Box from '@material-ui/core/Box';
 import { makeStyles } from '@material-ui/core/styles';
 
 import { BackButton, Layout, PageLayout } from '../../components';
 import { sif } from '../../utils';
 import Button from '@material-ui/core/Button';
-import { Link } from 'react-router-dom';
+import { Link, useRouteMatch } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+import { RootState } from '../../store';
+
+import { useServer } from '../../hooks/useServer';
+import { DetailedVaccinationType, GetDetailedVaccination } from '../../server';
 
 type VaccinationDetailsProps = {}
 
@@ -72,57 +77,103 @@ const useStyles = makeStyles({
   }
 });
 
+type DiseasRoutParams = {
+  id: string
+}
 
 export const VaccinationDetails: React.FC<VaccinationDetailsProps> = (props) => {
   const classes = useStyles();
+  const [vaccination, setVaccination] = useState<DetailedVaccinationType>();
 
+  const id = useRouteMatch<DiseasRoutParams>().params.id;  
+  const currentUser = useSelector((state: RootState) => state.user.currentUser);
 
+  const fetcher = useServer(GetDetailedVaccination);
+
+  useEffect(() => {
+    fetcher.fetch({
+      vaccineId: id as any,
+      patientId: currentUser!.id as any
+    })
+  }, []);
+
+  const loading = fetcher.state.fetching;
+  const success = !loading && fetcher.state.answer.succeeded;
+
+  useEffect(() => {
+    if (success) {
+      setVaccination(fetcher.state.answer.data!);
+
+      fetcher.reload();
+    }
+  }, [success]);
+
+  const toShow = !loading && vaccination !== undefined && vaccination.stages.map((stage, index) => {
+    return (
+      <div className={classes.stage} key={index}>
+        <div className={sif({ [classes.stageIcon]: true, })}>{`${stage.revaccination ? 'R' : 'V'}${stage.stage}`}</div>
+        <div className={classes.stageTitle}>{`${stage.revaccination ? 'Ревакцинация' : `${stage.stage} Стадия`}`}</div>
+        <div className={classes.stageDate}>{new Date(stage.date).toLocaleDateString('ru-RU')}</div>
+      </div>
+    );
+  });
+
+  !loading && vaccination !== undefined && vaccination.stages.length !== 0 && function() {
+    const lastStage = vaccination.stages[vaccination.stages.length - 1];
+    const maxStage = Math.max.apply(null, vaccination.totalStages.map(x => x.stage))
+    
+    let nextStageValue = 0;
+
+    const minRevaccinationStage = Math.min.apply(null, vaccination.totalStages.filter(x => x.revaccination).map(x => x.stage));
+
+    if (lastStage.revaccination) {
+      nextStageValue = lastStage.stage + 1 > maxStage ? minRevaccinationStage : lastStage.stage + 1;
+    } else {
+      nextStageValue = lastStage.stage + 1 > maxStage ? 1 : lastStage.stage + 1;
+    }
+
+    const resultStage = vaccination.totalStages.find(x => x.stage === nextStageValue)!;
+
+    if (toShow !== false) {
+      toShow.push((
+        <div
+          key={vaccination.stages.length + 2}
+          className={sif({
+            [classes.stage]: true,
+            [classes.stage__connect]: true
+          })}>
+          <div
+            className={sif({ [classes.stageIcon]: true, [classes.stageIcon__deactive]: true})}
+          >
+            {`${resultStage.revaccination ? 'R' : 'V'}${resultStage.stage}`}
+          </div>
+          <div className={classes.stageTitle}>{`${resultStage.revaccination ? 'Ревакцинация' : `${resultStage.stage} Стадия`}`}</div>
+          <Link className={classes.buttonLink} to="/">
+            <Button classes={{ root: classes.stageTake }} variant="contained" color="primary">
+              Записаться
+            </Button>
+          </Link>
+        </div>
+      ));
+    }
+  }();
+  
   return (
     <Layout title="" BackButtonCustom={<BackButton to="/vaccination" text="Вернуться к вакцинациям" />}>
       <PageLayout>
         <Box p="15px">
           <Box fontSize={24} fontWeight={500}>
-            Гардасил
+            {vaccination?.name}
           </Box>
           <Box fontWeight={300} color="#777">
-            Защищает от ВПЧ
+            {vaccination?.detailedShort}
           </Box>
 
 
           <Box mt={3}>
 
-            <div className={classes.stage}>
-              <div className={sif({ [classes.stageIcon]: true, })}>V1</div>
-              <div className={classes.stageTitle}>Первая вакцинация</div>
-              <div className={classes.stageDate}>07.11.2018</div>
-            </div>
-            <div
-              className={sif({
-                [classes.stage]: true,
-                [classes.stage__connect]: true
-              })}>
-              <div className={sif({ [classes.stageIcon]: true, })}>V2</div>
-              <div className={classes.stageTitle}>Вторая вакцинация</div>
-              <div className={classes.stageDate}>26.04.2019</div>
-            </div>
-            <div
-              className={sif({
-                [classes.stage]: true,
-                [classes.stage__connect]: true
-              })}>
-              <div
-                className={sif({ [classes.stageIcon]: true, [classes.stageIcon__deactive]: true})}
-              >
-                V3
-              </div>
-              <div className={classes.stageTitle}>Третья вакцинация</div>
-              <Link className={classes.buttonLink} to="/">
-                <Button classes={{ root: classes.stageTake }} variant="contained" color="primary">
-                  Записаться
-                </Button>
-              </Link>
-            </div>
-
+            {toShow}
+            
           </Box>
         </Box>
       </PageLayout>

@@ -8,4 +8,4 @@ type PatientVaccinations = {
 }[];
 
 export const GetVaccines: FetchFunc<undefined, PatientVaccinations> = (client) =>
-  client.get(`/vaccination`);
+  client.get(`/vaccine`);
