@@ -7,10 +7,11 @@ import AddIcon from '@material-ui/icons/Add';
 import { Layout } from '../../components/Layout/Layout';
 import { PageLayout } from '../../components/UI/PageLayout';
 import { BackButton } from '../../components/BackButton';
-import { Link, useHistory, useLocation } from 'react-router-dom';
+import { Link, useHistory, useLocation, useRouteMatch } from 'react-router-dom';
 import { useServer } from '../../hooks/useServer';
 import { AppLinkButton } from '../../components/UI/AppLinkButton';
 import { GetVaccineById } from '../../server';
+import { CircleLoader } from '../../components/UI/CircleLoader';
 
 type VaccineRouteParams = {
   id: string
@@ -34,16 +35,17 @@ const useStyles = makeStyles({
 });
 
 type VaccineType = {
-  id: number, 
-  name: string, 
-  detailedShort: string, 
+  id: number,
+  name: string,
+  detailedShort: string,
   detailedFull: string,
 }
 
 export const Vaccine: React.FC<VaccineProps> = (props) => {
   const classes = useStyles();
   const history = useHistory();
-  const vaccineId = useLocation<{ id: number }>().state;
+  const vaccineId = useRouteMatch<VaccineRouteParams>().params.id;
+
   const [vaccine, setVaccine] = useState<VaccineType>({
     id: 0,
     name: '',
@@ -52,9 +54,9 @@ export const Vaccine: React.FC<VaccineProps> = (props) => {
   });
 
   const fetcher = useServer(GetVaccineById);
-  
+
   useEffect(() => {
-    fetcher.fetch({ id: vaccineId.id });
+    fetcher.fetch({ id: Number(vaccineId) });
 
     return fetcher.cancel;
   }, []);
@@ -69,7 +71,7 @@ export const Vaccine: React.FC<VaccineProps> = (props) => {
     }
   }, [success])
 
-  
+
   /**
   * обработка клика кнопки "я привит"
   */
@@ -82,7 +84,11 @@ export const Vaccine: React.FC<VaccineProps> = (props) => {
     <Layout title="" BackButtonCustom={<BackButton simpleBack text="Вернуться к заболеванию" />}>
       <PageLayout>
 
-        {!vaccine &&
+        {loading &&
+          <Box textAlign="center"><CircleLoader /></Box>
+        }
+
+        {(!vaccineId || (!vaccine && !loading)) &&
           <Box textAlign="center">
             такая вацина не нашлась
 
@@ -90,7 +96,7 @@ export const Vaccine: React.FC<VaccineProps> = (props) => {
           </Box>
         }
 
-        {vaccine &&
+        {vaccine && !loading &&
           <Box fontSize={18}>
             <Box mb={2} display="grid" justifyContent="space-between" gridAutoFlow="column" alignItems="center">
               <Box fontWeight={500} fontSize={24} color="#9BC83F">
@@ -122,7 +128,7 @@ export const Vaccine: React.FC<VaccineProps> = (props) => {
         <AppLinkButton to={
           { pathname: '/passport/take', state: { type: 'vaccine', data: vaccine } }
         } className={classes.linkButton}
-          disabled={!Boolean(vaccine)}
+          disabled={loading}
           floated>
           Записаться
         </AppLinkButton>
