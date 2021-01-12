@@ -1,5 +1,6 @@
-.ready-page{
-    padding-bottom: 70px;
+.ready-page {
+    padding: 20px;
+    padding-top: 10px;
 
     .ready-page__text {
         color: #ACACAC;
@@ -9,5 +10,14 @@
 
     .ready-page__input {
         margin-bottom: 30px;
+    }
+
+    &__start {
+        max-width: 160px;
+        width: 100%;
+    }
+
+    .centred {
+        justify-content: center;
     }
 }

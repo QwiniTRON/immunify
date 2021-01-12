@@ -30,6 +30,7 @@ import { GetVisitById } from '../../server/fetchers/hospitalVisit/GetById';
 import { DeleteVisit } from '../../server/fetchers/hospitalVisit';
 import { UpdateVisit } from '../../server/fetchers/hospitalVisit/Update';
 import { Loader } from '../../components';
+import { CircleLoader } from '../../components/UI/CircleLoader';
 
 
 type LastAppointmentProps = {}
@@ -165,6 +166,11 @@ const useStyles = makeStyles((theme) => ({
     '& svg': {
       fontSize: 30,
     }
+  },
+
+  saveButton: {
+    maxWidth: 160,
+    width: '100%'
   }
 }));
 //#endregion
@@ -287,8 +293,8 @@ export const LastAppointment: React.FC<LastAppointmentProps> = (props) => {
   useEffect(() => {
     if (success) {
       setDetail(appointmentDetailReq.state.answer.data as any);
-      handleDateChange(new Date(String(appointmentDetailReq.state.answer.data?.data)));
-      handleTimeChange(new Date(String(appointmentDetailReq.state.answer.data?.data)));
+      handleDateChange(new Date(String(appointmentDetailReq.state.answer.data?.date)));
+      handleTimeChange(new Date(String(appointmentDetailReq.state.answer.data?.date)));
 
       appointmentDetailReq.reload();
     }
@@ -381,12 +387,13 @@ export const LastAppointment: React.FC<LastAppointmentProps> = (props) => {
   return (
     <Layout title="" BackButtonCustom={<BackButton text="Вернуться к списку записей" to={`/calendar`} />}>
       <PageLayout className={classes.root}>
-        {(loading || loadingDelete || loadingUpdate) && <Loader />}
 
         <Box component="h2" fontSize={24}>
           Запись на прием
         </Box>
-        <Divider color="gray" />
+        <Divider />
+
+        {(loading || loadingDelete || loadingUpdate) && <Box textAlign="center"><CircleLoader /></Box>}
 
         {!loading && <div className={classes.content}>
 
@@ -413,7 +420,7 @@ export const LastAppointment: React.FC<LastAppointmentProps> = (props) => {
           <Box mt={1} mb={3} fontWeight={500}>
             Моя запись:
 
-            {!isEdit &&
+            {!isExpired && !isEdit &&
               <Button
                 classes={{ root: classes.editButton }}
                 disabled={loading || loadingDelete || loadingUpdate}
@@ -423,8 +430,8 @@ export const LastAppointment: React.FC<LastAppointmentProps> = (props) => {
                 изменить
               </Button>
             }
-            {
-              isEdit &&
+
+            {!isExpired && isEdit &&
               <Button
                 classes={{ root: classes.cancelButton }}
                 disabled={loading || loadingDelete || loadingUpdate}
@@ -535,24 +542,15 @@ export const LastAppointment: React.FC<LastAppointmentProps> = (props) => {
         </div>
         }
 
-
-        {isExpired &&
-          <AppButtonGroup floated>
-            <Link className={classes.linkButton} to="/passport/take">
-              <AppButton>
-                я привит
-              </AppButton>
-            </Link>
-          </AppButtonGroup>
-        }
-
         {!isExpired && isEdit &&
-          <AppButton
-            disabled={loading || loadingDelete || loadingUpdate}
-            onClick={editHandle}
-            floated>
-            сохранить
-          </AppButton>
+          <Box mt="auto" textAlign="center">
+            <AppButton
+              disabled={loading || loadingDelete || loadingUpdate}
+              onClick={editHandle}
+              className={classes.saveButton}>
+              сохранить
+            </AppButton>
+          </Box>
         }
 
         <Modal

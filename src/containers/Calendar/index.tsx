@@ -85,7 +85,7 @@ export const Calendar: React.FC<CalendarProps> = (props) => {
                 }
 
                 {!loading && visits.length > 0 &&
-                    <Box p="20px">
+                    <Box p="10px 20px">
                         <Box mb={2} fontSize={24} fontWeight={500}>Вы записаны на прием</Box>
 
                         {

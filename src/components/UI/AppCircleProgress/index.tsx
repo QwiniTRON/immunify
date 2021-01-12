@@ -51,7 +51,7 @@ export const AppCircleProgress: React.FC<AppCircleProgressProps> = ({ progress, 
                 <circle cx="25" cy="25" r="24" className={classes.doneCircle} />
             }
             {isDone &&
-                <path stroke="white" strokeWidth="3" d="M 16 22 l 10 -10 M 16 22 l 25 15" />
+                <path stroke="white" strokeLinejoin="round" strokeLinecap="round" strokeWidth="3" d="M 16 21 l 10 -10 M 16 22 l 25 15" />
             }
         </svg>
     );

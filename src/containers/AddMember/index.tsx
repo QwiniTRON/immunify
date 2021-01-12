@@ -48,7 +48,9 @@ const useStyle = makeStyles({
         width: '100%',
         padding: 20,
         borderRadius: 20,
-        bottom: 35
+        position: 'relative',
+        margin: '0 auto',
+        marginTop: 50
     },
 
     title: {
@@ -187,14 +189,15 @@ const AddMember: React.FC<AddMemberProps> = ({
                                 />
                             </MuiPickersUtilsProvider>
 
-                            <AppButton
-                                floated
-                                className={classes.startButton}
-                                appColor="linear"
-                                disabled={loading || (!Boolean(name) || !Boolean(selectedDate) || !Boolean(sex))}
-                                type="submit">
-                                Начать
-                            </AppButton>
+                            <div className="btns">
+                                <AppButton
+                                    className={classes.startButton}
+                                    appColor="linear"
+                                    disabled={loading || (!Boolean(name) || !Boolean(selectedDate) || !Boolean(sex))}
+                                    type="submit">
+                                    Начать
+                                </AppButton>
+                            </div>
                         </form>
                     }
 

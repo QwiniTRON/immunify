@@ -35,6 +35,10 @@ type QuizProps = {}
 const useStyles = makeStyles((theme) => ({
     notice: {
         color: theme.palette.error.main
+    },
+
+    radio: {
+        marginBottom: 18
     }
 }));
 
@@ -154,36 +158,38 @@ export const Quiz: React.FC<QuizProps> = (props) => {
                 <h3 className="quiz-page__question">{currentQuestion.text}</h3>
 
                 <FormControl component="fieldset" color="primary">
-                    <FormLabel component="legend">ответ</FormLabel>
                     <RadioGroup
                         aria-label="answer"
                         name="quiz"
                         value={Number(selectedAnswer)}
                         onChange={setAnswer}>
                         {currentQuestion.answers.map((answer) => (
-                            <FormControlLabel key={answer.id} value={answer.id} control={<Radio color="primary" />} label={answer.text} />
+                            <FormControlLabel classes={{root: classes.radio}} key={answer.id} value={answer.id} control={<Radio color="primary" />} label={answer.text} />
                         ))}
                     </RadioGroup>
                 </FormControl>
 
-                <AppButtonGroup floated>
+                <div className="btns">
 
                     <AppButton
                         onClick={backQuestion}
                         disabled={quiz.currentStep === 0}
+                        className="quiz-button"
                         color="default">назад</AppButton>
 
                     {!(quiz.currentStep + 1 === quizQuestions.length) && <AppButton
                         onClick={nextQuestion}
                         disabled={isNotCurrentAnswer || quiz.currentStep + 1 === quizQuestions.length}
+                        className="quiz-button"
                         color="primary">далее</AppButton>}
 
                     {quiz.currentStep + 1 === quizQuestions.length && <AppButton
                         onClick={finishQuiz}
                         disabled={isNotCurrentAnswer}
                         appColor="linear"
+                        className="quiz-button"
                         color="primary">завершить</AppButton>}
-                </AppButtonGroup>
+                </div>
 
 
                 <Snackbar open={open} autoHideDuration={3000} onClose={() => setOpen(false)}>

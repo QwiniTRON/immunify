@@ -3,6 +3,7 @@ import { Link, useLocation, useHistory } from 'react-router-dom';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import { makeStyles } from '@material-ui/core/styles';
 
+import {useLastPath} from '../../hooks/';
 
 type BackButtonProps = {
     to?: string
@@ -35,12 +36,16 @@ export const BackButton: React.FC<BackButtonProps> = ({
     simpleBack
 }) => {
     const classes = useStyles();
+    const lastPath = useLastPath();
 
     const locationData = useLocation();
     const history = useHistory();
 
     const pathNames = locationData.pathname.split('/').slice(1);
     const pathToBack = '/' + pathNames.slice(0, -1).join('/');
+
+    console.log(lastPath);
+    
 
     if (simpleBack) {
         return (

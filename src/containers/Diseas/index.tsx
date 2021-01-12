@@ -14,6 +14,7 @@ import { useServer } from '../../hooks/useServer';
 import { GetDetailedDisease, Vaccine } from '../../server';
 import { AppLinkButton } from '../../components/UI/AppLinkButton';
 import { CircleLoader, CircleLoaderColors } from '../../components/UI/CircleLoader';
+import { MarkDown } from '../../components/MarkDown';
 
 
 
@@ -47,6 +48,11 @@ const useStyles = makeStyles((theme) => ({
         fontSize: 18,
         fontWeight: 400
     },
+
+    takeButton: {
+        maxWidth: 160,
+        width: "100%"
+    }
 }));
 
 type Diseas = {
@@ -68,10 +74,6 @@ export const Diseas: React.FC<DiseasProps> = (props) => {
     const success = !loading && diseasReq.state.answer.succeeded;
     const [diseas, setDiseas] = useState<Diseas | null>(null);
 
-    const [openAbout, setOpenAbout] = useState(false);
-    const [openVaccines, setOpenVaccines] = useState(false);
-    const [openSigns, setOpenSigns] = useState(false);
-
     // загрузка информации по болезни
     useEffect(() => {
         diseasReq.fetch({ diseaseId: Number(id) });
@@ -83,7 +85,6 @@ export const Diseas: React.FC<DiseasProps> = (props) => {
             setDiseas(diseasReq.state.answer.data);
         }
     }, [success]);
-
 
     /**
      * обработка клика кнопки "я привит"
@@ -110,7 +111,7 @@ export const Diseas: React.FC<DiseasProps> = (props) => {
                 {loading && <Box textAlign="center"><CircleLoader color={CircleLoaderColors.linear} /></Box>}
 
                 {!loading &&
-                    <>
+                    <Box mb={2}>
                         <Box mb={2} display="grid" justifyContent="space-between" gridAutoFlow="column" alignItems="center">
                             <Box component="h3" className={classes.title}>
                                 {diseas?.name}
@@ -128,7 +129,7 @@ export const Diseas: React.FC<DiseasProps> = (props) => {
                         </Box>
 
                         <Box mb={2}>
-                            {diseas?.detailedFull}
+                            <MarkDown md={diseas?.detailedFull ?? ""} />
                         </Box>
 
                         <Box>
@@ -149,19 +150,22 @@ export const Diseas: React.FC<DiseasProps> = (props) => {
                                 ))
                             }
                         </Box>
-                    </>
+                    </Box>
                 }
 
 
-                <AppLinkButton
-                    disabled={loading}
-                    to={{
-                        pathname: `/passport/take`,
-                        state: { type: 'diseas', data: diseas }
-                    }}
-                    floated
-                > Записаться
-                </AppLinkButton>
+
+                <Box mt="auto" textAlign="center">
+                    <AppLinkButton
+                        disabled={loading}
+                        to={{
+                            pathname: `/passport/take`,
+                            state: { type: 'diseas', data: diseas }
+                        }}
+                        className={classes.takeButton}
+                    > Записаться
+                    </AppLinkButton>
+                </Box>
             </PageLayout>
         </Layout>
     );

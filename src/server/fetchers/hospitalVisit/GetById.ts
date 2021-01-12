@@ -6,7 +6,7 @@ type Request = {
 
 type Response = {
   id: number,
-  data: string,
+  date: string,
   hospital: {
     id: number,
     name: string,

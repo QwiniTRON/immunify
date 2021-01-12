@@ -94,6 +94,16 @@ export const Region: React.FC<RegionProps> = (props) => {
                     }}
                 />
 
+                <FormControlLabel className="region-page__work"
+                    control={
+                        <Checkbox
+                            checked={otherWork}
+                            onChange={(e) => setOtherWork(e.target.checked)}
+                            color="primary"
+                        />}
+                    label="Я работаю в другом регионе"
+                />
+
                 {otherWork &&
                     <Box mt={2}>
                         <h4 className="region-page__title">В каком регионе Вы работаете?</h4>
@@ -112,22 +122,10 @@ export const Region: React.FC<RegionProps> = (props) => {
                     </Box>
                 }
 
-
-                <FormControlLabel className="region-page__work"
-                    control={
-                        <Checkbox
-                            checked={otherWork}
-                            onChange={(e) => setOtherWork(e.target.checked)}
-                            color="primary"
-                        />}
-                    label="Я работаю в другом регионе"
-                />
-
-
-                <AppButtonGroup floated>
-                    <AppButton className="region-page__save" color="default">отмена</AppButton>
-                    <AppButton className="region-page__save" onClick={handleEdit}>сохранить</AppButton>
-                </AppButtonGroup>
+                <div className="btns">
+                    <AppButton className="region-page__save region-button" color="default">отмена</AppButton>
+                    <AppButton className="region-page__save region-button" onClick={handleEdit}>сохранить</AppButton>
+                </div>
 
                 <Snackbar open={open} autoHideDuration={3000} onClose={() => setOpen(false)}>
                     <MuiAlert onClose={() => setOpen(false)} elevation={6} variant="filled">

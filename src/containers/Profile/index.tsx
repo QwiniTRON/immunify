@@ -9,7 +9,7 @@ import { RootState } from '../../store';
 import { PageLayout } from '../../components/UI/PageLayout';
 import { UserCard } from '../../components/UI/UserCard';
 import { Layout } from '../../components/Layout/Layout';
-import { useCheckUserDataCompoeated } from '../../hooks';
+import { useCheckUserDataCompleated } from '../../hooks';
 import { User, UserModel } from '../../models/User';
 import { AppLinkButton } from '../../components/UI/AppLinkButton';
 import { s } from '../../utils';
@@ -52,7 +52,7 @@ export const Profile: React.FC<ProfileProps> = (props) => {
 
   const currentUser = useSelector((state: RootState) => state.user.currentUser);
   const user = useSelector((state: RootState) => state.user.user);
-  const idUserDataCompleate = useCheckUserDataCompoeated();
+  const idUserDataCompleate = useCheckUserDataCompleated();
 
   let dataStatus: "error" | "success" | undefined = "error";
   let dataText = "не все данные указаны";

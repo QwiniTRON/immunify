@@ -81,6 +81,11 @@ const useStyles = makeStyles({
     '& svg': {
       fontSize: 30,
     }
+  },
+
+  takeButton: {
+    maxWidth: 160,
+    width: '100%'
   }
 });
 
@@ -150,7 +155,7 @@ export const Appointment: React.FC<AppointmentProps> = (props) => {
     const timeToVisit = new Date(selectedDate);
     timeToVisit.setHours(selectedTime.getHours());
     timeToVisit.setMinutes(selectedTime.getMinutes());
-    
+
     createAppointmentReq.fetch({
       patientId: Number(currentUser?.id),
       hospitalId: Number(clinicId),
@@ -193,7 +198,7 @@ export const Appointment: React.FC<AppointmentProps> = (props) => {
         <Box component="h2" fontSize={24}>
           Запишитесь на прием
         </Box>
-        <Divider color="gray" />
+        <Divider />
 
         {detailLoading && <Box textAlign="center"><CircleLoader /></Box>}
 
@@ -266,9 +271,11 @@ export const Appointment: React.FC<AppointmentProps> = (props) => {
           </div>
         }
 
-        <AppButton disabled={detailLoading || createLoading} floated onClick={handleCreateVaisit}>
-          Иду
-        </AppButton>
+        <Box mt="auto" textAlign="center">
+          <AppButton className={classes.takeButton} disabled={detailLoading || createLoading} onClick={handleCreateVaisit}>
+            Иду
+          </AppButton>
+        </Box>
 
       </PageLayout>
     </Layout>

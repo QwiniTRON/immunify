@@ -81,13 +81,13 @@ export const Profession: React.FC<ProfessionProps> = (props) => {
                     }}
                 />
 
-                <AppButtonGroup floated>
-                    <AppButton className="region-page__save" color="default">отмена</AppButton>
+                <div className="btns">
+                    <AppButton className="profession-button" color="default">отмена</AppButton>
 
-                    <AppButton className="region-page__save" onClick={handleEdit}>
+                    <AppButton className="profession-button" onClick={handleEdit}>
                         сохранить
                     </AppButton>
-                </AppButtonGroup>
+                </div>
 
                 <Snackbar open={open} autoHideDuration={3000} onClose={() => setOpen(false)}>
                     <MuiAlert onClose={() => setOpen(false)} elevation={6} variant="filled">
