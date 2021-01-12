@@ -14,6 +14,7 @@ import { useServer } from '../../hooks/useServer';
 import { GetDetailedDisease, Vaccine } from '../../server';
 import { AppLinkButton } from '../../components/UI/AppLinkButton';
 import { CircleLoader, CircleLoaderColors } from '../../components/UI/CircleLoader';
+import { MarkDown } from '../../components/MarkDown';
 
 
 
@@ -68,10 +69,6 @@ export const Diseas: React.FC<DiseasProps> = (props) => {
     const success = !loading && diseasReq.state.answer.succeeded;
     const [diseas, setDiseas] = useState<Diseas | null>(null);
 
-    const [openAbout, setOpenAbout] = useState(false);
-    const [openVaccines, setOpenVaccines] = useState(false);
-    const [openSigns, setOpenSigns] = useState(false);
-
     // загрузка информации по болезни
     useEffect(() => {
         diseasReq.fetch({ diseaseId: Number(id) });
@@ -83,7 +80,6 @@ export const Diseas: React.FC<DiseasProps> = (props) => {
             setDiseas(diseasReq.state.answer.data);
         }
     }, [success]);
-
 
     /**
      * обработка клика кнопки "я привит"
@@ -128,7 +124,7 @@ export const Diseas: React.FC<DiseasProps> = (props) => {
                         </Box>
 
                         <Box mb={2}>
-                            {diseas?.detailedFull}
+                            <MarkDown md={diseas?.detailedFull ?? ""} />
                         </Box>
 
                         <Box>

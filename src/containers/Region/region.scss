@@ -1,5 +1,5 @@
 .region-page {
-    padding-bottom: 65px;
+    padding: 20px;
 
 
     > div {
@@ -12,8 +12,17 @@
         margin-bottom: 30px;
     }
 
+    .region-button {
+        max-width: 160px;
+        width: 100%;
+        margin-right: 25px;
+
+        &:last-of-type {
+            margin-right: 0;
+        }
+    }
+
     .region-page__work {
-        margin-top: auto;
     }
 
     .region-page__btns {
@@ -30,4 +39,12 @@
             margin-right: 25px;
         }
     }
+
+    
+}
+
+.btns {
+    display: flex;
+    justify-content: space-between;
+    margin-top: auto;
 }

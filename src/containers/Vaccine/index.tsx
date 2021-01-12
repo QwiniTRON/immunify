@@ -12,6 +12,7 @@ import { useServer } from '../../hooks/useServer';
 import { AppLinkButton } from '../../components/UI/AppLinkButton';
 import { GetVaccineById } from '../../server';
 import { CircleLoader } from '../../components/UI/CircleLoader';
+import { MarkDown } from '../../components/MarkDown';
 
 type VaccineRouteParams = {
   id: string
@@ -84,45 +85,50 @@ export const Vaccine: React.FC<VaccineProps> = (props) => {
     <Layout title="" BackButtonCustom={<BackButton simpleBack text="Вернуться к заболеванию" />}>
       <PageLayout>
 
-        {loading &&
-          <Box textAlign="center"><CircleLoader /></Box>
-        }
+        <Box p="15px">
+          {loading &&
+            <Box textAlign="center"><CircleLoader /></Box>
+          }
 
-        {(!vaccineId || (!vaccine && !loading)) &&
-          <Box textAlign="center">
-            такая вацина не нашлась
+          {(!vaccineId || (!vaccine && !loading)) &&
+            <Box textAlign="center">
+              такая вацина не нашлась
 
             <Box marginY={2} color="#000"><Link to="/passport">имунный паспорт</Link></Box>
-          </Box>
-        }
+            </Box>
+          }
 
-        {vaccine && !loading &&
-          <Box fontSize={18}>
-            <Box mb={2} display="grid" justifyContent="space-between" gridAutoFlow="column" alignItems="center">
-              <Box fontWeight={500} fontSize={24} color="#9BC83F">
-                {vaccine.name}
+          {vaccine && !loading &&
+            <Box fontSize={18}>
+              <Box mb={2} display="grid" justifyContent="space-between" gridAutoFlow="column" alignItems="center">
+                <Box fontWeight={500} fontSize={24} color="#9BC83F">
+                  {vaccine.name}
+                </Box>
+
+                <IconButton
+                  classes={{ label: classes.menuButton }}
+                  onClick={takeHandle}
+                  color="primary"
+                >
+                  <AddIcon />
+                  <div>Уже привит</div>
+                </IconButton>
               </Box>
 
-              <IconButton
-                classes={{ label: classes.menuButton }}
-                onClick={takeHandle}
-                color="primary"
-              >
-                <AddIcon />
-                <div>Уже привит</div>
-              </IconButton>
-            </Box>
 
-            <Box mb={2}>
-              {vaccine.detailedFull}
-            </Box>
+              <Box mb={2}>
+                <MarkDown md={vaccine.detailedFull} />
+              </Box>
 
-            <Box mt={3}>
-              <Box fontWeight={500}>Последняя вакцинация:</Box>
-              <Box>Апрель 2019 - ревакцинация</Box>
+
+              <Box mt={3}>
+                <Box fontWeight={500}>Последняя вакцинация:</Box>
+                <Box>Апрель 2019 - ревакцинация</Box>
+              </Box>
             </Box>
-          </Box>
-        }
+          }
+
+        </Box>
 
 
         <AppLinkButton to={

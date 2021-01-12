@@ -1,5 +1,6 @@
 .profession-page {
-    
+    padding: 20px;
+
     > div {
         padding: 5px 10px;
     }
@@ -8,6 +9,16 @@
         font-size: 24px;
         font-weight: 500;
         margin-bottom: 30px;
+    }
+
+    .profession-button {
+        max-width: 160px;
+        width: 100%;
+        margin-right: 25px;
+
+        &:last-of-type {
+            margin-right: 0;
+        }
     }
 
     .region-page__btns {
