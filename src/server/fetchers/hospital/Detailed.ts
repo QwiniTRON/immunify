@@ -7,7 +7,8 @@ type Request = {
 type Response = {
   id: number,
   name: string,
-  coordinate: string,
+  latitude: string,
+  longitude: string,
   regionName: string,
 };
 
