@@ -1,16 +1,20 @@
-import React, { useState } from 'react';
+import React from 'react';
 import googlelogo from '../../assets/google.png';
 import vklogo from '../../assets/vk.png';
 import facebooklogo from '../../assets/facebook.png';
 import { Link } from 'react-router-dom';
+import { GoogleLogin, GoogleLoginResponse, GoogleLoginResponseOffline } from 'react-google-login';
+import FacebookLogin from 'react-facebook-login/dist/facebook-login-render-props';
 
 import { useServer } from '../../hooks/useServer';
 import { useAccessToken } from '../../hooks/useAccessToken';
 
-import { Register } from '../../server';
+import { Register, ExternalRegister, ExternalAuth } from '../../server';
 
 import './Registration.scss';
 import { useForm } from 'react-hook-form';
+import { GeneratePassword } from '../../utils';
+import VkLogin from 'react-vkontakte-login';
 
 type Form = {
   username: string,
@@ -21,6 +25,7 @@ type Form = {
 export const Registration: React.FC = () => {
     const { set: setToken } = useAccessToken();
     const registerFetcher = useServer(Register);
+    const externalFetcher = useServer(ExternalRegister); 
 
     const { 
       register,
@@ -36,14 +41,70 @@ export const Registration: React.FC = () => {
         });
     }
 
-    const loading = registerFetcher.state.fetching;
-    const success = !loading && registerFetcher.state.answer.succeeded;
-    const error = !loading && (registerFetcher.state.answer.errorMessage || "");
+    const loading = registerFetcher.state.fetching || externalFetcher.state.fetching;
+    const successRegister = !loading && registerFetcher.state.answer.succeeded;
+    const successExternal = !loading && externalFetcher.state.answer.succeeded;
+    const error = !loading && (registerFetcher.state.answer.errorMessage || externalFetcher.state.answer.errorMessage || "");
   
-    if (success) {
+    if (successRegister) {
         setToken(registerFetcher.state.answer.data?.token || "");
         window.location.href = "/profile";
         registerFetcher.reload();
+    }  
+
+    if (successExternal) {
+        setToken(externalFetcher.state.answer.data?.token || "");
+        window.location.href = "/profile";
+        externalFetcher.reload();
+    }
+  
+    const responseGoogle = (response: GoogleLoginResponse | GoogleLoginResponseOffline): void => {
+  
+      function isGoogleResponse(obj: any): obj is GoogleLoginResponse {
+        return obj.profileObj !== undefined;
+      }
+  
+      if (isGoogleResponse(response)) {
+        GeneratePassword(response.googleId).then(pass => {            
+            externalFetcher.fetch({
+                username: response.googleId + 'Google',
+                password: pass,
+                externalAuth: ExternalAuth.Google,
+                identity: response.googleId,
+            });
+        })
+      }
+    }
+    
+    const failureResponseGoogle = (response: GoogleLoginResponse): void => {
+      // Show error maybe?
+      console.log(response.profileObj.googleId);
+    }
+
+    const facebookCallback = (userInfo: any): void => {
+        if (userInfo.userID !== undefined) {
+            GeneratePassword(userInfo.userID).then(pass => {
+                externalFetcher.fetch({
+                    username: userInfo.userID + 'Facebook',
+                    password: pass,
+                    externalAuth: ExternalAuth.Facebook,
+                    identity: userInfo.userID,
+                });
+            })
+        }
+    }
+
+    const vkCallback = (userInfo: any): void => {
+      if (userInfo.session !== undefined) {
+        GeneratePassword(userInfo.session.user.id).then(pass => {
+            externalFetcher.fetch({
+                username: userInfo.userID + 'VK',
+                password: pass,
+                externalAuth: ExternalAuth.VK,
+                identity: userInfo.session.user.id,
+            });
+        })
+      }
     }
 
     return (
@@ -117,13 +178,40 @@ export const Registration: React.FC = () => {
 
                     <div className="socials__networks">
                         <div className="socials__item">
-                            <img src={googlelogo} alt="google" />
+                        <GoogleLogin
+                            clientId="830770546293-pu13vb9rsqgbh1u4oklhg47p3humh3gr.apps.googleusercontent.com"
+                            buttonText="Login"
+                            onSuccess={responseGoogle}
+                            onFailure={failureResponseGoogle}
+                            render={props => (
+                                <button {...props} style={{ background: 'none', border: 'none' }}>
+                                    <img src={googlelogo} alt="google" />
+                                </button>
+                            )}
+                            cookiePolicy='single_host_origin'
+                        />
                         </div>
                         <div className="socials__item">
-                            <img src={vklogo} alt="vk" />
+                            <VkLogin 
+                                apiId="7707005"
+                                callback={vkCallback}
+                                render={(renderProps: any) => (
+                                    <button {...renderProps} style={{ background: 'none', border: 'none' }}>
+                                    <img src={vklogo} alt="vk" />
+                                    </button>
+                                )}
+                            />
                         </div>
                         <div className="socials__item">
-                            <img src={facebooklogo} alt="facebook" />
+                            <FacebookLogin
+                                appId="438469453977207"
+                                callback={facebookCallback}
+                                render={(renderProps: any) => (
+                                    <button onClick={renderProps.onClick} style={{ background: 'none', border: 'none' }}>
+                                        <img src={facebooklogo} alt="facebook" />
+                                    </button>
+                                )}
+                            />
                         </div>
                     </div>
 

@@ -1,4 +1,4 @@
-import React, { useState, FC } from 'react';
+import React, { FC } from 'react';
 import googlelogo from '../../assets/google.png';
 import vklogo from '../../assets/vk.png';
 import facebooklogo from '../../assets/facebook.png';
@@ -9,8 +9,14 @@ import { useForm } from 'react-hook-form';
 import { useServer } from '../../hooks/useServer';
 import { useAccessToken } from '../../hooks/useAccessToken';
 
+import { GoogleLogin, GoogleLoginResponse, GoogleLoginResponseOffline } from 'react-google-login';
+import FacebookLogin from 'react-facebook-login/dist/facebook-login-render-props';
+import VkLogin from 'react-vkontakte-login';
+
 import {
   Login,
+  ExternalLogin,
+  ExternalAuth,
 } from '../../server';
 
 import './loginpage.scss';
@@ -22,6 +28,7 @@ type Form = {
 
 export const LoginPage: FC = () => {
   const loginFetcher = useServer(Login);
+  const externalLoginFetcher = useServer(ExternalLogin);
   const { set: setToken } = useAccessToken();
 
   const { 
@@ -37,14 +44,59 @@ export const LoginPage: FC = () => {
     })
   }
 
-  const loading = loginFetcher.state.fetching;
-  const success = !loading && loginFetcher.state.answer.succeeded;
-  const error = !loading && (loginFetcher.state.answer.errorMessage || "");
+  const loading = loginFetcher.state.fetching || externalLoginFetcher.state.fetching;
+  const successLogin = !loading && loginFetcher.state.answer.succeeded;
+  const successExternal = !loading && externalLoginFetcher.state.answer.succeeded;
 
-  if (success) {
+  const error = !loading && (loginFetcher.state.answer.errorMessage || externalLoginFetcher.state.answer.errorMessage || "");
+
+  if (successLogin) {
     setToken(loginFetcher.state.answer.data?.token || "");
     window.location.href = "/profile";
     loginFetcher.reload();
+  }
+
+  if (successExternal) {
+    setToken(externalLoginFetcher.state.answer.data?.token || "");
+    window.location.href = "/profile";
+    externalLoginFetcher.reload();
+  }
+  
+  const responseGoogle = (response: GoogleLoginResponse | GoogleLoginResponseOffline): void => {
+
+    function isGoogleResponse(obj: any): obj is GoogleLoginResponse {
+      return obj.profileObj !== undefined;
+    }
+
+    if (isGoogleResponse(response)) {
+      externalLoginFetcher.fetch({
+        externalAuth: ExternalAuth.Google,
+        identity: response.googleId,
+      });
+    }
+  }
+  
+  const failureResponseGoogle = (response: GoogleLoginResponse): void => {
+    // Show error maybe?
+    console.log(response.profileObj.googleId);
+  }
+
+  const facebookCallback = (userInfo: any): void => {
+      if (userInfo.userID !== undefined) {
+        externalLoginFetcher.fetch({
+          externalAuth: ExternalAuth.Facebook,
+          identity: userInfo.userID,
+        });
+      }
+  }
+
+  const vkCallback = (userInfo: any): void => {
+    if (userInfo.session !== undefined) {
+      externalLoginFetcher.fetch({
+        externalAuth: ExternalAuth.VK,
+        identity: userInfo.session.user.id,
+      });
+    }
   }
 
   return (
@@ -105,13 +157,40 @@ export const LoginPage: FC = () => {
 
             <div className="socials__networks">
               <div className="socials__item">
-                <img src={googlelogo} alt="google" />
+                <GoogleLogin
+                  clientId="830770546293-pu13vb9rsqgbh1u4oklhg47p3humh3gr.apps.googleusercontent.com"
+                  buttonText="Login"
+                  onSuccess={responseGoogle}
+                  onFailure={failureResponseGoogle}
+                  render={props => (
+                    <button {...props} style={{ background: 'none', border: 'none' }}>
+                      <img src={googlelogo} alt="google" />
+                    </button>
+                  )}
+                  cookiePolicy='single_host_origin'
+                />
               </div>
               <div className="socials__item">
-                <img src={vklogo} alt="vk" />
+                <VkLogin 
+                  apiId="7707005"
+                  callback={vkCallback}
+                  render={(renderProps: any) => (
+                    <button {...renderProps} style={{ background: 'none', border: 'none' }}>
+                      <img src={vklogo} alt="vk" />
+                    </button>
+                  )}
+                />
               </div>
               <div className="socials__item">
-                <img src={facebooklogo} alt="facebook" />
+                <FacebookLogin
+                  appId="438469453977207"
+                  callback={facebookCallback}
+                  render={(renderProps: any) => (
+                    <button onClick={renderProps.onClick} style={{ background: 'none', border: 'none' }}>
+                      <img src={facebooklogo} alt="facebook" />
+                    </button>
+                  )}
+                />
               </div>
             </div>
 
