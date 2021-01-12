@@ -11,13 +11,18 @@ import './styles/index.scss';
 
 import { mainTheme } from './styles/Theme';
 import { store } from "./store";
+import { LastPathProvider } from './components/LastPathProvider';
+import {pathDictionary} from './pathConfig';
+
 
 ReactDOM.render(
   <Provider store={store}>
     <BrowserRouter>
-      <ThemeProvider theme={mainTheme}>
-        <App />
-      </ThemeProvider>
+      <LastPathProvider pathDictionary={pathDictionary}>
+        <ThemeProvider theme={mainTheme}>
+          <App />
+        </ThemeProvider>
+      </LastPathProvider>
     </BrowserRouter>
   </Provider>,
   document.getElementById('root')
