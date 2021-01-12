@@ -148,7 +148,7 @@ export const VaccinationDetails: React.FC<VaccinationDetailsProps> = (props) => 
             {`${resultStage.revaccination ? 'R' : 'V'}${resultStage.stage}`}
           </div>
           <div className={classes.stageTitle}>{`${resultStage.revaccination ? 'Ревакцинация' : `${resultStage.stage} Стадия`}`}</div>
-          <Link className={classes.buttonLink} to="/">
+          <Link className={classes.buttonLink} to="/passport/take">
             <Button classes={{ root: classes.stageTake }} variant="contained" color="primary">
               Записаться
             </Button>

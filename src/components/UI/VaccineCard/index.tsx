@@ -45,7 +45,7 @@ export const VaccineCard: React.FC<VaccineCardProps> = ({
       </Box>
 
       <Box fontWeight={300}>
-        {vaccine.detailed}
+        полиомиелит
       </Box>
 
       <Box className={s((classes as any)[status])}>

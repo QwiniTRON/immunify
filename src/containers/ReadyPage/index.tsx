@@ -146,7 +146,7 @@ export const ReadyPage: React.FC<ReadyPageProps> = (props) => {
                 <Divider />
 
                 {vaccinesRequest.state.fetching &&
-                    <Box m={3}><Loader /></Box>}
+                    <Box marginY={2} height="56px"><Loader /></Box>}
 
                 {!vaccinesRequest.state.fetching &&
                     <Box marginY={2}>
@@ -174,7 +174,7 @@ export const ReadyPage: React.FC<ReadyPageProps> = (props) => {
                     </Box>
                 }
 
-                {stagesRequest.state.fetching && <Box m={3} mb={6}><Loader /></Box>}
+                {stagesRequest.state.fetching && <Box mb="30px" height="59px"><Loader /></Box>}
                 {!stagesRequest.state.fetching && <FormControl
                     variant="outlined"
                     fullWidth
@@ -219,9 +219,11 @@ export const ReadyPage: React.FC<ReadyPageProps> = (props) => {
                     />
                 </MuiPickersUtilsProvider>
 
-                <AppButton floated onClick={saveHandle} disabled={loading}>
-                    Сохранить
-                </AppButton>
+                <div className="btns centred">
+                    <AppButton className="ready-page__start" onClick={saveHandle} disabled={loading}>
+                        Сохранить
+                    </AppButton>
+                </div>
             </PageLayout>
         </Layout>
     );

@@ -66,8 +66,6 @@ export const Vaccination: React.FC<VaccinationProps> = (props) => {
   const copiedVaccines: PatientVaccinations = JSON.parse(JSON.stringify(vaccines));
 
   const vaccinesToShow = copiedVaccines.map((vaccine, index) => {
-    console.log(vaccine);
-    
     const lastVaccination = vaccine.passedStages[vaccine.passedStages.length - 1];
 
     let startDate = new Date(lastVaccination.date);
@@ -124,7 +122,3 @@ export const Vaccination: React.FC<VaccinationProps> = (props) => {
     </Layout>
   );
 };
-
-function arraysEqual(a1: any, a2: any): boolean {
-  return a1.toString() === a2.toString();
-}

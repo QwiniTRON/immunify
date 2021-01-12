@@ -48,6 +48,11 @@ const useStyles = makeStyles((theme) => ({
         fontSize: 18,
         fontWeight: 400
     },
+
+    takeButton: {
+        maxWidth: 160,
+        width: "100%"
+    }
 }));
 
 type Diseas = {
@@ -106,7 +111,7 @@ export const Diseas: React.FC<DiseasProps> = (props) => {
                 {loading && <Box textAlign="center"><CircleLoader color={CircleLoaderColors.linear} /></Box>}
 
                 {!loading &&
-                    <>
+                    <Box mb={2}>
                         <Box mb={2} display="grid" justifyContent="space-between" gridAutoFlow="column" alignItems="center">
                             <Box component="h3" className={classes.title}>
                                 {diseas?.name}
@@ -145,19 +150,22 @@ export const Diseas: React.FC<DiseasProps> = (props) => {
                                 ))
                             }
                         </Box>
-                    </>
+                    </Box>
                 }
 
 
-                <AppLinkButton
-                    disabled={loading}
-                    to={{
-                        pathname: `/passport/take`,
-                        state: { type: 'diseas', data: diseas }
-                    }}
-                    floated
-                > Записаться
-                </AppLinkButton>
+
+                <Box mt="auto" textAlign="center">
+                    <AppLinkButton
+                        disabled={loading}
+                        to={{
+                            pathname: `/passport/take`,
+                            state: { type: 'diseas', data: diseas }
+                        }}
+                        className={classes.takeButton}
+                    > Записаться
+                    </AppLinkButton>
+                </Box>
             </PageLayout>
         </Layout>
     );
