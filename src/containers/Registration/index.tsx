@@ -1,16 +1,18 @@
-import React, { useState } from 'react';
+import React from 'react';
 import googlelogo from '../../assets/google.png';
 import vklogo from '../../assets/vk.png';
 import facebooklogo from '../../assets/facebook.png';
 import { Link } from 'react-router-dom';
+import { GoogleLogin, GoogleLoginResponse, GoogleLoginResponseOffline } from 'react-google-login';
 
 import { useServer } from '../../hooks/useServer';
 import { useAccessToken } from '../../hooks/useAccessToken';
 
-import { Register } from '../../server';
+import { Register, ExternalRegister, ExternalAuth } from '../../server';
 
 import './Registration.scss';
 import { useForm } from 'react-hook-form';
+import { GeneratePassword } from '../../utils';
 
 type Form = {
   username: string,
@@ -21,6 +23,7 @@ type Form = {
 export const Registration: React.FC = () => {
     const { set: setToken } = useAccessToken();
     const registerFetcher = useServer(Register);
+    const externalFetcher = useServer(ExternalRegister); 
 
     const { 
       register,
@@ -36,14 +39,51 @@ export const Registration: React.FC = () => {
         });
     }
 
-    const loading = registerFetcher.state.fetching;
-    const success = !loading && registerFetcher.state.answer.succeeded;
-    const error = !loading && (registerFetcher.state.answer.errorMessage || "");
+    const loading = registerFetcher.state.fetching || externalFetcher.state.fetching;
+    const successRegister = !loading && registerFetcher.state.answer.succeeded;
+    const successExternal = !loading && externalFetcher.state.answer.succeeded;
+    const error = !loading && (registerFetcher.state.answer.errorMessage || externalFetcher.state.answer.errorMessage || "");
   
-    if (success) {
+    if (successRegister) {
         setToken(registerFetcher.state.answer.data?.token || "");
         window.location.href = "/profile";
         registerFetcher.reload();
+    }  
+
+    if (successExternal) {
+        setToken(externalFetcher.state.answer.data?.token || "");
+        window.location.href = "/profile";
+        externalFetcher.reload();
+    }
+  
+    const responseGoogle = (response: GoogleLoginResponse | GoogleLoginResponseOffline): void => {
+  
+      function isGoogleResponse(obj: any): obj is GoogleLoginResponse {
+        return obj.profileObj !== undefined;
+      }
+  
+      if (isGoogleResponse(response)) {
+        GeneratePassword(response.googleId).then(pass => {
+            console.log({
+                username: response.googleId + 'Google',
+                password: pass,
+                externalAuth: ExternalAuth.Google,
+                identity: response.googleId,
+            });
+            
+            externalFetcher.fetch({
+                username: response.googleId + 'Google',
+                password: pass,
+                externalAuth: ExternalAuth.Google,
+                identity: response.googleId,
+            });
+        })
+      }
+    }
+    
+    const failureResponse = (response: GoogleLoginResponse): void => {
+      // Show error maybe?
+      console.log(response.profileObj.googleId);
     }
 
     return (
@@ -117,7 +157,18 @@ export const Registration: React.FC = () => {
 
                     <div className="socials__networks">
                         <div className="socials__item">
-                            <img src={googlelogo} alt="google" />
+                        <GoogleLogin
+                            clientId="830770546293-pu13vb9rsqgbh1u4oklhg47p3humh3gr.apps.googleusercontent.com"
+                            buttonText="Login"
+                            onSuccess={responseGoogle}
+                            onFailure={failureResponse}
+                            render={props => (
+                                <button {...props} style={{ background: 'none', border: 'none' }}>
+                                    <img src={googlelogo} alt="google" />
+                                </button>
+                            )}
+                            cookiePolicy='single_host_origin'
+                        />
                         </div>
                         <div className="socials__item">
                             <img src={vklogo} alt="vk" />

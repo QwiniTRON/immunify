@@ -146,7 +146,7 @@ export const LoginPage: FC = () => {
                   onFailure={failureResponse}
                   render={props => (
                     <button {...props} style={{ background: 'none', border: 'none' }}>
-                      <img src={googlelogo} alt="facebook" />
+                      <img src={googlelogo} alt="google" />
                     </button>
                   )}
                   cookiePolicy='single_host_origin'
