@@ -78,9 +78,11 @@ const useStyles = makeStyles({
   }
 });
 
+
 type DiseasRoutParams = {
   id: string
 }
+
 
 export const VaccinationDetails: React.FC<VaccinationDetailsProps> = (props) => {
   const classes = useStyles();
@@ -113,21 +115,31 @@ export const VaccinationDetails: React.FC<VaccinationDetailsProps> = (props) => 
 
 
   // стадии для показа
-  const toShow = !loading && vaccination !== undefined && vaccination.stages.map((stage, index) => {
-    return (
-      <div className={sif({
-        [classes.stage]: true,
-        [classes.stage__connect]: index > 0
-      })} key={index}>
-        <div className={sif({ [classes.stageIcon]: true, })}>{`${stage.revaccination ? 'R' : `V${stage.stage}`}`}</div>
-        <div className={classes.stageTitle}>{`${stage.revaccination ? 'Ревакцинация' : `${stage.stage} Стадия`}`}</div>
-        <div className={classes.stageDate}>{new Date(stage.date).toLocaleDateString('ru-RU')}</div>
-      </div>
-    );
-  });
+  let toShow = null;
+
+  if (!loading && vaccination !== undefined) {
+    toShow = vaccination.stages.map((stage, index) => {
+      let stageMode = stage.revaccination ? 'R' : `V${stage.stage}`;
+      let stageStep = stage.revaccination ? 'Ревакцинация' : `${stage.stage} Стадия`;
+      let stageDate = new Date(stage.date).toLocaleDateString('ru-RU');
+
+      return (
+        <div className={sif({
+          [classes.stage]: true,
+          [classes.stage__connect]: index > 0
+        })} key={index}>
+
+          <div className={sif({ [classes.stageIcon]: true, })}>{stageMode}</div>
+          <div className={classes.stageTitle}>{stageStep}</div>
+          <div className={classes.stageDate}>{stageDate}</div>
+
+        </div>
+      );
+    });
+  }
 
 
-  !loading && vaccination !== undefined && vaccination.stages.length !== 0 && function () {
+  if (!loading && vaccination !== undefined && vaccination.stages.length !== 0) {
     const lastStage = vaccination.stages[vaccination.stages.length - 1];
     const maxStage = Math.max.apply(null, vaccination.totalStages.map(x => x.stage))
 
@@ -137,38 +149,37 @@ export const VaccinationDetails: React.FC<VaccinationDetailsProps> = (props) => 
 
     if (lastStage.revaccination && revaccinationStage !== undefined) {
       nextStageValue = revaccinationStage.stage;
-    } else if (lastStage.stage + 1 > maxStage) {
-      return;
-    }
-    else {
+    } else {
       nextStageValue = lastStage.stage + 1;
     }
 
-    const resultStage = vaccination.totalStages.find(x => x.stage === nextStageValue)!;
+    if (!(lastStage.stage + 1 > maxStage)) {
+      const resultStage = vaccination.totalStages.find(x => x.stage === nextStageValue)!;
 
-    if (toShow !== false) {
-      toShow.push((
-        <div
-          key={vaccination.stages.length + 2}
-          className={sif({
-            [classes.stage]: true,
-            [classes.stage__connect]: true
-          })}>
+      if (Boolean(toShow) && toShow != null) {
+        toShow.push((
           <div
-            className={sif({ [classes.stageIcon]: true, [classes.stageIcon__deactive]: true })}
-          >
-            {`${resultStage.revaccination ? 'R' : `V${resultStage.stage}`}`}
+            key={vaccination.stages.length + 2}
+            className={sif({
+              [classes.stage]: true,
+              [classes.stage__connect]: true
+            })}>
+            <div
+              className={sif({ [classes.stageIcon]: true, [classes.stageIcon__deactive]: true })}
+            >
+              {`${resultStage.revaccination ? 'R' : `V${resultStage.stage}`}`}
+            </div>
+            <div className={classes.stageTitle}>{`${resultStage.revaccination ? 'Ревакцинация' : `${resultStage.stage} Стадия`}`}</div>
+            <Link className={classes.buttonLink} to="/passport/take">
+              <Button classes={{ root: classes.stageTake }} variant="contained" color="primary">
+                Записаться
+              </Button>
+            </Link>
           </div>
-          <div className={classes.stageTitle}>{`${resultStage.revaccination ? 'Ревакцинация' : `${resultStage.stage} Стадия`}`}</div>
-          <Link className={classes.buttonLink} to="/passport/take">
-            <Button classes={{ root: classes.stageTake }} variant="contained" color="primary">
-              Записаться
-            </Button>
-          </Link>
-        </div>
-      ));
+        ));
+      }
     }
-  }();
+  };
 
   return (
     <Layout title="" BackButtonCustom={<BackButton to="/vaccination" text="Вернуться к вакцинациям" />}>
@@ -177,7 +188,7 @@ export const VaccinationDetails: React.FC<VaccinationDetailsProps> = (props) => 
           <Box fontSize={24} fontWeight={500}>
             {vaccination?.name}
           </Box>
-         
+
           <Box marginY={1}>
             <MarkDown md={vaccination?.detailedShort ?? ''} />
           </Box>
