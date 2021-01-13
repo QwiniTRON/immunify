@@ -3,8 +3,7 @@ import { FetchFunc } from '../../types';
 type PatientVaccinations = {
   id: number,
   name: string,
-  detailedShort: string,
-  detailedFull: string,
+  diseaseIds: number[],
 }[];
 
 export const GetVaccines: FetchFunc<undefined, PatientVaccinations> = (client) =>
