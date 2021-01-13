@@ -119,7 +119,7 @@ export const VaccinationDetails: React.FC<VaccinationDetailsProps> = (props) => 
         [classes.stage]: true,
         [classes.stage__connect]: index > 0
       })} key={index}>
-        <div className={sif({ [classes.stageIcon]: true, })}>{`${stage.revaccination ? 'R' : 'V'}${stage.stage}`}</div>
+        <div className={sif({ [classes.stageIcon]: true, })}>{`${stage.revaccination ? 'R' : `V${stage.stage}`}`}</div>
         <div className={classes.stageTitle}>{`${stage.revaccination ? 'Ревакцинация' : `${stage.stage} Стадия`}`}</div>
         <div className={classes.stageDate}>{new Date(stage.date).toLocaleDateString('ru-RU')}</div>
       </div>
@@ -154,7 +154,7 @@ export const VaccinationDetails: React.FC<VaccinationDetailsProps> = (props) => 
           <div
             className={sif({ [classes.stageIcon]: true, [classes.stageIcon__deactive]: true })}
           >
-            {`${resultStage.revaccination ? 'R' : 'V'}${resultStage.stage}`}
+            {`${resultStage.revaccination ? 'R' : `V${resultStage.stage}`}`}
           </div>
           <div className={classes.stageTitle}>{`${resultStage.revaccination ? 'Ревакцинация' : `${resultStage.stage} Стадия`}`}</div>
           <Link className={classes.buttonLink} to="/passport/take">
@@ -178,7 +178,6 @@ export const VaccinationDetails: React.FC<VaccinationDetailsProps> = (props) => 
           <Box marginY={1}>
             <MarkDown md={vaccination?.detailedShort ?? ''} />
           </Box>
-
 
           <Box mt={3}>
 
