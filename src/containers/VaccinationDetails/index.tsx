@@ -90,6 +90,7 @@ export const VaccinationDetails: React.FC<VaccinationDetailsProps> = (props) => 
 
   const fetcher = useServer(GetDetailedVaccination);
 
+  // запрос деталей по вакцинации
   useEffect(() => {
     fetcher.fetch({
       vaccineId: id as any,
@@ -100,6 +101,7 @@ export const VaccinationDetails: React.FC<VaccinationDetailsProps> = (props) => 
   const loading = fetcher.state.fetching;
   const success = !loading && fetcher.state.answer.succeeded;
 
+  // успешная загрузка деталей вакцинации
   useEffect(() => {
     if (success) {
       setVaccination(fetcher.state.answer.data!);
@@ -108,15 +110,21 @@ export const VaccinationDetails: React.FC<VaccinationDetailsProps> = (props) => 
     }
   }, [success]);
 
+
+  // стадии для показа
   const toShow = !loading && vaccination !== undefined && vaccination.stages.map((stage, index) => {
     return (
-      <div className={classes.stage} key={index}>
+      <div className={sif({
+        [classes.stage]: true,
+        [classes.stage__connect]: index > 0
+      })} key={index}>
         <div className={sif({ [classes.stageIcon]: true, })}>{`${stage.revaccination ? 'R' : 'V'}${stage.stage}`}</div>
         <div className={classes.stageTitle}>{`${stage.revaccination ? 'Ревакцинация' : `${stage.stage} Стадия`}`}</div>
         <div className={classes.stageDate}>{new Date(stage.date).toLocaleDateString('ru-RU')}</div>
       </div>
     );
   });
+
 
   !loading && vaccination !== undefined && vaccination.stages.length !== 0 && function () {
     const lastStage = vaccination.stages[vaccination.stages.length - 1];
