@@ -13,7 +13,7 @@ import AddIcon from '@material-ui/icons/Add';
 import RemoveIcon from '@material-ui/icons/Remove';
 
 import { useServer } from '../../hooks/useServer';
-import { GetVaccines, GetAvailableStages, CreateManyVaccination } from '../../server';
+import { GetVaccines, GetAvailableStages, CreateManyVaccination, GetDiseases } from '../../server';
 import { CircleLoader } from '../../components/UI/CircleLoader';
 import { s } from '../../utils';
 import { useSelector } from 'react-redux';
@@ -36,7 +36,22 @@ type Visit = {
 type Vaccine = {
     id: string
     name: string
+    diseaseIds: number[]
 }
+
+type Diseas = {
+    id: number
+    name: string
+}
+
+type DiseasFull = {
+    detailedShort: string
+    detailedFull: string
+    id: number
+    name: string
+    vaccines: Vaccine[]
+}
+
 
 const useStyles = makeStyles({
     commandLine: {
@@ -79,36 +94,70 @@ const useStyles = makeStyles({
 });
 
 
-type VaccinePicker = {
+type VaccinePickerProps = {
     vaccines: Vaccine[]
     status: MarkedVaccine
     editHandle: Function
+    diseases: Diseas[]
 }
 
-const VaccinePicker: React.FC<VaccinePicker> = ({
+const VaccinePicker: React.FC<VaccinePickerProps> = ({
     vaccines,
     status,
-    editHandle
+    editHandle,
+    diseases
 }) => {
     const [stages, setStages] = useState<{ id: number, stage: number }[]>([]);
+    const [diseas, setDiseas] = useState<Diseas | null>(null);
 
+    // запрос стадий
     const stagesRequest = useServer(GetAvailableStages);
 
+    // блок запросов
     const successStages = !stagesRequest.state.fetching && stagesRequest.state.answer.succeeded;
     const loading = stagesRequest.state.fetching;
 
+    // валидация поля stage
     const stageError = status.vaccine && !status.stage;
 
+    // пришли стадии для вакцины
     if (successStages) {
         setStages(stagesRequest.state.answer.data || []);
         stagesRequest.reload();
     }
 
+    // фильтрация вакцин по болезни
+    let filteredVaccines: Vaccine[] = vaccines;
+    if (Boolean(diseas)) {
+        filteredVaccines = vaccines.filter((vaccine) => vaccine.diseaseIds.includes(Number(diseas?.id)));
+    }
+
+
     return (
         <div>
+            <Box marginY={2}>
+                <Autocomplete
+                    id="combo-region-main"
+                    options={diseases}
+                    getOptionLabel={(option) => option.name}
+                    value={diseas}
+                    fullWidth
+                    renderInput={(params) =>
+                        <TextField
+                            {...params}
+                            helperText="найти вакцины по болезни"
+                            label="болезнь"
+                            variant="outlined" />
+                    }
+                    onChange={(event, newValue) => {
+                        setDiseas(newValue);
+                    }}
+                />
+            </Box>
+
             <Box marginY={3}>
                 <Autocomplete
-                    options={vaccines}
+                    options={filteredVaccines}
                     getOptionLabel={(option) => option.name}
                     value={status.vaccine}
                     fullWidth
@@ -130,7 +179,7 @@ const VaccinePicker: React.FC<VaccinePicker> = ({
 
             <Box marginY={3}>
                 {loading &&
-                    <Box marginY={3} height="59px">
+                    <Box marginY={3} height="78px">
                         <Loader />
                     </Box>
                 }
@@ -176,6 +225,7 @@ export const MarkVaccine: React.FC<MarkVaccineProps> = (props) => {
     const currentUser = useSelector((state: RootState) => state.user.currentUser);
 
     const [vaccines, setVaccines] = useState<Vaccine[]>([]);
+    const [diseases, setDiseases] = useState<Diseas[]>([]);
     const [markedVaccines, setMarkedVaccines] = useState<MarkedVaccine[]>([
         {
             vaccine: undefined,
@@ -184,27 +234,40 @@ export const MarkVaccine: React.FC<MarkVaccineProps> = (props) => {
     ]);
     const [error, setError] = useState('');
 
+    // запросы
     const vaccinesRequest = useServer(GetVaccines);
     const vaccinationRequest = useServer(CreateManyVaccination);
+    const diseasRequest = useServer(GetDiseases);
 
-    const loading = vaccinesRequest.state.fetching;
+    // блок запросов
+    const loading = vaccinesRequest.state.fetching || diseasRequest.state.fetching;
     const vaccinationCreateLoading = vaccinationRequest.state.fetching;
     const successVaccination = !vaccinationRequest.state.fetching && vaccinationRequest.state.answer.succeeded;
     const successVaccines = !loading && vaccinesRequest.state.answer.succeeded;
+    const successDiseas = !loading && diseasRequest.state.answer.succeeded;
 
 
     // загружаем все известные вакцины
     useEffect(() => {
         vaccinesRequest.fetch(undefined);
+        diseasRequest.fetch(undefined);
 
         return vaccinesRequest.cancel;
     }, []);
 
+    // пришли вакцины
     if (successVaccines) {
         setVaccines((vaccinesRequest.state.answer.data || []) as any);
         vaccinesRequest.reload();
     }
 
+    // пришли болезни
+    if (successDiseas) {
+        setDiseases(diseasRequest.state.answer.data as Diseas[]);
+        diseasRequest.reload();
+    }
+
+    // вакцинации сохранены
     if (successVaccination) {
         history.push('/vaccination');
     }
@@ -276,14 +339,12 @@ export const MarkVaccine: React.FC<MarkVaccineProps> = (props) => {
     // если нет переданного визита, то просто переносим пользователя на календарь
     if (Boolean(visit) == false) history.push('/calendar');
 
-    // console.log(markedVaccines, visit);
-
 
     return (
         <Layout title="" BackButtonCustom={<BackButton simpleBack />}>
             <PageLayout>
                 <Box p="20px" className={classes.pageContent}>
-                    {loading || vaccinationCreateLoading && <Box textAlign="center"><CircleLoader /></Box>}
+                    {(loading || vaccinationCreateLoading) && <Box textAlign="center"><CircleLoader /></Box>}
 
                     {!loading && !vaccinationCreateLoading &&
                         <div>
@@ -311,6 +372,7 @@ export const MarkVaccine: React.FC<MarkVaccineProps> = (props) => {
                                                 status={mark}
                                                 vaccines={vaccines}
                                                 editHandle={(newState: MarkedVaccine) => editMark(newState, idx)}
+                                                diseases={diseases}
                                             />
                                         </div>
                                     );

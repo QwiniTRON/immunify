@@ -21,7 +21,7 @@ import { BackButton } from '../../components/BackButton';
 
 import { useServer } from '../../hooks/useServer';
 
-import { GetVaccines, GetAvailableStages, CreateVaccination } from '../../server';
+import { GetVaccines, GetAvailableStages, CreateVaccination, GetDiseases } from '../../server';
 import { RootState } from '../../store';
 import { Divider, Loader } from '../../components';
 
@@ -34,30 +34,65 @@ type ReadyPageProps = {
 type Vaccine = {
     id: string
     name: string
+    diseaseIds: number[]
+}
+
+type Diseas = {
+    id: number
+    name: string
+}
+
+type DiseasFull = {
+    detailedShort: string
+    detailedFull: string
+    id: number
+    name: string
+    vaccines: Vaccine[]
+}
+
+type LocationDataArrived = {
+    type: 'diseas' | 'vaccine'
+    data: Diseas | Vaccine
 }
 
 
 export const ReadyPage: React.FC<ReadyPageProps> = (props) => {
     const currentUser = useSelector((state: RootState) => state.user.currentUser);
     const history = useHistory();
-    const routerData = useLocation<Vaccine | undefined>();
-    const arrivedVaccine = routerData.state;
+
+    const routerData = useLocation<LocationDataArrived | undefined>().state;
+    let arrivedVaccine: Vaccine | undefined;
+    let arrivedDiseas: Diseas | undefined;
+
+    // определяем откуда мы пришли и что нам передали
+    if(routerData?.type == 'diseas') {
+        arrivedDiseas = routerData.data as Diseas;
+    } 
+    if(routerData?.type == 'vaccine') {
+        arrivedVaccine = routerData.data as Vaccine;
+    } 
+
+    // общие списки
+    const [vaccines, setVaccines] = useState<Vaccine[]>([]);
+    const [diseases, setDiseases] = useState<Diseas[]>([]);
+    const [stages, setStages] = useState<{ id: number, stage: number }[]>([]);
 
     const [selectedDate, handleDateChange] = useState(new Date());
-    const [vaccines, setVaccines] = useState<Vaccine[]>([]);
-    const [stages, setStages] = useState<{ id: number, stage: number }[]>([]);
     const [vaccine, setVaccine] = useState<Vaccine | null>(arrivedVaccine ?? null);
+    const [diseas, setDiseas] = useState<Diseas | null>(arrivedDiseas ?? null);
     const [currentStage, setCurrentStage] = useState(0);
+
     const [errors, setErrors] = useState({
         'vaccine': '',
         'stage': '',
         'date': ''
     });
 
+    // запросы
     const vaccinesRequest = useServer(GetVaccines);
     const stagesRequest = useServer(GetAvailableStages);
     const vaccinationRequest = useServer(CreateVaccination);
-    const diseasRequest = useServer(CreateVaccination);
+    const diseasRequest = useServer(GetDiseases);
 
     // загружаем все известные вакцины
     useEffect(() => {
@@ -65,17 +100,26 @@ export const ReadyPage: React.FC<ReadyPageProps> = (props) => {
             stagesRequest.fetch({ vaccineId: Number(arrivedVaccine?.id) });
         }
         vaccinesRequest.fetch(undefined);
+        diseasRequest.fetch(undefined);
 
         return vaccinesRequest.cancel;
     }, []);
 
 
-    const loading = vaccinesRequest.state.fetching || stagesRequest.state.fetching || vaccinationRequest.state.fetching;
+    // блок запросов
+    const loading = vaccinesRequest.state.fetching || stagesRequest.state.fetching || vaccinationRequest.state.fetching || diseasRequest.state.fetching;
     const successVaccines = !loading && vaccinesRequest.state.answer.succeeded;
     const successStages = !loading && stagesRequest.state.answer.succeeded;
     const successVaccination = !loading && vaccinationRequest.state.answer.succeeded;
+    const successDiseas = !loading && diseasRequest.state.answer.succeeded;
 
+    // фильтруем вакцины по выбранной болезни
+    let filteredVaccines: Vaccine[] = vaccines;
+    if(Boolean(diseas)) {
+        filteredVaccines = vaccines.filter((vaccine) => vaccine.diseaseIds.includes(Number(diseas?.id)) );
+    }
 
+    
     /**
      * валидация
      */
@@ -123,14 +167,22 @@ export const ReadyPage: React.FC<ReadyPageProps> = (props) => {
     }
 
 
+    // пришли вакцины
     if (successVaccines) {
         setVaccines((vaccinesRequest.state.answer.data || []) as any);
         vaccinesRequest.reload();
     }
 
+    // пришли стадии для вакцины
     if (successStages) {
         setStages(stagesRequest.state.answer.data || []);
         stagesRequest.reload();
+    }
+
+    // пришли болезни
+    if(successDiseas) {
+        setDiseases(diseasRequest.state.answer.data as Diseas[]);
+        diseasRequest.reload();
     }
 
     // после ввода просто делаем переадресация на риски
@@ -146,6 +198,32 @@ export const ReadyPage: React.FC<ReadyPageProps> = (props) => {
 
                 <Divider />
 
+                {diseasRequest.state.fetching &&
+                    <Box marginY={2} height="78px"><Loader /></Box>}
+
+                {!diseasRequest.state.fetching &&
+                    <Box marginY={2}>
+                        <Autocomplete
+                            id="combo-region-main"
+                            options={diseases}
+                            getOptionLabel={(option) => option.name}
+                            value={diseas}
+                            fullWidth
+                            renderInput={(params) =>
+                                <TextField
+                                    {...params}
+                                    helperText="найти вакцины по болезни"
+                                    label="болезнь"
+                                    variant="outlined" />
+                            }
+                            onChange={(event, newValue) => {
+                                setDiseas(newValue);
+                            }}
+                        />
+                    </Box>
+                }
+
+
                 {vaccinesRequest.state.fetching &&
                     <Box marginY={2} height="56px"><Loader /></Box>}
 
@@ -153,7 +231,7 @@ export const ReadyPage: React.FC<ReadyPageProps> = (props) => {
                     <Box marginY={2}>
                         <Autocomplete
                             id="combo-region-main"
-                            options={vaccines}
+                            options={filteredVaccines}
                             getOptionLabel={(option) => option.name}
                             value={vaccine}
                             fullWidth

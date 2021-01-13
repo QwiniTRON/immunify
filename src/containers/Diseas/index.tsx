@@ -90,7 +90,7 @@ export const Diseas: React.FC<DiseasProps> = (props) => {
      * обработка клика кнопки "я привит"
      */
     const takeHandle = () => {
-        history.push('/vaccination/add');
+        history.push('/vaccination/add', { type: 'diseas', data: diseas });
     }
 
     // если данных по болезни не нашлось
