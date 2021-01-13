@@ -11,6 +11,7 @@ import { RootState } from '../../store';
 
 import { useServer } from '../../hooks/useServer';
 import { DetailedVaccinationType, GetDetailedVaccination } from '../../server';
+import { MarkDown } from '../../components/MarkDown';
 
 type VaccinationDetailsProps = {}
 
@@ -173,8 +174,9 @@ export const VaccinationDetails: React.FC<VaccinationDetailsProps> = (props) => 
           <Box fontSize={24} fontWeight={500}>
             {vaccination?.name}
           </Box>
-          <Box fontWeight={300} color="#777">
-            {vaccination?.detailedShort}
+         
+          <Box marginY={1}>
+            <MarkDown md={vaccination?.detailedShort ?? ''} />
           </Box>
 
 

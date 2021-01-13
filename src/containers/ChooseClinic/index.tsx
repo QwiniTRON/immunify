@@ -32,7 +32,8 @@ const useStyles = makeStyles({
   },
   root: {
     display: 'flex',
-    flexDirection: 'column'
+    flexDirection: 'column',
+    padding: '10px 20px'
   }
 });
 
@@ -75,7 +76,7 @@ export const ChooseClinic: React.FC<ChooseClinicProps> = (props) => {
 
 
   return (
-    <Layout title="" clearScroll BackButtonCustom={<BackButton to={`/passport`} text="Вернуться к списку центров" />} >
+    <Layout title="" clearScroll BackButtonCustom={<BackButton simpleBack routeText />} >
       <PageLayout className={clasess.root}>
 
         <Box component="h2" fontSize={24} fontWeight={500} marginY={1}>

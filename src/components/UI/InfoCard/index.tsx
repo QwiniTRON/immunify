@@ -24,7 +24,8 @@ const useStyles = makeStyles({
   root: {
     padding: 15,
     position: 'relative',
-    paddingBottom: 20
+    paddingBottom: 45,
+    borderRadius: 10
   },
 
   link: {

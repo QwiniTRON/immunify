@@ -23,7 +23,9 @@ const useStyles = makeStyles({
     },
 
     text: {
-        fontSize: 18
+        fontSize: 18,
+        color: '#777',
+        fontWeight: 300
     },
 
     icon: {

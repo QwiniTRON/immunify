@@ -40,7 +40,7 @@ type ClinicDetailed = {
 const useStyles = makeStyles({
   root: {
     fontSize: 18,
-    padding: 15
+    padding: 20
   },
 
   phoneIcon: {

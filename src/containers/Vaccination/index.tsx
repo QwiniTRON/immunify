@@ -35,7 +35,7 @@ const VaccinationPlaceholder: React.FC = () => {
 
 const useStyles = makeStyles({
   page: {
-    padding: '15px 15px 65px 15px'
+    padding: '20px 20px 85px 20px'
   }
 });
 
@@ -84,7 +84,7 @@ export const Vaccination: React.FC<VaccinationProps> = (props) => {
     }
 
     return (
-      <Box marginY={1} key={vaccine.id + vaccine.name + index.toString()}>
+      <Box marginY="5px" key={vaccine.id + vaccine.name + index.toString()}>
         <VaccineCard
           vaccine={{
             id: vaccine.id,
@@ -103,13 +103,18 @@ export const Vaccination: React.FC<VaccinationProps> = (props) => {
       <PageLayout className={classes.page}>
 
         {vaccinations.state.fetching && <Box m="15px auto"><CircleLoader /></Box>}
+
         {!vaccinations.state.fetching &&
           <>
             {
               vaccinesToShow.length === 0 ?
                 <VaccinationPlaceholder />
                 :
-                vaccinesToShow
+                <>
+                  <Box color="#646464" fontSize={16}>Вы защищены! Эти вакцины усиливают ваш иммунитет</Box>
+
+                  {vaccinesToShow}
+                </>
             }
 
             <AppLinkButton to="/vaccination/add" floated appColor="linear">

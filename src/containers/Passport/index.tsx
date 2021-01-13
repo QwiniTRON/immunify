@@ -45,7 +45,7 @@ export const Passport: React.FC<PassportProps> = (props) => {
     return (
         <Layout title="Иммунный пасспорт" titleCurrentName domainPage>
             <PageLayout>
-                <Box paddingX={1}>
+                <Box paddingX="15px">
                     {!compleatedStatus && <PassportPlaceholder />}
 
 

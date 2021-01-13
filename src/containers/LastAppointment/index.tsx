@@ -52,7 +52,7 @@ type AppointmentDetail = {
 const useStyles = makeStyles((theme) => ({
   root: {
     fontSize: 18,
-    padding: 15
+    padding: 20
   },
 
   phoneIcon: {
