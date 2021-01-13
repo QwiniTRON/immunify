@@ -9,4 +9,4 @@ function addNewPath(path: string, text: string, mode: PathMode) {
 
 
 addNewPath("/vaccination", 'Вернуться к вакцинациям', "exact");
-addNewPath("/vaccination", 'Вернуться к вакцинациям', "exact");
+addNewPath("/profile", 'Вернуться в профиль', "exact");

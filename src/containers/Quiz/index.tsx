@@ -153,7 +153,7 @@ export const Quiz: React.FC<QuizProps> = (props) => {
         <Layout title="" BackButtonCustom={<BackButton to={pathToBack} text="Вернуться в профиль" />} >
             <PageLayout className="quiz-page">
                 <LinearProgress variant="determinate" value={quizProgress} />
-                <p>вопрос {`${quiz.currentStep + 1}/${quizQuestions.length}`}</p>
+                {/* <p>вопрос {`${quiz.currentStep + 1}/${quizQuestions.length}`}</p> */}
                 {/* {isNotCurrentAnswer && (<p className={classes.notice}>ответьте на этот вопрос</p>)} */}
                 <h3 className="quiz-page__question">{currentQuestion.text}</h3>
 

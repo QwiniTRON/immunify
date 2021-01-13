@@ -106,15 +106,19 @@ export const VisitCard: React.FC<VisitCardProps> = ({ visit }) => {
                         </div>
                     </Box>
 
-                    <Divider color="gray" />
-                    <Box display="flex" fontSize={18} alignItems="center"   >
-                        <SyringeIcon className={classes.ticketIcon} />
+                    {false &&
+                        <>
+                            <Divider color="gray" />
+                            <Box display="flex" fontSize={18} alignItems="center"   >
+                                <SyringeIcon className={classes.ticketIcon} />
 
-                        <div>
-                            <Box>Вакцина</Box>
-                            <Box fontWeight={300}>Инфарникс</Box>
-                        </div>
-                    </Box>
+                                <div>
+                                    <Box>Вакцина</Box>
+                                    <Box fontWeight={300}>Инфарникс</Box>
+                                </div>
+                            </Box>
+                        </>
+                    }
                 </div>
             </Paper>
         </Link>

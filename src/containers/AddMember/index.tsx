@@ -77,6 +77,12 @@ const AddMember: React.FC<AddMemberProps> = ({
         age: '',
         sex: ''
     });
+    const [inputTouches, setInputTouches] = useState({
+        name: false,
+        age: false,
+        sex: false
+    });
+    const [isValid, setIsValid] = useState(false);
 
     useLayoutEffect(() => {
         if (success) {
@@ -90,11 +96,12 @@ const AddMember: React.FC<AddMemberProps> = ({
         }
     }, [success]);
 
-    const handleSubmit = (e: React.FormEvent) => {
-        e.preventDefault();
-        if (loading) return;
-
+    /**
+     * валидаци данных
+     */
+    const validate = () => {
         let valid = true;
+
         // sanitize
         const sexText = sex.trim();
         const nameText = name.trim();
@@ -105,23 +112,45 @@ const AddMember: React.FC<AddMemberProps> = ({
         }
 
         // валидация
-        if (nameText.length < 2) {
-            errors.name = 'имя должно быть не короче 2 символов';
+        if (nameText.length < 2 && inputTouches.name) {
+            errors.name = '* имя должно быть не короче 2 символов';
             valid = false;
-        }
-        if (!Boolean(selectedDate)) {
-            errors.age = 'возраст обязателен';
+        } else if (!Boolean(selectedDate) && inputTouches.age) {
+            errors.age = '* возраст обязателен';
             valid = false;
-        }
-        if (!sexText) {
-            errors.sex = 'пол обязателен';
+        } else if (!sexText && (inputTouches.name || inputTouches.age)) {
+            errors.sex = '* пол обязателен';
             valid = false;
         }
 
+        if (!inputTouches.name || !inputTouches.age || !inputTouches.sex) {
+            valid = false;
+        }
+        setIsValid(valid);
+        setErrors(errors);
+
+        return [valid, errors]
+    }
+
+    // при изменении пола
+    useEffect(() => {
+        validate();
+    }, [sex]);
+
+    /**
+     * 
+     * добовление нового пациента
+     * 
+     * @param e 
+     */
+    const handleSubmit = (e: React.FormEvent) => {
+        e.preventDefault();
+        if (loading) return;
+
+        const [valid, errors] = validate();
+
         if (valid) {
             addReq.fetch(undefined);
-        } else {
-            setErrors(errors);
         }
     }
 
@@ -142,7 +171,9 @@ const AddMember: React.FC<AddMemberProps> = ({
                             <Typography color="error">{errors.sex}</Typography>
                             <Box display="flex" justifyContent="space-evenly" marginBottom={3}>
                                 <AppRadioGroup onChange={(value: string) => {
+                                    setInputTouches(Object.assign({}, inputTouches, { sex: true }));
                                     setSex(value);
+                                    validate();
                                 }}
                                     value={sex}
                                 >
@@ -172,7 +203,12 @@ const AddMember: React.FC<AddMemberProps> = ({
                                 className="reg__input"
                                 id="name-input"
                                 value={name}
-                                onChange={(e: React.ChangeEvent<HTMLInputElement>) => setName(e.target.value)} />
+                                onBlurCapture={validate}
+                                onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                                    setName(e.target.value);
+                                    setInputTouches(Object.assign({}, inputTouches, { name: true }));
+                                }}
+                            />
 
                             <Typography color="error">{errors.age}</Typography>
                             <MuiPickersUtilsProvider utils={DateFnsUtils} locale={ruLocale}>
@@ -186,6 +222,8 @@ const AddMember: React.FC<AddMemberProps> = ({
                                     disableFuture
                                     inputVariant="outlined"
                                     clearable
+                                    onBlurCapture={validate}
+                                    onFocus={() => setInputTouches(Object.assign({}, inputTouches, { age: true }))}
                                 />
                             </MuiPickersUtilsProvider>
 
@@ -193,7 +231,7 @@ const AddMember: React.FC<AddMemberProps> = ({
                                 <AppButton
                                     className={classes.startButton}
                                     appColor="linear"
-                                    disabled={loading || (!Boolean(name) || !Boolean(selectedDate) || !Boolean(sex))}
+                                    disabled={loading || !isValid}
                                     type="submit">
                                     Начать
                                 </AppButton>

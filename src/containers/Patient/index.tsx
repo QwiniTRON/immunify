@@ -60,7 +60,7 @@ export const Patient: React.FC<PatientProps> = (props) => {
   return (
     <Layout title="" BackButtonCustom={<BackButton text="Вернуться к пациентам" />} background>
       <PageLayout>
-        <Box pb={8}>
+        <Box pb={8} p="15px">
           <UserData />
 
           <AppButton

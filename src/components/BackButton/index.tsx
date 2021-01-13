@@ -22,6 +22,7 @@ const useStyles = makeStyles({
     },
 
     text: {
+        fontSize: 18
     },
 
     icon: {
@@ -43,8 +44,6 @@ export const BackButton: React.FC<BackButtonProps> = ({
 
     const pathNames = locationData.pathname.split('/').slice(1);
     const pathToBack = '/' + pathNames.slice(0, -1).join('/');
-
-    console.log(lastPath);
     
 
     if (simpleBack) {

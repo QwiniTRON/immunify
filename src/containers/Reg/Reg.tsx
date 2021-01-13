@@ -86,6 +86,9 @@ const Reg: React.FC<RegProps> = ({
     }, [success]);
 
 
+    /**
+     * валидаци данных
+     */
     const validate = () => {
         let valid = true;
 
@@ -105,7 +108,7 @@ const Reg: React.FC<RegProps> = ({
         } else if (!Boolean(selectedDate) && inputTouches.age) {
             errors.age = 'возраст обязателен';
             valid = false;
-        } else if (!sexText && inputTouches.sex) {
+        } else if (!sexText && (inputTouches.name || inputTouches.age)) {
             errors.sex = 'пол обязателен';
             valid = false;
         }
@@ -119,10 +122,16 @@ const Reg: React.FC<RegProps> = ({
         return [valid, errors]
     }
 
+
     useEffect(() => {
         validate();
-    }, [sex, name, selectedDate]);
+    }, [sex]);
 
+    /**
+     * отправка данных для регистрации нового пользователя
+     * 
+     * @param e 
+     */
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         if (loading) return;

@@ -26,13 +26,13 @@ const useStyle = makeStyles((theme) => ({
         position: 'relative',
         display: 'flex',
         alignItems: 'center',
-        justifyContent: 'space-between'
+        borderRadius: 10
     },
     rootLink: {
         textDecoration: 'none'
     },
     arrow: {
-        marginLeft: 10
+        marginLeft: 'auto'
     },
 
     customIcon: {
@@ -44,7 +44,8 @@ const useStyle = makeStyles((theme) => ({
     },
 
     title: {
-        fontSize: 18
+        fontSize: 18,
+        fontWeight: 500
     },
 
     status: {

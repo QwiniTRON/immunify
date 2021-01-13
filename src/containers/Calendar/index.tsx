@@ -30,6 +30,12 @@ const useStyles = makeStyles({
     root: {
         display: 'flex',
         flexDirection: 'column'
+    },
+
+    takeButton: {
+        maxWidth: 160,
+        width: "100%",
+        marginBottom: 20
     }
 });
 
@@ -41,10 +47,6 @@ const TakePlaceholder: React.FC<any> = (props) => {
             <Box fontSize={18} fontWeight={500} m="0 auto" width={0.5} mt={4}>
                 У Вас нет предстоящих записей
             </Box>
-
-            <AppLinkButton to="/profile" floated appColor="linear">
-                добавить
-            </AppLinkButton>
         </Box>
     );
 }
@@ -99,6 +101,18 @@ export const Calendar: React.FC<CalendarProps> = (props) => {
                         }
                     </Box>
                 }
+
+                <Box mt="auto" textAlign="center">
+                    <AppLinkButton
+                        disabled={loading}
+                        to={{
+                            pathname: `/passport/take`
+                        }}
+                        appColor="linear"
+                        className={classes.takeButton}
+                    > Записаться
+                    </AppLinkButton>
+                </Box>
             </PageLayout>
         </Layout>
     );
