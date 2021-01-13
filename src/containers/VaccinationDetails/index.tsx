@@ -138,7 +138,6 @@ export const VaccinationDetails: React.FC<VaccinationDetailsProps> = (props) => 
     });
   }
 
-
   if (!loading && vaccination !== undefined && vaccination.stages.length !== 0) {
     const lastStage = vaccination.stages[vaccination.stages.length - 1];
     const maxStage = Math.max.apply(null, vaccination.totalStages.map(x => x.stage))
@@ -149,15 +148,16 @@ export const VaccinationDetails: React.FC<VaccinationDetailsProps> = (props) => 
 
     if (lastStage.revaccination && revaccinationStage !== undefined) {
       nextStageValue = revaccinationStage.stage;
-    } else {
+    } else if (lastStage.stage + 1 <= maxStage) {
       nextStageValue = lastStage.stage + 1;
     }
 
-    if (!(lastStage.stage + 1 > maxStage)) {
+
+    if (revaccinationStage) {
       const resultStage = vaccination.totalStages.find(x => x.stage === nextStageValue)!;
 
-      if (Boolean(toShow) && toShow != null) {
-        toShow.push((
+      if (Boolean(toShow)) {
+        toShow?.push((
           <div
             key={vaccination.stages.length + 2}
             className={sif({
