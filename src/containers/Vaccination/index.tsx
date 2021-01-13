@@ -66,21 +66,26 @@ export const Vaccination: React.FC<VaccinationProps> = (props) => {
   const copiedVaccines: PatientVaccinations = JSON.parse(JSON.stringify(vaccines));
 
   const vaccinesToShow = copiedVaccines.map((vaccine, index) => {
-    const lastVaccination = vaccine.passedStages[vaccine.passedStages.length - 1];
-
-    let startDate = new Date(lastVaccination.date);
-    startDate = new Date(startDate.setMonth(startDate.getMonth() + lastVaccination.durationStartInMonths));
-
-    let endDate = new Date(lastVaccination.date);
-    endDate = new Date(endDate.setMonth(endDate.getMonth() + lastVaccination.durationEndInMonths));
-
+    const lastVaccination = vaccine.passedStages[0];
+    let dateMessage = "Вы прошли все стадии вакцинации";
     let color: 'green' | 'red' | 'yellow' = 'green';
 
-    const currentDate = new Date();
 
-    if (currentDate >= startDate) {
-      if (currentDate <= endDate) color = 'yellow';
-      else color = 'red';
+    if (lastVaccination.revaccination || lastVaccination.stage !== Math.max.apply(null, vaccine.totalStages)) {
+      let startDate = new Date(lastVaccination.date);
+      startDate = new Date(startDate.setMonth(startDate.getMonth() + lastVaccination.durationStartInMonths));
+  
+      let endDate = new Date(lastVaccination.date);
+      endDate = new Date(endDate.setMonth(endDate.getMonth() + lastVaccination.durationEndInMonths));
+  
+      const currentDate = new Date();
+  
+      if (currentDate >= startDate) {
+        if (currentDate <= endDate) color = 'yellow';
+        else color = 'red';
+      }
+
+      dateMessage = `Следующая вакцинация не поздее ${startDate.toLocaleDateString('ru-RU')}`;
     }
 
     return (
@@ -88,7 +93,7 @@ export const Vaccination: React.FC<VaccinationProps> = (props) => {
         <VaccineCard
           vaccine={{
             id: vaccine.id,
-            date: `Следующая вакцинация не поздее ${startDate.toLocaleDateString('ru-RU')}`,
+            date: dateMessage,
             name: vaccine.name,
             detailed: vaccine.detailed
           }}
