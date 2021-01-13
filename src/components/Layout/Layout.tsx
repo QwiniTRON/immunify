@@ -28,7 +28,9 @@ type LayoutProps = {
 const useStyles = makeStyles((theme) => ({
     avatar: {
         width: 48,
-        height: 48
+        height: 48,
+        color: '#646464',
+        fontWeight: 500
     },
 
     title: {

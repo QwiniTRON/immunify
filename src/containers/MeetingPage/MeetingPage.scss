@@ -188,7 +188,7 @@
         padding-bottom: 30px;
         background: url("") no-repeat, url("../../assets/fon2.png") no-repeat, url("../../assets/fon3.png") no-repeat,
             url("../../assets/fon4.png") no-repeat, url("../../assets/fon5.png") no-repeat;
-        background-position: 5% 100%, 15% 35%, 35% 80%, 68% 18%, 84% 72%;
+        background-position: 7% 100%, 19% 35%, 35% 80%, 68% 18%, 82% 72%;
     }
 
     .auth__img {
@@ -201,5 +201,7 @@
         display: block;
         margin: 10px auto;
         width: 290px;
+        padding: 20px;
+        border-radius: 20px;
     }
 }

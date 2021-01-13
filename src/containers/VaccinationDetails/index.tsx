@@ -85,11 +85,12 @@ export const VaccinationDetails: React.FC<VaccinationDetailsProps> = (props) => 
   const classes = useStyles();
   const [vaccination, setVaccination] = useState<DetailedVaccinationType>();
 
-  const id = useRouteMatch<DiseasRoutParams>().params.id;  
+  const id = useRouteMatch<DiseasRoutParams>().params.id;
   const currentUser = useSelector((state: RootState) => state.user.currentUser);
 
   const fetcher = useServer(GetDetailedVaccination);
 
+  // запрос деталей по вакцинации
   useEffect(() => {
     fetcher.fetch({
       vaccineId: id as any,
@@ -100,6 +101,7 @@ export const VaccinationDetails: React.FC<VaccinationDetailsProps> = (props) => 
   const loading = fetcher.state.fetching;
   const success = !loading && fetcher.state.answer.succeeded;
 
+  // успешная загрузка деталей вакцинации
   useEffect(() => {
     if (success) {
       setVaccination(fetcher.state.answer.data!);
@@ -108,9 +110,14 @@ export const VaccinationDetails: React.FC<VaccinationDetailsProps> = (props) => 
     }
   }, [success]);
 
+
+  // стадии для показа
   const toShow = !loading && vaccination !== undefined && vaccination.stages.map((stage, index) => {
     return (
-      <div className={classes.stage} key={index}>
+      <div className={sif({
+        [classes.stage]: true,
+        [classes.stage__connect]: index > 0
+      })} key={index}>
         <div className={sif({ [classes.stageIcon]: true, })}>{`${stage.revaccination ? 'R' : 'V'}${stage.stage}`}</div>
         <div className={classes.stageTitle}>{`${stage.revaccination ? 'Ревакцинация' : `${stage.stage} Стадия`}`}</div>
         <div className={classes.stageDate}>{new Date(stage.date).toLocaleDateString('ru-RU')}</div>
@@ -118,10 +125,11 @@ export const VaccinationDetails: React.FC<VaccinationDetailsProps> = (props) => 
     );
   });
 
-  !loading && vaccination !== undefined && vaccination.stages.length !== 0 && function() {
+
+  !loading && vaccination !== undefined && vaccination.stages.length !== 0 && function () {
     const lastStage = vaccination.stages[vaccination.stages.length - 1];
     const maxStage = Math.max.apply(null, vaccination.totalStages.map(x => x.stage))
-    
+
     let nextStageValue = 0;
 
     const minRevaccinationStage = Math.min.apply(null, vaccination.totalStages.filter(x => x.revaccination).map(x => x.stage));
@@ -143,7 +151,7 @@ export const VaccinationDetails: React.FC<VaccinationDetailsProps> = (props) => 
             [classes.stage__connect]: true
           })}>
           <div
-            className={sif({ [classes.stageIcon]: true, [classes.stageIcon__deactive]: true})}
+            className={sif({ [classes.stageIcon]: true, [classes.stageIcon__deactive]: true })}
           >
             {`${resultStage.revaccination ? 'R' : 'V'}${resultStage.stage}`}
           </div>
@@ -157,7 +165,7 @@ export const VaccinationDetails: React.FC<VaccinationDetailsProps> = (props) => 
       ));
     }
   }();
-  
+
   return (
     <Layout title="" BackButtonCustom={<BackButton to="/vaccination" text="Вернуться к вакцинациям" />}>
       <PageLayout>
@@ -173,7 +181,7 @@ export const VaccinationDetails: React.FC<VaccinationDetailsProps> = (props) => 
           <Box mt={3}>
 
             {toShow}
-            
+
           </Box>
         </Box>
       </PageLayout>

@@ -77,7 +77,7 @@ export const Vaccine: React.FC<VaccineProps> = (props) => {
   * обработка клика кнопки "я привит"
   */
   const takeHandle = () => {
-    history.push('/vaccination/add', vaccine);
+    history.push('/vaccination/add', { type: 'vaccine', data: vaccine });
   }
 
 

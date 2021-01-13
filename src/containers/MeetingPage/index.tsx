@@ -17,11 +17,11 @@ export const MeetingPage: React.FC = () => {
                     <div className="auth__buttons">
                         <Link className="button auth__button" to="/registration">
                             регистрация
-                    </Link>
+                        </Link>
 
                         <Link className="button auth__button  button--white" to="/login">
                             войти
-                    </Link>
+                        </Link>
                     </div>
                 </main>
             </div>

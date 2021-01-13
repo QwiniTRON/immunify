@@ -139,7 +139,7 @@ export const ReadyPage: React.FC<ReadyPageProps> = (props) => {
     }
 
     return (
-        <Layout title="" BackButtonCustom={<BackButton simpleBack text="Вернуться к заболеванию" />}>
+        <Layout title="" BackButtonCustom={<BackButton simpleBack routeText />}>
             <PageLayout className="ready-page">
                 <Box fontSize={24} fontWeight={500}>Прошедшие вакцинации</Box>
 
