@@ -2,6 +2,7 @@ import React from 'react';
 import Paper from '@material-ui/core/Paper';
 import { makeStyles } from '@material-ui/core/styles';
 import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos';
+import Box from '@material-ui/core/Box';
 
 import { s } from '../../../utils/Styels';
 import { Link } from 'react-router-dom';
@@ -30,7 +31,7 @@ const useStyels = makeStyles({
         display: 'flex',
         justifyContent: 'space-between',
         alignItems: 'center',
-        marginBottom: 15
+        marginBottom: 5
     },
 
     headArrow: {
@@ -46,9 +47,11 @@ const useStyels = makeStyles({
     line: {
         display: 'flex',
         alignItems: 'flex-start',
+        justifyContent: 'space-between',
         fontSize: 18,
         fontWeight: 400,
         borderTop: "1px solid #eee",
+        padding: '10px 0'
     },
 
     line__bnone: {
@@ -59,7 +62,13 @@ const useStyels = makeStyles({
         height: 12,
         width: 12,
         borderRadius: 6,
-        margin: "7px 10px 10px 10px"
+        margin: "7px 10px 10px 10px",
+        display: 'inline-block',
+        verticalAlign: 'middle'
+    },
+
+    status: {
+        fontWeight: 300
     },
 
     green: {
@@ -75,13 +84,16 @@ const useStyels = makeStyles({
     }
 });
 
-const riskBackgroundColors = {
-    [RiskStage.Low]: 'green',
-    [RiskStage.Medium]: 'yellow',
-    [RiskStage.High]: 'red',
-    [RiskCoefficient.None]: 'green',
-    [RiskCoefficient.Low]: 'yellow',
-    [RiskCoefficient.High]: 'red'
+const riskBackgroundColors: {[p: string]: string} = {
+    '1': 'green',
+    '2': 'yellow',
+    '3': 'red'
+}
+
+const riskText: {[p: string]: string} = {
+    '1': 'низкий',
+    '2': 'средний',
+    '3': 'высокий'
 }
 
 export const DiseasCard: React.FC<DiseasCardProps> = ({
@@ -91,38 +103,42 @@ export const DiseasCard: React.FC<DiseasCardProps> = ({
 }) => {
     const classes = useStyels();
     const personRisk: RiskStage = risks[0] as RiskStage;
-    const profRisk: RiskCoefficient = risks[1];
-    const epicRisk: RiskCoefficient = risks[2];
+    const profRisk: RiskCoefficient = risks[1] + 1 as RiskCoefficient;
+    const epicRisk: RiskCoefficient = risks[2] + 1 as RiskCoefficient;
 
+    const indicatorColor = String(Math.max(personRisk, (profRisk), (epicRisk)));
 
     return (
         <Link className={classes.rootLink} to={to}>
             <Paper classes={{ root: classes.root }}>
                 <div className={classes.head}>
-                    <p className={classes.title}>{name}</p>
+                    <p className={classes.title}>
+                        <div className={s(classes.indicator, (classes as any)[riskBackgroundColors[indicatorColor]])} />
+
+                        {name}
+                    </p>
 
                     <ArrowForwardIosIcon classes={{ root: classes.headArrow }} />
                 </div>
 
+                <Box fontWeight={300}>Риск заражения:</Box>
+
                 <div className={s(classes.line, classes.line__bnone)}>
-                    <div
-                        className={s(classes.indicator, (classes as any)[riskBackgroundColors[personRisk]])}
-                    ></div>
-                    Персональный риск
+                    Индивидуальный
+
+                    <span className={classes.status}>{riskText[personRisk]}</span>
                 </div>
 
                 <div className={classes.line}>
-                    <div
-                        className={s(classes.indicator, (classes as any)[riskBackgroundColors[profRisk]])}
-                    ></div>
-                    Профессиональный риск
+                    Профессиональный
+
+                    <span className={classes.status}>{riskText[String(profRisk)]}</span>
                 </div>
 
                 <div className={classes.line}>
-                    <div
-                        className={s(classes.indicator, (classes as any)[riskBackgroundColors[epicRisk]])}
-                    ></div>
-                    Эпидемиологическая обстановка
+                    Эпидемиологический
+
+                    <span className={classes.status}>{riskText[String(epicRisk)]}</span>
                 </div>
             </Paper>
         </Link>

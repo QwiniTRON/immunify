@@ -152,7 +152,6 @@ export const VaccinationDetails: React.FC<VaccinationDetailsProps> = (props) => 
       nextStageValue = lastStage.stage + 1;
     }
 
-
     if (revaccinationStage) {
       const resultStage = vaccination.totalStages.find(x => x.stage === nextStageValue)!;
 
