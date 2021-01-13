@@ -109,7 +109,7 @@ const Reg: React.FC<RegProps> = ({
             errors.age = 'возраст обязателен';
             valid = false;
         } else if (!sexText && (inputTouches.name || inputTouches.age)) {
-            errors.sex = 'пол обязателен';
+            errors.sex = '* поле обязательно';
             valid = false;
         }
 

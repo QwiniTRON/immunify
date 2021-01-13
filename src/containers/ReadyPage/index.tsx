@@ -57,6 +57,7 @@ export const ReadyPage: React.FC<ReadyPageProps> = (props) => {
     const vaccinesRequest = useServer(GetVaccines);
     const stagesRequest = useServer(GetAvailableStages);
     const vaccinationRequest = useServer(CreateVaccination);
+    const diseasRequest = useServer(CreateVaccination);
 
     // загружаем все известные вакцины
     useEffect(() => {
