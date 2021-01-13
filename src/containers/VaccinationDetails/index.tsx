@@ -133,12 +133,15 @@ export const VaccinationDetails: React.FC<VaccinationDetailsProps> = (props) => 
 
     let nextStageValue = 0;
 
-    const minRevaccinationStage = Math.min.apply(null, vaccination.totalStages.filter(x => x.revaccination).map(x => x.stage));
+    const revaccinationStage = vaccination.totalStages.find(x => x.revaccination);
 
-    if (lastStage.revaccination) {
-      nextStageValue = lastStage.stage + 1 > maxStage ? minRevaccinationStage : lastStage.stage + 1;
-    } else {
-      nextStageValue = lastStage.stage + 1 > maxStage ? 1 : lastStage.stage + 1;
+    if (lastStage.revaccination && revaccinationStage !== undefined) {
+      nextStageValue = revaccinationStage.stage;
+    } else if (lastStage.stage + 1 > maxStage) {
+      return;
+    }
+    else {
+      nextStageValue = lastStage.stage + 1;
     }
 
     const resultStage = vaccination.totalStages.find(x => x.stage === nextStageValue)!;
