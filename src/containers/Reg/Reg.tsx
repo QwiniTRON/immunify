@@ -125,7 +125,7 @@ const Reg: React.FC<RegProps> = ({
 
     useEffect(() => {
         validate();
-    }, [sex]);
+    }, [sex, selectedDate]);
 
     /**
      * отправка данных для регистрации нового пользователя

@@ -1,9 +1,10 @@
 import React, { createContext, useRef } from 'react';
 import { useLocation } from 'react-router-dom';
+import {IPathDictionary} from './appRouter';
 
 
 type LastPathProviderProps = {
-  pathDictionary: { [p: string]: string }
+  pathDictionary: IPathDictionary
 }
 
 
@@ -24,9 +25,11 @@ export const LastPathProvider: React.FC<LastPathProviderProps> = ({
   const lastPath = useRef<string>("");
 
   const currentPath = locationData.pathname;
+  const foundRoute = pathDictionary.findRoute(lastPath.current);
+
   const value: LastPathContext = {
     lastPath: lastPath.current,
-    lastPathText: pathDictionary[lastPath.current]
+    lastPathText: foundRoute?.text
   };
 
   lastPath.current = currentPath;

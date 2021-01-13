@@ -135,7 +135,7 @@ const AddMember: React.FC<AddMemberProps> = ({
     // при изменении пола
     useEffect(() => {
         validate();
-    }, [sex]);
+    }, [sex, selectedDate]);
 
     /**
      * 

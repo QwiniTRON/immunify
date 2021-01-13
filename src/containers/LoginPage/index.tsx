@@ -31,7 +31,7 @@ export const LoginPage: FC = () => {
   const externalLoginFetcher = useServer(ExternalLogin);
   const { set: setToken } = useAccessToken();
 
-  const { 
+  const {
     register,
     handleSubmit,
     errors,
@@ -61,7 +61,7 @@ export const LoginPage: FC = () => {
     window.location.href = "/profile";
     externalLoginFetcher.reload();
   }
-  
+
   const responseGoogle = (response: GoogleLoginResponse | GoogleLoginResponseOffline): void => {
 
     function isGoogleResponse(obj: any): obj is GoogleLoginResponse {
@@ -75,19 +75,19 @@ export const LoginPage: FC = () => {
       });
     }
   }
-  
+
   const failureResponseGoogle = (response: GoogleLoginResponse): void => {
     // Show error maybe?
     console.log(response.profileObj.googleId);
   }
 
   const facebookCallback = (userInfo: any): void => {
-      if (userInfo.userID !== undefined) {
-        externalLoginFetcher.fetch({
-          externalAuth: ExternalAuth.Facebook,
-          identity: userInfo.userID,
-        });
-      }
+    if (userInfo.userID !== undefined) {
+      externalLoginFetcher.fetch({
+        externalAuth: ExternalAuth.Facebook,
+        identity: userInfo.userID,
+      });
+    }
   }
 
   const vkCallback = (userInfo: any): void => {
@@ -104,101 +104,98 @@ export const LoginPage: FC = () => {
       <div className="container">
         <h1 className="title">Вход</h1>
 
-        <main>
+        <div className="error">{error}</div>
+        <form onSubmit={handleSubmit(onSubmit)}>
 
-          <div className="error">{error}</div>
-          <form onSubmit={handleSubmit(onSubmit)}>
-
-            <div className="input-group">
-              <label>
-                <input
-                  type="text"
-                  placeholder=" "
-                  className="input-group__input"
-                  name="username"
-                  ref={register({ required: true, minLength: 4, maxLength: 20 })}
-                />
-                <p className="input-group__title">Имя пользователя</p>
-              </label>
-              <div className="input-group__error">
-                {errors.username?.type === 'required' && 'Это поле обязательно'}
-                {errors.username?.type === 'minLength' && 'Минимальная длинна поля - 4 символа'}
-                {errors.username?.type === 'maxLength' && 'Максимальная длинна поля - 20 символа'}
-              </div>
-            </div>
-
-            <div className="input-group">
-              <label>
-                <input
-                  type="password"
-                  placeholder=" "
-                  className="input-group__input"
-                  name="password"
-                  ref={register({ required: true, minLength: 4, maxLength: 20 })}
-                /> 
-                <p className="input-group__title">Пароль</p>
-              </label>
-              <div className="input-group__error">
-                {errors.password?.type === 'required' && 'Это поле обязательно'}
-                {errors.password?.type === 'minLength' && 'Минимальная длинна поля - 4 символа'}
-                {errors.password?.type === 'maxLength' && 'Максимальная длинна поля - 20 символа'}
-              </div>
-            </div>
-
-
-            <div className="login__buttons">
-              <button className="button button--app" disabled={loading} type="submit">войти</button>
-            </div>
-          </form>
-
-
-          <div className="socials">
-            <div className="socials__title">вход через соцсети</div>
-
-            <div className="socials__networks">
-              <div className="socials__item">
-                <GoogleLogin
-                  clientId="830770546293-pu13vb9rsqgbh1u4oklhg47p3humh3gr.apps.googleusercontent.com"
-                  buttonText="Login"
-                  onSuccess={responseGoogle}
-                  onFailure={failureResponseGoogle}
-                  render={props => (
-                    <button {...props} style={{ background: 'none', border: 'none' }}>
-                      <img src={googlelogo} alt="google" />
-                    </button>
-                  )}
-                  cookiePolicy='single_host_origin'
-                />
-              </div>
-              <div className="socials__item">
-                <VkLogin 
-                  apiId="7707005"
-                  callback={vkCallback}
-                  render={(renderProps: any) => (
-                    <button {...renderProps} style={{ background: 'none', border: 'none' }}>
-                      <img src={vklogo} alt="vk" />
-                    </button>
-                  )}
-                />
-              </div>
-              <div className="socials__item">
-                <FacebookLogin
-                  appId="438469453977207"
-                  callback={facebookCallback}
-                  render={(renderProps: any) => (
-                    <button onClick={renderProps.onClick} style={{ background: 'none', border: 'none' }}>
-                      <img src={facebooklogo} alt="facebook" />
-                    </button>
-                  )}
-                />
-              </div>
-            </div>
-
-            <div className="socials__notice">
-                Нет аккаунта? <Link className="socials__link" to="/registration">Зарегистрироваться</Link>
+          <div className="input-group">
+            <label>
+              <input
+                type="text"
+                placeholder=" "
+                className="input-group__input"
+                name="username"
+                ref={register({ required: true, minLength: 4, maxLength: 20 })}
+              />
+              <p className="input-group__title">Имя пользователя</p>
+            </label>
+            <div className="input-group__error">
+              {errors.username?.type === 'required' && 'Это поле обязательно'}
+              {errors.username?.type === 'minLength' && 'Минимальная длинна поля - 4 символа'}
+              {errors.username?.type === 'maxLength' && 'Максимальная длинна поля - 20 символа'}
             </div>
           </div>
-        </main>
+
+          <div className="input-group">
+            <label>
+              <input
+                type="password"
+                placeholder=" "
+                className="input-group__input"
+                name="password"
+                ref={register({ required: true, minLength: 4, maxLength: 20 })}
+              />
+              <p className="input-group__title">Пароль</p>
+            </label>
+            <div className="input-group__error">
+              {errors.password?.type === 'required' && 'Это поле обязательно'}
+              {errors.password?.type === 'minLength' && 'Минимальная длинна поля - 4 символа'}
+              {errors.password?.type === 'maxLength' && 'Максимальная длинна поля - 20 символа'}
+            </div>
+          </div>
+
+
+          <div className="login__buttons">
+            <button className="button button--app" disabled={loading} type="submit">войти</button>
+          </div>
+        </form>
+
+
+        <div className="socials">
+          <div className="socials__title">вход через соцсети</div>
+
+          <div className="socials__networks">
+            <div className="socials__item">
+              <GoogleLogin
+                clientId="830770546293-pu13vb9rsqgbh1u4oklhg47p3humh3gr.apps.googleusercontent.com"
+                buttonText="Login"
+                onSuccess={responseGoogle}
+                onFailure={failureResponseGoogle}
+                render={props => (
+                  <button type="button" {...props} style={{ background: 'none', border: 'none' }}>
+                    <img src={googlelogo} alt="google" />
+                  </button>
+                )}
+                cookiePolicy='single_host_origin'
+              />
+            </div>
+            <div className="socials__item">
+              <VkLogin
+                apiId="7707005"
+                callback={vkCallback}
+                render={(renderProps: any) => (
+                  <button {...renderProps} type="button" style={{ background: 'none', border: 'none' }}>
+                    <img src={vklogo} alt="vk" />
+                  </button>
+                )}
+              />
+            </div>
+            <div className="socials__item">
+              <FacebookLogin
+                appId="438469453977207"
+                callback={facebookCallback}
+                render={(renderProps: any) => (
+                  <button onClick={renderProps.onClick} type="button" style={{ background: 'none', border: 'none' }}>
+                    <img src={facebooklogo} alt="facebook" />
+                  </button>
+                )}
+              />
+            </div>
+          </div>
+
+          <div className="socials__notice">
+            Нет аккаунта? <Link className="socials__link" to="/registration">Зарегистрироваться</Link>
+          </div>
+        </div>
       </div>
     </div>
   );
