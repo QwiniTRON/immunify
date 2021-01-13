@@ -70,17 +70,15 @@ const Reg: React.FC<RegProps> = ({
     });
     const [isValid, setIsValid] = useState(false);
 
+    useEffect(() => {
+        appDataInit(token);
+    }, []);
 
     useLayoutEffect(() => {
         if (success) {
             register(name, selectedDate?.getTime(), sex, addReq.state?.answer?.data?.id)
-                .then((r: any) => {
-                    appDataInit(token).then(() => {
-                    });
+                .then(() => {
                     history.push(`/profile/${name.trim()}`);
-                })
-                .catch((e: any) => {
-                    console.log(e);
                 });
         } else if (addReq.state.answer.errorMessage) { }
     }, [success]);
@@ -89,6 +87,7 @@ const Reg: React.FC<RegProps> = ({
     /**
      * валидаци данных
      */
+    
     const validate = () => {
         let valid = true;
 
