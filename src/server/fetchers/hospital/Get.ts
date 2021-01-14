@@ -5,6 +5,7 @@ export type Clinic = {
   name: string,
   latitude: string,
   longitude: string,
+  address: string,
 }
 
 type Response = Clinic[];

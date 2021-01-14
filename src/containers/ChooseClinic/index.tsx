@@ -123,18 +123,8 @@ export const ChooseClinic: React.FC<ChooseClinicProps> = (props) => {
   }, []);
 
   useEffect(() => {
-    if (success) {
-
-      // __MOCK__
-      let clinics = (clinicsReq?.state?.answer?.data as Clinic[]).map((clinic) => {
-        clinic.latitude = String(55.25 + Math.random() * 1);
-        clinic.longitude = String(37.57 + Math.random() * 1);
-
-        return clinic;
-      });
-      // __MOCK__
-      
-      setClinics(clinics as Clinic[]);
+    if (success) {      
+      setClinics(clinicsReq.state.answer.data! as Clinic[]);
       clinicsReq.reload();
     }
   }, [success]);
@@ -145,12 +135,12 @@ export const ChooseClinic: React.FC<ChooseClinicProps> = (props) => {
   };
 
   // точки клиник на карте
-  let clinicToShow = clinics.map((clinic) => {
-    const x = global.parseFloat(clinic.latitude);
-    const y = global.parseFloat(clinic.longitude);
+  let clinicToShow = clinics.filter(x => x.latitude !== "" && x.longitude !== "").map((clinic) => {
+    const latitude = global.parseFloat(clinic.latitude);
+    const longitude = global.parseFloat(clinic.longitude);
 
     return (
-      <Placemark key={clinic.id} geometry={[x, y]} onClick={() => (setClinic(clinic), setSubMenuOpen(true))} />
+      <Placemark key={clinic.id} geometry={[latitude, longitude]} onClick={() => (setClinic(clinic), setSubMenuOpen(true))} />
     );
   });
 
@@ -169,7 +159,7 @@ export const ChooseClinic: React.FC<ChooseClinicProps> = (props) => {
           {clinic.name}
         </Box>
         <Box fontSize={18} fontWeight={300}>
-          Москва, улица Перерва, дом 53
+          {clinic.address}
         </Box>
 
         <Link to={`/passport/appointment/${clinic.id}`} className={classes.takeLink}>Позвонить и записаться
@@ -205,7 +195,7 @@ export const ChooseClinic: React.FC<ChooseClinicProps> = (props) => {
             {!loading && clinics.map((c) => (
               <Box marginY={2}>
                 <InfoCard data={[
-                  { description: 'Москва, улица Перерва, дом 53', title: c.name }
+                  { description: c.address, title: c.name }
                 ]}
                   detailText="Позвонить и записаться"
                   to={`/passport/appointment/${c.id}`}
