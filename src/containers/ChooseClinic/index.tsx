@@ -103,7 +103,6 @@ const useStyles = makeStyles({
   }
 });
 
-
 export const ChooseClinic: React.FC<ChooseClinicProps> = (props) => {
   const classes = useStyles();
   const routeData: ChooseClinicRouteState | undefined = useLocation<ChooseClinicRouteState>().state;
