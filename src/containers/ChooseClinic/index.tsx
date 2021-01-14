@@ -11,7 +11,7 @@ import { AppTabPanel } from '../../components/UI/TabPanel';
 import { PageLayout } from '../../components/UI/PageLayout';
 import { BackButton } from '../../components/BackButton';
 import { useLocation } from 'react-router-dom';
-import { GetHospitals } from '../../server/fetchers/hospital';
+import { GetHospitals, HospitalResponse } from '../../server';
 import { useServer } from '../../hooks/useServer';
 import { Divider, Loader } from '../../components';
 
@@ -37,8 +37,6 @@ const useStyles = makeStyles({
   }
 });
 
-type Clinic = { id: number, name: string }
-
 export const ChooseClinic: React.FC<ChooseClinicProps> = (props) => {
   const clasess = useStyles();
   const routeData: ChooseClinicRouteState | undefined = useLocation<ChooseClinicRouteState>().state;
@@ -48,7 +46,7 @@ export const ChooseClinic: React.FC<ChooseClinicProps> = (props) => {
   const success = !loading && clinicsReq.state.answer.succeeded;
 
   const [tabValue, setTabValue] = useState(0);
-  const [clinics, setClinics] = useState<Clinic[]>([]);
+  const [clinics, setClinics] = useState<HospitalResponse>([]);
 
   useEffect(() => {
     clinicsReq.fetch(undefined);
@@ -56,7 +54,7 @@ export const ChooseClinic: React.FC<ChooseClinicProps> = (props) => {
 
   useEffect(() => {
     if (success) {
-      setClinics(clinicsReq?.state?.answer?.data as Clinic[]);
+      setClinics(clinicsReq.state.answer.data! as HospitalResponse);
       clinicsReq.reload();
     }
   }, [success]);
@@ -113,7 +111,9 @@ export const ChooseClinic: React.FC<ChooseClinicProps> = (props) => {
           <Box textAlign="center">
             <YMaps>
               <Map defaultState={{ center: [55.75, 37.57], zoom: 9 }}>
-                <Placemark geometry={[55.75, 37.57]} onClick={() => console.log('click')} />
+                {clinics.filter(x => x.latitude !== "" && x.longitude !== "").map((cl, index) => (
+                  <Placemark key={index} geometry={[Number.parseFloat(cl.longitude), Number.parseFloat(cl.latitude)]} onClick={() => console.log('click')} />
+                ))}
               </Map>
             </YMaps>
           </Box>
