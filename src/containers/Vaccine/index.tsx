@@ -94,7 +94,7 @@ export const Vaccine: React.FC<VaccineProps> = (props) => {
             <Box textAlign="center">
               такая вацина не нашлась
 
-            <Box marginY={2} color="#000"><Link to="/passport">имунный паспорт</Link></Box>
+            <Box marginY={2} color="#000"><Link to="/passport">иммунный паспорт</Link></Box>
             </Box>
           }
 

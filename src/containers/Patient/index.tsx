@@ -68,7 +68,7 @@ export const Patient: React.FC<PatientProps> = (props) => {
             disabled={!UserModel.getCurrentUserDataStatus()}
             onClick={() => history.push(`/passport`)}
             appColor="linear">
-            Имунный паспорт
+            иммунный паспорт
           </AppButton>
         </Box>
       </PageLayout>
