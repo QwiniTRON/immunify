@@ -168,9 +168,9 @@ export const ChooseClinic: React.FC<ChooseClinicProps> = (props) => {
         <Box fontSize={18} fontWeight={500}>
           {clinic.name}
         </Box>
-        <Box fontSize={18} fontWeight={300}>
+        {/* <Box fontSize={18} fontWeight={300}>
           Москва, улица Перерва, дом 53
-        </Box>
+        </Box> */}
 
         <Link to={`/passport/appointment/${clinic.id}`} className={classes.takeLink}>Позвонить и записаться
           <div className={classes.takeLinkIcon}><ArrowForwardIosIcon /></div>
