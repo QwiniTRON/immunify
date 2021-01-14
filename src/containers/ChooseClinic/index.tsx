@@ -15,7 +15,7 @@ import { GetHospitals } from '../../server/fetchers/hospital';
 import { useServer } from '../../hooks/useServer';
 import { Divider, Loader } from '../../components';
 
-
+import { YMaps, Map, Placemark } from 'react-yandex-maps';
 
 type ChooseClinicProps = {}
 
@@ -111,7 +111,11 @@ export const ChooseClinic: React.FC<ChooseClinicProps> = (props) => {
         </AppTabPanel>
         <AppTabPanel value={tabValue} index={1}>
           <Box textAlign="center">
-            <MapIcon />
+            <YMaps>
+              <Map defaultState={{ center: [55.75, 37.57], zoom: 9 }}>
+                <Placemark geometry={[55.75, 37.57]} onClick={() => console.log('click')} />
+              </Map>
+            </YMaps>
           </Box>
         </AppTabPanel>
       </PageLayout>
