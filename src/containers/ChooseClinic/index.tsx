@@ -124,7 +124,7 @@ export const ChooseClinic: React.FC<ChooseClinicProps> = (props) => {
 
   useEffect(() => {
     if (success) {      
-      setClinics(clinics as Clinic[]);
+      setClinics(clinicsReq.state.answer.data! as Clinic[]);
       clinicsReq.reload();
     }
   }, [success]);
