@@ -74,7 +74,14 @@ export const Quiz: React.FC<QuizProps> = (props) => {
         return null;
     }
     const quizQuestions = Questionnaire?.questions!;
-    const quizProgress = quiz.userAnswers.length / quizQuestions?.length * 100;
+
+    let quizProgress: number;
+    if(quiz.userAnswers.length == quizQuestions?.length) {
+        quizProgress = Math.round((quiz.currentStep + 1) / quizQuestions.length * 100);
+    } else {
+        quizProgress = quiz.userAnswers.length / quizQuestions?.length * 100;
+    }
+    
     const isNotCurrentAnswer = !Boolean(quiz.userAnswers[quiz.currentStep]) && !Boolean(Number(selectedAnswer));
     const currentQuestion = quizQuestions?.[quiz.currentStep];
 

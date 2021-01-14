@@ -17,13 +17,13 @@ import CloseIcon from '@material-ui/icons/Close';
 import AddIcon from '@material-ui/icons/Add';
 import DateRangeIcon from '@material-ui/icons/DateRange';
 import TimerIcon from '@material-ui/icons/Timer';
+import { Link, useHistory, useRouteMatch } from 'react-router-dom';
 
 import { BackButton } from '../../components/BackButton';
 import { Layout } from '../../components/Layout/Layout';
 import { PageLayout } from '../../components/UI/PageLayout';
 import { Divider } from '../../components/UI/Divider';
 import { AppButton } from '../../components/UI/AppButton';
-import { Link, useHistory, useRouteMatch } from 'react-router-dom';
 import { useServer } from '../../hooks/useServer';
 import { GetVisitById } from '../../server/fetchers/hospitalVisit/GetById';
 import { DeleteVisit } from '../../server/fetchers/hospitalVisit';
@@ -174,6 +174,7 @@ const useStyles = makeStyles((theme) => ({
 //#endregion
 
 
+// поле выбора даты
 const DatePickerInput: React.FC = (props) => {
   const classes = useStyles();
 
@@ -187,6 +188,7 @@ const DatePickerInput: React.FC = (props) => {
   )
 }
 
+// поле выбора времени
 const TimePickerInput: React.FC = (props) => {
   const classes = useStyles();
 
@@ -200,9 +202,83 @@ const TimePickerInput: React.FC = (props) => {
   )
 }
 
+// окно сообщение об успешном удалении
+type DeletePlaceholderProps = {
+  deleteNotieceOpen: boolean
+  setDeleteNotieceOpen: Function
+  history: any
+}
+const DeletePlaceholder: React.FC<DeletePlaceholderProps> = ({
+  deleteNotieceOpen,
+  setDeleteNotieceOpen,
+  history
+}) => {
+  const classes = useStyles();
+
+  return (
+    <Layout title="" BackButtonCustom={<BackButton text="Вернуться к списку записей" to={`/calendar`} />}>
+      <PageLayout className={classes.root}>
+        <Box fontSize={24} fontWeight={500} textAlign="center">
+          Запись удалена
+          </Box>
+
+        <Snackbar
+          open={deleteNotieceOpen}
+          autoHideDuration={TimeToRedirect}
+          onClose={() => setDeleteNotieceOpen(false)}
+          onAnimationEnd={() => {
+            history.push('/calendar');
+          }}>
+          <MuiAlert onClose={() => setDeleteNotieceOpen(false)} elevation={6} variant="filled">
+            Заявка отменена
+            <Box p={1}><Link to={`/calendar`}>к записям</Link></Box>
+          </MuiAlert>
+        </Snackbar>
+      </PageLayout>
+    </Layout>
+  );
+}
+
+// окно сообщение об успешном изменении
+type UpdatePlaceholderProps = {
+  editNotieceOpen: boolean
+  setEditNotieceOpen: Function
+  history: any
+}
+const UpdatePlaceholder: React.FC<UpdatePlaceholderProps> = ({
+  editNotieceOpen,
+  setEditNotieceOpen,
+  history
+}) => {
+  const classes = useStyles();
+
+  return (
+    <Layout title="" BackButtonCustom={<BackButton text="Вернуться к списку записей" to={`/calendar`} />}>
+      <PageLayout className={classes.root}>
+        <Box fontSize={24} fontWeight={500} textAlign="center">
+          Запись обновлена
+          </Box>
+
+        <Snackbar
+          open={editNotieceOpen}
+          autoHideDuration={TimeToRedirect}
+          onClose={() => setEditNotieceOpen(false)}
+          onAnimationEnd={() => {
+            history.push('/calendar');
+          }}>
+          <MuiAlert onClose={() => setEditNotieceOpen(false)} elevation={6} variant="filled">
+            запись обновлена
+            <Box p={1}><Link to={`/calendar`}>к записям</Link></Box>
+          </MuiAlert>
+        </Snackbar>
+      </PageLayout>
+    </Layout>
+  );
+}
 
 
 const TimeToRedirect = 3000;
+
 
 export const LastAppointment: React.FC<LastAppointmentProps> = (props) => {
   const classes = useStyles(props);
@@ -234,7 +310,6 @@ export const LastAppointment: React.FC<LastAppointmentProps> = (props) => {
   const [deleteOpen, setDeleteOpen] = React.useState(false);
   const [deleteNotieceOpen, setDeleteNotieceOpen] = React.useState(false);
   const [editNotieceOpen, setEditNotieceOpen] = React.useState(false);
-
 
   /**
    * нажатие отмена
@@ -328,26 +403,7 @@ export const LastAppointment: React.FC<LastAppointmentProps> = (props) => {
   // если визит был удалён, показываем вставку для удаления
   if (successDelete) {
     return (
-      <Layout title="" BackButtonCustom={<BackButton text="Вернуться к списку записей" to={`/calendar`} />}>
-        <PageLayout className={classes.root}>
-          <Box fontSize={24} fontWeight={500} textAlign="center">
-            Запись удалена
-          </Box>
-
-          <Snackbar
-            open={deleteNotieceOpen}
-            autoHideDuration={TimeToRedirect}
-            onClose={() => setDeleteNotieceOpen(false)}
-            onAnimationEnd={() => {
-              history.push('/calendar');
-            }}>
-            <MuiAlert onClose={() => setDeleteNotieceOpen(false)} elevation={6} variant="filled">
-              Заявка отменена
-            <Box p={1}><Link to={`/calendar`}>к записям</Link></Box>
-            </MuiAlert>
-          </Snackbar>
-        </PageLayout>
-      </Layout>
+      <DeletePlaceholder deleteNotieceOpen={deleteNotieceOpen} history={history} setDeleteNotieceOpen={setDeleteNotieceOpen} />
     );
   }
 
@@ -355,29 +411,9 @@ export const LastAppointment: React.FC<LastAppointmentProps> = (props) => {
   // если визит был обновлён, показываем вставку для обновления
   if (successUpdate) {
     return (
-      <Layout title="" BackButtonCustom={<BackButton text="Вернуться к списку записей" to={`/calendar`} />}>
-        <PageLayout className={classes.root}>
-          <Box fontSize={24} fontWeight={500} textAlign="center">
-            Запись обновлена
-          </Box>
-
-          <Snackbar
-            open={editNotieceOpen}
-            autoHideDuration={TimeToRedirect}
-            onClose={() => setEditNotieceOpen(false)}
-            onAnimationEnd={() => {
-              history.push('/calendar');
-            }}>
-            <MuiAlert onClose={() => setEditNotieceOpen(false)} elevation={6} variant="filled">
-              запись обновлена
-            <Box p={1}><Link to={`/calendar`}>к записям</Link></Box>
-            </MuiAlert>
-          </Snackbar>
-        </PageLayout>
-      </Layout>
+      <UpdatePlaceholder editNotieceOpen={editNotieceOpen} history={history} setEditNotieceOpen={setEditNotieceOpen} />
     );
   }
-
 
   const isExpired = (Date.parse(detail?.date ?? '') - Date.now()) < 0;
 
