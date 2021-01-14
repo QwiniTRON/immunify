@@ -158,9 +158,9 @@ export const ChooseClinic: React.FC<ChooseClinicProps> = (props) => {
         <Box fontSize={18} fontWeight={500}>
           {clinic.name}
         </Box>
-        {/* <Box fontSize={18} fontWeight={300}>
-          Москва, улица Перерва, дом 53
-        </Box> */}
+        <Box fontSize={18} fontWeight={300}>
+          {clinic.address}
+        </Box>
 
         <Link to={`/passport/appointment/${clinic.id}`} className={classes.takeLink}>Позвонить и записаться
           <div className={classes.takeLinkIcon}><ArrowForwardIosIcon /></div>
@@ -195,7 +195,7 @@ export const ChooseClinic: React.FC<ChooseClinicProps> = (props) => {
             {!loading && clinics.map((c) => (
               <Box marginY={2}>
                 <InfoCard data={[
-                  { description: 'Москва, улица Перерва, дом 53', title: c.name }
+                  { description: c.address, title: c.name }
                 ]}
                   detailText="Позвонить и записаться"
                   to={`/passport/appointment/${c.id}`}
