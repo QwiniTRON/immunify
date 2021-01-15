@@ -116,7 +116,8 @@ export const Vaccination: React.FC<VaccinationProps> = (props) => {
                 <VaccinationPlaceholder />
                 :
                 <>
-                  <Box color="#646464" fontSize={16}>Вы защищены! Эти вакцины усиливают ваш иммунитет</Box>
+                  <Box fontSize={24} fontWeight={500}>Вы защищены!</Box>
+                  <Box color="#646464" fontSize={16} mb={2}> Эти вакцины усиливают ваш иммунитет</Box>
 
                   {vaccinesToShow}
                 </>

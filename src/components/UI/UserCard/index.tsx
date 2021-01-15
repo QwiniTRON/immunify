@@ -33,7 +33,8 @@ const useStyles = makeStyles((theme) => ({
     },
 
     content: {
-        display: 'flex'
+        display: 'flex',
+        alignItems: 'center'
     },
 
     progress: {
@@ -70,7 +71,14 @@ const useStyles = makeStyles((theme) => ({
     },
 
     active: {
-        color: '#67CDFD'
+        backgroundColor: '#dadada'
+    },
+
+    indicator: {
+        height: 24,
+        width: 24,
+        border: '1px solid #DADADA',
+        borderRadius: 12
     }
 }));
 
@@ -87,13 +95,13 @@ export const UserCard: React.FC<UserCardProps> = ({
 
     return (
         <Link to={to} className={classes.rootLink}>
-            <div className={sif({ [classes.root]: true, [classes.active]: Boolean(active) })}>
+            <div className={classes.root}>
                 <div className={classes.content}>
                     <div className={classes.avatarBlock}>
-                        <Avatar classes={{ root: classes.avatarImg }}>{avatarLetters}</Avatar>
+                        <div className={sif({ [classes.indicator]: true, [classes.active]: Boolean(active) })} />
                     </div>
                     <div className={classes.text}>
-                        <p className={sif({ [classes.title]: true, [classes.active]: Boolean(active) })}>
+                        <p className={classes.title}>
                             {title}
                         </p>
                         <p className={classes.age}>{subtitle}</p>

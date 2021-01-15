@@ -14,9 +14,11 @@ import { UserModel } from '../../models/User';
 //? ********** STATIC *********
 //  ***************************
 
-
-
-// setUser
+/**
+ * установить главного пользователя
+ * 
+ * @param {User} user пользователь
+ */
 export function setUser(user: User): UserAction {
     return {
         type: USER_SET_USER,
@@ -24,7 +26,12 @@ export function setUser(user: User): UserAction {
     }
 }
 
-// setUserData
+/**
+ * обновить данные для пациента
+ * 
+ * @param {UserData} data данные для обновления
+ * @param {string} userName имя пациента
+ */
 export function setUserData(data: UserData, userName: string): UserAction {
     return {
         type: USER_SET_DATA,
@@ -33,7 +40,11 @@ export function setUserData(data: UserData, userName: string): UserAction {
     }
 }
 
-// addNewMember
+/**
+ * добавить нового пациента
+ * 
+ * @param {User} member пациент
+ */
 export function addNewMember(member: User): UserAction {
     return {
         type: USER_ADD_MEMBER,
@@ -41,7 +52,12 @@ export function addNewMember(member: User): UserAction {
     }
 }
 
-// updateByName
+/**
+ * обновить пациента
+ * 
+ * @param {User} member новые данные пациента
+ * @param {string} memberName имя пациента
+ */
 export function updateByName(member: User, memberName: string): UserAction {
     return {
         type: USER_UPDATE_BY_NAME,
@@ -50,7 +66,11 @@ export function updateByName(member: User, memberName: string): UserAction {
     }
 }
 
-// changeCurrentUser
+/**
+ * сменить активного пользователя
+ * 
+ * @param {User} member новый активный пользователь
+ */
 export function setCurrentUser(member: User): UserAction {
     return {
         type: USER_SET_CURRENT_USER,
@@ -62,24 +82,24 @@ export function setCurrentUser(member: User): UserAction {
 //? ********** ASYNC **********
 //  ***************************
 
-// LOGIN
-/*
-
-*/
+/**
+ * login
+ */
 export function login() {
-    return async function (dispatch: Function, getState: Function) {
-
-    }
+    return async function (dispatch: Function, getState: Function) {}
 }
 
 
-// REGISTER
-/*
-    метод для регистрации
-*/
+/**
+ * регистрация главного пользователя
+ * 
+ * @param {string} name имя
+ * @param {number} age возраст
+ * @param {Sex} sex пол
+ * @param {string} id id из базы
+ */
 export function register(name: string, age: number, sex: Sex, id: string) {
     return async function (dispatch: Function, getState: Function) {
-        // сервер ...
         const user: User = new User(name, age, sex, undefined, undefined, undefined, id);
 
         UserModel.saveUser(user);
@@ -90,10 +110,14 @@ export function register(name: string, age: number, sex: Sex, id: string) {
 }
 
 
-// ADDMEMBER
-/*
-    добавление нового пациента. 
-*/
+/**
+ * добавление нового пациента
+ * 
+ * @param {string} name имя
+ * @param {number} age возраст
+ * @param {Sex} sex пол
+ * @param {string} id id из базы
+ */
 export function addMember(name: string, age: number, sex: Sex, id: string) {
     return async function (dispatch: Function, getState: Function) {
         
@@ -113,10 +137,12 @@ export function addMember(name: string, age: number, sex: Sex, id: string) {
 }
 
 
-// updateMember
-/*
-    
-*/
+/**
+ * обновление пациента
+ * 
+ * @param {Partial<User>} memberNextState новые данные пациента для обновления
+ * @param {string} memberName имя пациента
+ */
 export function updateMember(memberNextState: Partial<User>, memberName: string) {
     return async function (dispatch: Function, getState: Function) {
         let state: RootState = getState();
@@ -137,10 +163,11 @@ export function updateMember(memberNextState: Partial<User>, memberName: string)
 }
 
 
-// chaneCurrentUser
-/*
-   
-*/
+/**
+ * смена активного пациента
+ * 
+ * @param {string} userName имя пользователя
+ */
 export function changeCurrentUser(userName: string) {
     return async function (dispatch: Function, getState: Function) {
         try {
@@ -157,10 +184,11 @@ export function changeCurrentUser(userName: string) {
     }
 }
 
-// updateUserData
-/*
-   
-*/
+/**
+ * обновление данных активного пациента
+ * 
+ * @param {Partial<UserData>} userData новые данные для пользователя
+ */
 export function updateCurrentUserData(userData: Partial<UserData>) {
     return async function (dispatch: Function, getState: Function) {
         try {
@@ -178,10 +206,9 @@ export function updateCurrentUserData(userData: Partial<UserData>) {
     }
 }
 
-// userInit
-/*
-   
-*/
+/**
+ * инициация данных пользователя и пациентов 
+ */
 export function userInit() {
     return async function (dispatch: Function, getState: Function) {
         try {
@@ -205,9 +232,3 @@ export function userInit() {
         }
     }
 }
-
-
-
-
-// ? TODO 
-// * add documentation(js doc)

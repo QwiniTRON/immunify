@@ -58,7 +58,7 @@ const useStyles = makeStyles({
     borderRadius: '45px 45px 0 0',
     padding: '20px 20px 55px 20px',
     borderTop: '3px solid #9BC83F',
-    transform: 'translateY(70%)',
+    transform: 'translateY(calc(100% - 45px))',
     transition: 'transform 0.1s ease'
   },
 
@@ -123,7 +123,7 @@ export const ChooseClinic: React.FC<ChooseClinicProps> = (props) => {
   }, []);
 
   useEffect(() => {
-    if (success) {      
+    if (success) {
       setClinics(clinicsReq.state.answer.data! as Clinic[]);
       clinicsReq.reload();
     }
@@ -147,9 +147,11 @@ export const ChooseClinic: React.FC<ChooseClinicProps> = (props) => {
 
   let subMenuContent: JSX.Element | null = null;
   if (!clinic) {
-    subMenuContent = (<Box fontSize={18} fontWeight={500}>
-      клиника не выбрана
-    </Box>);
+    subMenuContent = (
+      <Box fontSize={18} fontWeight={500}>
+        клиника не выбрана
+      </Box>
+    );
   }
 
   if (clinic) {
@@ -199,6 +201,7 @@ export const ChooseClinic: React.FC<ChooseClinicProps> = (props) => {
                 ]}
                   detailText="Позвонить и записаться"
                   to={`/passport/appointment/${c.id}`}
+                  key={c.id}
                 />
               </Box>
             ))}

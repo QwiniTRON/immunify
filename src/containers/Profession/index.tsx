@@ -50,6 +50,7 @@ export const Profession: React.FC<ProfessionProps> = (props) => {
 
         setErrors({ profession: '' });
 
+        // сохраняем риски локально
         (dispatch(updateCurrentUserData({ profession })) as any)
             .then((r: any) => {
                 setOpen(true);

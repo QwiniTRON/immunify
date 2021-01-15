@@ -8,10 +8,13 @@ import { Profession, Region } from '../type';
 ///////////////////////////////////////////////////////////////////////////////
 
 
+// todo - add provider
+
 export type QuizAnswer = {
     questionId: string,
     answerId: string
 }
+
 export class QuizData {
     public lastDate: string;
     public isDone: boolean;
@@ -44,6 +47,10 @@ export class UserData {
         this.quiz = quiz;
     }
 }
+
+/**
+ * 
+ */
 export class User {
     public name: string;
     public age: number;

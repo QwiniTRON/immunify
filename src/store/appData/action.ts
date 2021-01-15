@@ -14,6 +14,12 @@ import { updateMember } from '../user/action';
 //  ***************************
 //? ********** STATIC *********
 //  ***************************
+
+/**
+ * заполнение данных хранилища
+ * 
+ * @param {Partial<AppDataStore>} newState новые данные для хранилища
+ */
 export function setData(newState: Partial<AppDataStore>): AppDataAction {
   return {
     type: APPDATA_SET_DATA,
@@ -27,6 +33,11 @@ export function setData(newState: Partial<AppDataStore>): AppDataAction {
 //? ********** ASYNC **********
 //  ***************************
 
+/**
+ * подсчитать данные для пользователя 
+ * 
+ * @param {authOidc} authOidc
+ */
 export function claculateRisks(authOidc: string) {
   return async function (dispatch: Function, getState: Function) {
     const fetcher = new AxiosFetcher(CalculateRisk, authOidc);
@@ -57,7 +68,11 @@ export function claculateRisks(authOidc: string) {
   }
 }
 
-
+/**
+ * получение необходимых данных приложения
+ * 
+ * @param {string} authOidc 
+ */
 export function appDataInit(authOidc: string) {
   return async function (dispatch: Function, getState: Function) {
     const fetcher = new AxiosFetcher(GetQuestionnaire, authOidc);
