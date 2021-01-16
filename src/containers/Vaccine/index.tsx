@@ -131,7 +131,7 @@ export const Vaccine: React.FC<VaccineProps> = (props) => {
                 </Box>
 
                 {isVaccined &&
-                  <div className={classes.vaccinedNotice}>Уже привит</div>
+                  <div className={classes.vaccinedNotice}>Я привит</div>
                 }
 
                 {!isVaccined &&
@@ -141,7 +141,7 @@ export const Vaccine: React.FC<VaccineProps> = (props) => {
                     color="primary"
                   >
                     <AddIcon />
-                    <div>Уже привит</div>
+                    <div>Я привит</div>
                   </IconButton>
                 }
               </Box>
