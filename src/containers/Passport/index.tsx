@@ -40,7 +40,11 @@ const useStyles = makeStyles({
         gridAutoFlow: 'column',
         gridAutoColumns: '1fr',
         gap: '0 15px',
-        margin: '14px 0'
+        margin: '14px 0',
+
+        '@supports not (display: grid)': {
+            display: 'flex'
+        }
     },
 
     step: {
@@ -166,11 +170,13 @@ export const Passport: React.FC<PassportProps> = (props) => {
         if (step == "all") {
             return true;
         }
-    });
+    }).sort((l, r) => Math.max(r.risk, r.regionRisk + 1, r.professionRisk + 1) - Math.max(l.risk, l.regionRisk + 1, l.professionRisk + 1));
+
+
 
 
     return (
-        <Layout title="Иммунный пасспорт" titleCurrentName domainPage>
+        <Layout title="Иммунный пасспорт" domainPage>
             <PageLayout>
                 <Box paddingX="15px">
 
@@ -180,7 +186,7 @@ export const Passport: React.FC<PassportProps> = (props) => {
 
                     {!compleatedStatus && !loading && <PassportPlaceholder />}
 
-                    {compleatedStatus && !loading &&
+                    {/* {compleatedStatus && !loading &&
                         <>
                             <Box fontSize={24} fontWeight={500}>Риски</Box>
 
@@ -203,10 +209,17 @@ export const Passport: React.FC<PassportProps> = (props) => {
                                 </label>
                             </AppRadioGroup>
                         </>
-                    }
+                    } */}
 
                     {compleatedStatus && !loading &&
                         <>
+                            <Box fontSize={24} fontWeight={500}>
+                                {currentUser?.name}
+                            </Box>
+                            <Box mb={2} color="#999" fontSize={18} fontWeight={300}>
+                                Вы ещё не защищены от этих заболеваний
+                            </Box>
+
                             {risksFiltred?.map((risk) => {
                                 const foundVaccination = vaccinationsForDiseases.find(
                                     (vaccination) => vaccination.diseaseIds.includes(risk.diseaseId)

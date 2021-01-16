@@ -40,7 +40,8 @@ const useStyles = makeStyles({
     color: '#67CDFD',
     border: '1px solid #67CDFD',
     padding: 5,
-    borderRadius: 2
+    borderRadius: 2,
+    textAlign: 'center'
   },
 });
 

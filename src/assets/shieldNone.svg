@@ -8,10 +8,10 @@
      stroke="#3BCF1A"
      d="M33.2862 5.60423C23.2635 9.13192 18.0005 3 18.0005 3C18.0005 3 12.7328 9.13681 2.71474 5.60423C2.71474 5.60423 -3.01859 25.8176 17.9911 39H18.0146C39.0148 25.8127 33.2862 5.60423 33.2862 5.60423Z" />
   <g
-     transform="matrix(1.266999,0,0,1.3605661,-4.9205035,-7.3690098)">
+     transform="matrix(0.7,0,0,0.7,5,7)">
     <rect
-       style="fill:#ed1c24;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:1.06298"
-       width="1.081535"
+       style="fill:#ed1c24;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:5;border-radius: 3px;"
+       width="3"
        height="29.398083"
        x="-2.0920672"
        y="10.76933"
@@ -21,7 +21,7 @@
        y="-16.527824"
        x="-25.990719"
        height="29.398083"
-       width="1.081535"
-       style="fill:#ed1c24;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:1.06298" />
+       width="3"
+       style="fill:#ed1c24;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:5;border-radius: 3px;" />
   </g>
 </svg>

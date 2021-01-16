@@ -1,0 +1,72 @@
+.diseas-card {
+  .line {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .icon {
+    font-size: 24px;
+    height: 2em;
+    width: 2em;
+    margin: 0 5px;
+  }
+
+  .virusIcon {
+    color: red;
+    font-size: 16px;
+    height: 2em;
+    width: 2em;
+    margin: 0 5px;
+  }
+
+  .text {
+    font-size: 18px;
+  }
+  .text--red {
+    color: #ed1c24;
+  }
+  .text--yellow {
+    color: #ffb800;
+  }
+  .text--green {
+    color: #3bcf1a;
+  }
+
+  .diseas-card__def-text {
+    text-align: right;
+    font-size: 16px;
+    font-weight: 300;
+  }
+
+  &.red {
+    .virusIcon {
+      font-size: 24px;
+    }
+
+    .text {
+      color: #ed1c24;
+    }
+  }
+
+  &.yellow {
+    .virusIcon {
+      font-size: 20px;
+      color: #ff6666;
+    }
+
+    .text {
+      color: #ffb800;
+    }
+  }
+
+  &.green {
+    .virusIcon {
+      color: #ffcccc;
+    }
+
+    .text {
+      color: #3bcf1a;
+    }
+  }
+}

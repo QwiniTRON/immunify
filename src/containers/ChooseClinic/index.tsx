@@ -36,7 +36,7 @@ const useStyles = makeStyles({
   root: {
     display: 'flex',
     flexDirection: 'column',
-    padding: '10px 20px 0'
+    padding: '0'
   },
 
   mapTab: {
@@ -54,7 +54,7 @@ const useStyles = makeStyles({
     left: 0,
     right: 0,
     minHeight: 160,
-    backgroundColor: 'white',
+    background: 'linear-gradient(180deg, #9BC835 0%, #A8E3F1 100%)',
     borderRadius: '45px 45px 0 0',
     padding: '20px 20px 55px 20px',
     borderTop: '3px solid #9BC83F',
@@ -63,9 +63,9 @@ const useStyles = makeStyles({
   },
 
   subMenuCloser: {
-    height: 5,
+    height: 2,
     backgroundColor: '#777',
-    borderRadius: 5,
+    borderRadius: 1,
     cursor: 'pointer',
     width: 50,
     margin: '0 auto 10px',
@@ -79,7 +79,7 @@ const useStyles = makeStyles({
   takeLink: {
     fontSize: 18,
     fontWeight: 300,
-    color: '#000',
+    color: '#fff',
     textDecoration: 'none',
     position: 'absolute',
     right: 15,
@@ -92,13 +92,13 @@ const useStyles = makeStyles({
     textAlign: 'center',
     lineHeight: '43px',
     borderRadius: 15,
-    backgroundColor: '#9BC83F',
+    backgroundColor: '#fff',
     display: 'inline-block',
     verticalAlign: 'middle',
     marginLeft: 10,
 
     '& svg': {
-      color: '#fff'
+      color: '#9BC83F'
     }
   }
 });
@@ -157,10 +157,10 @@ export const ChooseClinic: React.FC<ChooseClinicProps> = (props) => {
   if (clinic) {
     subMenuContent = (
       <>
-        <Box fontSize={18} fontWeight={500}>
+        <Box fontSize={18} fontWeight={500} color="white">
           {clinic.name}
         </Box>
-        <Box fontSize={18} fontWeight={300}>
+        <Box fontSize={18} fontWeight={300} color="white">
           {clinic.address}
         </Box>
 
@@ -176,21 +176,22 @@ export const ChooseClinic: React.FC<ChooseClinicProps> = (props) => {
     <Layout title="" clearScroll BackButtonCustom={<BackButton simpleBack routeText />} >
       <PageLayout className={classes.root}>
 
-        <Box component="h2" fontSize={24} fontWeight={500} marginY={1}>
-          Выберите медцентр
-        </Box>
+        <Box marginX="20px">
+          <Box component="h2" fontSize={24} fontWeight={500} marginY={1}>
+            Выберите медцентр
+          </Box>
 
-        <Divider />
-
-        <Box mb={1}>
-          <Tabs variant="fullWidth" indicatorColor="primary" value={tabValue} onChange={handleTabChange} aria-label="simple tabs example">
-            <Tab label="Список" textColor="#000" />
-            <Tab label="карта" textColor="#000" />
-          </Tabs>
+          <Divider />
+          <Box mb={1} >
+            <Tabs variant="fullWidth" indicatorColor="primary" value={tabValue} onChange={handleTabChange} aria-label="simple tabs example">
+              <Tab label="Список" textColor="#000" />
+              <Tab label="карта" textColor="#000" />
+            </Tabs>
+          </Box>
         </Box>
 
         <AppTabPanel value={tabValue} index={0} className={classes.content} >
-          <Box p={1}>
+          <Box p={1} marginX="20px">
 
             {loading && <Box m={3}><Loader /></Box>}
 

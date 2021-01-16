@@ -75,7 +75,7 @@ export const Calendar: React.FC<CalendarProps> = (props) => {
 
 
     return (
-        <Layout title="Календарь" domainPage clearScroll>
+        <Layout title="Предстоящие записи" domainPage clearScroll>
             <PageLayout className={classes.root}>
                 {loading &&
                     <Box textAlign="center"><CircleLoader /></Box>

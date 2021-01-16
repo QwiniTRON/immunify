@@ -79,7 +79,8 @@ const useStyles = makeStyles((theme) => ({
         color: '#67CDFD',
         border: '1px solid #67CDFD',
         padding: 5,
-        borderRadius: 2
+        borderRadius: 2,
+        textAlign: 'center'
     },
 
     risks: {
@@ -150,6 +151,62 @@ const TextsEnum: { [p: string]: string } = {
     '2': 'средний',
     '3': 'высокий'
 }
+
+
+type RiskTableProps = {
+    personRisk: string
+    professionalRisk: string
+    regionalRisk: string
+}
+const RiskTable: React.FC<RiskTableProps> = ({
+    personRisk,
+    professionalRisk,
+    regionalRisk
+}) => {
+    const classes = useStyles();
+
+    return (
+        <div className={classes.risks}>
+            <Box fontWeight={500} mb={2}>Мои риски заражения: </Box>
+
+            <div className={classes.line}>
+                <div className={classes.lineTitle}>
+                    <div className={s(classes.indicator, (classes as any)[ColorsEnum[personRisk]])} />
+                    Индивидуальный
+                </div>
+
+                <Box ml="auto">
+                    {TextsEnum[personRisk]}
+                </Box>
+            </div>
+
+            <Divider color="gray" />
+            <div className={classes.line}>
+                <div className={classes.lineTitle}>
+                    <div className={s(classes.indicator, (classes as any)[ColorsEnum[professionalRisk]])} />
+                    Профессиональный
+                </div>
+
+                <Box ml="auto">
+                    {TextsEnum[professionalRisk]}
+                </Box>
+            </div>
+
+            <Divider color="gray" />
+            <div className={classes.line}>
+                <div className={classes.lineTitle}>
+                    <div className={s(classes.indicator, (classes as any)[ColorsEnum[regionalRisk]])} />
+                    Эпидемиологический
+                </div>
+
+                <Box ml="auto">
+                    {TextsEnum[regionalRisk]}
+                </Box>
+            </div>
+        </div>
+    );
+}
+
 
 export const Diseas: React.FC<DiseasProps> = (props) => {
     const classes = useStyles();
@@ -251,9 +308,9 @@ export const Diseas: React.FC<DiseasProps> = (props) => {
 
                 {loading && <Box textAlign="center"><CircleLoader color={CircleLoaderColors.linear} /></Box>}
 
+                {/* название и отметка */}
                 {!loading &&
                     <Box mb={2}>
-
                         <Box mb={5} display="grid" justifyContent="space-between" gridAutoFlow="column" alignItems="center">
                             <Box component="h3" className={classes.title}>
                                 {diseas?.name}
@@ -276,47 +333,13 @@ export const Diseas: React.FC<DiseasProps> = (props) => {
                             }
                         </Box>
 
+                        {/* блок с расчётами */}
                         <Box mb={5}>
 
-                            <div className={classes.risks}>
-                                <Box fontWeight={500} mb={2}>Мои риски заражения: </Box>
+                            {/* таблица рисков */}
+                            <RiskTable key='risktable' personRisk={personRisk} professionalRisk={professionalRisk} regionalRisk={regionalRisk} />
 
-                                <div className={classes.line}>
-                                    <div className={classes.lineTitle}>
-                                        <div className={s(classes.indicator, (classes as any)[ColorsEnum[personRisk]])} />
-                                            Индивидуальный
-                                        </div>
-
-                                    <Box ml="auto">
-                                        {TextsEnum[personRisk]}
-                                    </Box>
-                                </div>
-
-                                <Divider color="gray" />
-                                <div className={classes.line}>
-                                    <div className={classes.lineTitle}>
-                                        <div className={s(classes.indicator, (classes as any)[ColorsEnum[professionalRisk]])} />
-                                            Профессиональный
-                                        </div>
-
-                                    <Box ml="auto">
-                                        {TextsEnum[professionalRisk]}
-                                    </Box>
-                                </div>
-
-                                <Divider color="gray" />
-                                <div className={classes.line}>
-                                    <div className={classes.lineTitle}>
-                                        <div className={s(classes.indicator, (classes as any)[ColorsEnum[regionalRisk]])} />
-                                            Эпидемиологический
-                                        </div>
-
-                                    <Box ml="auto">
-                                        {TextsEnum[regionalRisk]}
-                                    </Box>
-                                </div>
-                            </div>
-
+                            {/* строка вакцины */}
                             {isVaccined &&
                                 <div className={classes.vaccineLine}>
                                     <div>
@@ -348,12 +371,15 @@ export const Diseas: React.FC<DiseasProps> = (props) => {
                                     </div>
                                 </div>
                             }
+
                         </Box>
 
+                        {/* текст */}
                         <Box mb={2}>
                             <MarkDown md={diseas?.detailedFull ?? ""} />
                         </Box>
 
+                        {/* список вакцин */}
                         <Box>
                             <Box fontSize={18} fontWeight={300}>Вакцины:</Box>
                             {
@@ -375,8 +401,7 @@ export const Diseas: React.FC<DiseasProps> = (props) => {
                     </Box>
                 }
 
-
-
+                {/* кнопка записатся */}
                 <Box mt="auto" textAlign="center">
                     <AppLinkButton
                         disabled={loading}
@@ -385,9 +410,9 @@ export const Diseas: React.FC<DiseasProps> = (props) => {
                             state: { type: 'diseas', data: diseas }
                         }}
                         className={classes.takeButton}
-                    > Записаться
-                    </AppLinkButton>
+                    > Записаться</AppLinkButton>
                 </Box>
+                
             </PageLayout>
         </Layout>
     );
