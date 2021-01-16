@@ -10,9 +10,11 @@ import { BackButton } from '../../components/BackButton';
 import { Link, useHistory, useLocation, useRouteMatch } from 'react-router-dom';
 import { useServer } from '../../hooks/useServer';
 import { AppLinkButton } from '../../components/UI/AppLinkButton';
-import { GetVaccineById } from '../../server';
+import { GetVaccineById, GetVaccinationByPatient, PatientVaccinations } from '../../server';
 import { CircleLoader } from '../../components/UI/CircleLoader';
 import { MarkDown } from '../../components/MarkDown';
+import { RootState } from '../../store';
+import { useSelector } from 'react-redux';
 
 type VaccineRouteParams = {
   id: string
@@ -33,6 +35,13 @@ const useStyles = makeStyles({
       fontSize: 32
     }
   },
+
+  vaccinedNotice: {
+    color: '#67CDFD',
+    border: '1px solid #67CDFD',
+    padding: 5,
+    borderRadius: 2
+  },
 });
 
 type VaccineType = {
@@ -46,6 +55,7 @@ export const Vaccine: React.FC<VaccineProps> = (props) => {
   const classes = useStyles();
   const history = useHistory();
   const vaccineId = useRouteMatch<VaccineRouteParams>().params.id;
+  const currentUser = useSelector((state: RootState) => state.user.currentUser);
 
   const [vaccine, setVaccine] = useState<VaccineType>({
     id: 0,
@@ -53,24 +63,36 @@ export const Vaccine: React.FC<VaccineProps> = (props) => {
     detailedFull: '',
     detailedShort: '',
   });
+  const [vaccinations, setVaccinations] = useState<PatientVaccinations>([]);
 
   const fetcher = useServer(GetVaccineById);
+  const vaccinationsRequest = useServer(GetVaccinationByPatient);
 
   useEffect(() => {
     fetcher.fetch({ id: Number(vaccineId) });
+    vaccinationsRequest.fetch({
+      patientId: Number(currentUser?.id)
+    });
 
     return fetcher.cancel;
   }, []);
 
-  const loading = fetcher.state.fetching;
-  const success = !loading && fetcher.state.answer.succeeded;
+  const loading = vaccinationsRequest.state.fetching || fetcher.state.fetching;
+  const success = !fetcher.state.fetching && fetcher.state.answer.succeeded;
+  const vaccinationsSuccess = !vaccinationsRequest.state.fetching && vaccinationsRequest.state.answer.succeeded;
 
-  useEffect(() => {
-    if (success) {
-      setVaccine(fetcher.state.answer.data!);
-      fetcher.reload();
-    }
-  }, [success])
+
+  if (success) {
+    setVaccine(fetcher.state.answer.data!);
+    fetcher.reload();
+  }
+
+  // пришли вакцинации для пациента
+  if (vaccinationsSuccess) {
+    const userVaccinations = vaccinationsRequest.state.answer.data as PatientVaccinations;
+    setVaccinations(userVaccinations);
+    vaccinationsRequest.reload();
+  }
 
 
   /**
@@ -79,6 +101,8 @@ export const Vaccine: React.FC<VaccineProps> = (props) => {
   const takeHandle = () => {
     history.push('/vaccination/add', { type: 'vaccine', data: vaccine });
   }
+
+  const isVaccined = vaccinations.some((vaccination) => vaccination.name == vaccine.name);
 
 
   return (
@@ -105,14 +129,20 @@ export const Vaccine: React.FC<VaccineProps> = (props) => {
                   {vaccine.name}
                 </Box>
 
-                <IconButton
-                  classes={{ label: classes.menuButton }}
-                  onClick={takeHandle}
-                  color="primary"
-                >
-                  <AddIcon />
-                  <div>Уже привит</div>
-                </IconButton>
+                {isVaccined &&
+                  <div className={classes.vaccinedNotice}>Уже привит</div>
+                }
+
+                {!isVaccined &&
+                  <IconButton
+                    classes={{ label: classes.menuButton }}
+                    onClick={takeHandle}
+                    color="primary"
+                  >
+                    <AddIcon />
+                    <div>Уже привит</div>
+                  </IconButton>
+                }
               </Box>
 
 

@@ -8,10 +8,11 @@ type AppRadioGroupProps = {
   [p: string]: any
   onChange: Function
   value: string | number
+  className?: string
 }
 
 
-export const AppRadioGroup: React.FC<AppRadioGroupProps> = ({ onChange, value, ...props }) => {
+export const AppRadioGroup: React.FC<AppRadioGroupProps> = ({ onChange, value, className, ...props }) => {
   const changeHandle = (e: React.ChangeEvent<HTMLInputElement>) => {
     const inputValue: string = e.target.value;
 
@@ -20,7 +21,7 @@ export const AppRadioGroup: React.FC<AppRadioGroupProps> = ({ onChange, value, .
 
   const patchedRadio = React.Children.map(props.children, (e: any) => {
 
-    if (React.isValidElement(e) && e.type == AppRadioButton) {
+    if (React.isValidElement(e)) {
       const elem: React.ReactElement<any> = e as any;
       return React.cloneElement(elem, { checked: elem.props.value == value, onChange: changeHandle });
     } else {
@@ -29,8 +30,8 @@ export const AppRadioGroup: React.FC<AppRadioGroupProps> = ({ onChange, value, .
   });
 
   return (
-    <>
+    <div className={className}>
       { patchedRadio }
-    </>
+    </div>
   );
 };

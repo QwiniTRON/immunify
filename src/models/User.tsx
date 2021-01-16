@@ -4,7 +4,7 @@ import { RiskViewModel } from '../server';
 import { Profession, Region } from '../type';
 
 ///////////////////////////////////////////////////////////////////////////////
-// * methodName$suffix - Это тот же метод только с перегрузкой параметров  *///
+//  methodName$suffix - Это тот же метод только с перегрузкой параметров    ///
 ///////////////////////////////////////////////////////////////////////////////
 
 
@@ -49,7 +49,7 @@ export class UserData {
 }
 
 /**
- * 
+ * класс пользователя - пациента
  */
 export class User {
     public name: string;
@@ -81,20 +81,29 @@ export class User {
 
 export class UserModel {
 
-    static userDataStoreKey = 'appUser'
-    static currentUserStoreKey = 'currentUser'
+    private static userDataStoreKey = 'appUser'
+    private static currentUserStoreKey = 'currentUser'
+
 
     static get CurrentUser() {
         return localStorage.getItem(UserModel.currentUserStoreKey);
     }
 
 
+    /**
+     * сохранение пользователя в хранилище
+     * 
+     * @param {User} user 
+     */
     static saveUser(user: User) {
         const stateForSave = JSON.stringify(user);
         localStorage.setItem(UserModel.userDataStoreKey, stateForSave);
     }
 
 
+    /**
+     * получение пользователя из хранилища
+     */
     static getUserData(): User | null {
         const localStorageData = localStorage.getItem(UserModel.userDataStoreKey);
 
@@ -103,11 +112,22 @@ export class UserModel {
     }
 
 
+    /**
+     * сохранить активного пациента
+     * 
+     * @param {string} userName имя нового активного пациента
+     */
     static changeCurrentUser(userName: string) {
         localStorage.setItem(UserModel.currentUserStoreKey, userName);
     }
 
 
+    /**
+     * найти пациента в указанном хранилище
+     * 
+     * @param {UserStore} userStore хранилище приложения 
+     * @param {string} userName имя пациента
+     */
     static getUserByName(userStore: UserStore, userName: string): User | null {
         const allUsers = [userStore.user, ...userStore.user?.family!];
         const newCurrentUser: User = allUsers.find((u) => u?.name == userName)!;
@@ -115,6 +135,13 @@ export class UserModel {
         if (!newCurrentUser) return null;
         return newCurrentUser;
     }
+
+    /**
+     * найти пациента среди всех пациентов по главному пользователю
+     * 
+     * @param {User} user главный пользователь
+     * @param {string} userName имя пациента
+     */
     static getUserByName$u(user: User, userName: string): User | null {
         const allUsers = [user, ...user?.family!];
         const newCurrentUser: User = allUsers.find((u) => u?.name == userName)!;
@@ -124,16 +151,24 @@ export class UserModel {
     }
 
 
+    /**
+     * достаточно ли заполнены данные активного пациента
+     */
     static getCurrentUserDataStatus() {
         const user: User = store.getState().user.currentUser!;
         let userDataStatus = false;
         if (UserModel.getCompleatedStatus(user) >= 50) {
             userDataStatus = true;
         }
-        
+
         return userDataStatus;
     }
 
+    /**
+     * получение процента заполненности данных для пациента
+     * 
+     * @param {User} user пациент
+     */
     static getCompleatedStatus(user: User) {
         let procent = 0;
 

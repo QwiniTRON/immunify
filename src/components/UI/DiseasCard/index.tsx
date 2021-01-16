@@ -3,17 +3,24 @@ import Paper from '@material-ui/core/Paper';
 import { makeStyles } from '@material-ui/core/styles';
 import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos';
 import Box from '@material-ui/core/Box';
+import { ReactComponent as ShieldLowIcon } from '../../../assets/shieldLow.svg';
+import { ReactComponent as ShieldMedIcon } from '../../../assets/shieldMed.svg';
+import { ReactComponent as ShieldFullIcon } from '../../../assets/shieldFull.svg';
+import { ReactComponent as ShieldNoneIcon } from '../../../assets/shieldNone.svg';
+import { ReactComponent as VirusIcon } from '../../../assets/virus.svg';
 
-import { s } from '../../../utils/Styels';
+import { s, sif } from '../../../utils/Styels';
 import { Link } from 'react-router-dom';
-import { RiskCoefficient, RiskStage } from '../../../server';
+import { RiskCoefficient, RiskStage, RiskViewModel } from '../../../server';
+import { VaccinationForDiseas } from '../../../containers/Passport';
+import { Divider } from '../Divider';
 
 
 type riskString = "low" | "medium" | "high"
 type DiseasCardProps = {
-    risks: number[]
-    name: string
     to: string
+    vaccination?: VaccinationForDiseas
+    risk: RiskViewModel
 }
 
 const useStyels = makeStyles({
@@ -22,21 +29,31 @@ const useStyels = makeStyles({
     },
 
     root: {
-        padding: 8,
+        padding: '10px 15px',
         margin: '5px 0',
         borderRadius: 10
     },
 
-    head: {
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        marginBottom: 5
+    subTitle: {
+        fontSize: 16,
+        fontWeight: 300,
+        color: '#999'
     },
 
-    headArrow: {
-        color: '#acacac',
-        fontSize: 14
+    text: {
+        fontSize: 18,
+    },
+
+    head: {
+        display: 'flex',
+        alignItems: 'center',
+        marginBottom: 20
+    },
+
+    linkIcon: {
+        color: '#ACACAC',
+        fontSize: 18,
+        marginLeft: 'auto'
     },
 
     title: {
@@ -46,100 +63,82 @@ const useStyels = makeStyles({
 
     line: {
         display: 'flex',
-        alignItems: 'flex-start',
-        justifyContent: 'space-between',
-        fontSize: 18,
-        fontWeight: 400,
-        borderTop: "1px solid #eee",
-        padding: '10px 0'
+        alignItems: 'center',
     },
 
-    line__bnone: {
-        borderTop: 'none'
-    },
-
-    indicator: {
-        height: 12,
-        width: 12,
-        borderRadius: 6,
-        margin: "7px 10px 10px 10px",
-        display: 'inline-block',
-        verticalAlign: 'middle'
-    },
-
-    status: {
-        fontWeight: 300
-    },
-
-    green: {
-        backgroundColor: '#3BCF1A'
+    icon: {
+        marginLeft: 'auto'
     },
 
     red: {
-        backgroundColor: '#FF003D'
+        color: '#ED1C24'
     },
 
     yellow: {
-        backgroundColor: '#FFB800'
+        color: '#FFB800'
+    },
+
+    green: {
+        color: '#3BCF1A'
     }
 });
 
-const riskBackgroundColors: {[p: string]: string} = {
-    '1': 'green',
-    '2': 'yellow',
-    '3': 'red'
-}
-
-const riskText: {[p: string]: string} = {
-    '1': 'низкий',
-    '2': 'средний',
-    '3': 'высокий'
-}
 
 export const DiseasCard: React.FC<DiseasCardProps> = ({
-    risks,
-    name,
-    to
+    to,
+    risk,
+    vaccination
 }) => {
     const classes = useStyels();
-    const personRisk: RiskStage = risks[0] as RiskStage;
-    const profRisk: RiskCoefficient = risks[1] + 1 as RiskCoefficient;
-    const epicRisk: RiskCoefficient = risks[2] + 1 as RiskCoefficient;
 
-    const indicatorColor = String(Math.max(personRisk, (profRisk), (epicRisk)));
+
+    let shieldIcon = <ShieldNoneIcon className={classes.icon} />;
+    if(vaccination?.vaccinationStatus?.statusColor == "red") shieldIcon = <ShieldLowIcon className={classes.icon} />; 
+    if(vaccination?.vaccinationStatus?.statusColor == "yellow") shieldIcon = <ShieldMedIcon className={classes.icon} />; 
+    if(vaccination?.vaccinationStatus?.statusColor == "green") shieldIcon = <ShieldFullIcon className={classes.icon} />; 
+
+
+    let riskStatus = Math.max(risk.risk, risk.regionRisk + 1, risk.regionRisk + 1);
+    let currentRisk = <div className={s(classes.text, classes.green)}>Низкий</div>;
+    if(riskStatus == 2) currentRisk = <div className={s(classes.text, classes.yellow)}>Средний</div>;
+    if(riskStatus == 3) currentRisk = <div className={s(classes.text, classes.red)}>Высокий</div>;
+
+
+    let vaccinationStatus = 'отсутствует';
+    if(vaccination?.vaccinationStatus?.statusColor == "red") vaccinationStatus = "Истекла"; 
+    if(vaccination?.vaccinationStatus?.statusColor == "yellow") vaccinationStatus = "Частичная"; 
+    if(vaccination?.vaccinationStatus?.statusColor == "green") vaccinationStatus = "Полная"; 
+
 
     return (
         <Link className={classes.rootLink} to={to}>
             <Paper classes={{ root: classes.root }}>
                 <div className={classes.head}>
-                    <p className={classes.title}>
-                        <div className={s(classes.indicator, (classes as any)[riskBackgroundColors[indicatorColor]])} />
+                    <div className={classes.title}>{risk.disease}</div>
 
-                        {name}
-                    </p>
-
-                    <ArrowForwardIosIcon classes={{ root: classes.headArrow }} />
-                </div>
-
-                <Box fontWeight={300}>Риск заражения:</Box>
-
-                <div className={s(classes.line, classes.line__bnone)}>
-                    Индивидуальный
-
-                    <span className={classes.status}>{riskText[personRisk]}</span>
+                    <ArrowForwardIosIcon classes={{root: classes.linkIcon}} />
                 </div>
 
                 <div className={classes.line}>
-                    Профессиональный
+                    <div>
+                        <div className={classes.subTitle}>Риск заражения:</div>
 
-                    <span className={classes.status}>{riskText[String(profRisk)]}</span>
+                        <div className={classes.text}>{currentRisk}</div>
+                    </div>
+
+                    <VirusIcon className={classes.icon} />
                 </div>
 
+                <Divider color="gray" />
                 <div className={classes.line}>
-                    Эпидемиологический
+                    <div>
+                        <div className={classes.subTitle}>Защита: </div>
 
-                    <span className={classes.status}>{riskText[String(epicRisk)]}</span>
-                </div>
+                        <div className={classes.text}>{vaccinationStatus}</div> 
+                    </div>
+
+                    {shieldIcon}
+                </div>                
             </Paper>
         </Link>
     );

@@ -4,7 +4,7 @@ type Request = {
   diseaseId: number;
 }
 
-type Response = {
+export type Response = {
   id: number,
   name: string,
   detailedShort: string,

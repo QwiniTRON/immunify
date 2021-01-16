@@ -11,10 +11,17 @@ import { PageLayout } from '../../components/UI/PageLayout';
 import { Layout } from '../../components/Layout/Layout';
 import { BackButton } from '../../components/BackButton';
 import { useServer } from '../../hooks/useServer';
-import { GetDetailedDisease, Vaccine } from '../../server';
+import { GetDetailedDisease } from '../../server';
 import { AppLinkButton } from '../../components/UI/AppLinkButton';
 import { CircleLoader, CircleLoaderColors } from '../../components/UI/CircleLoader';
 import { MarkDown } from '../../components/MarkDown';
+import { GetVaccinationByPatient, PatientVaccinations, PatientVaccination, GetVaccines } from '../../server';
+import { Vaccination, VaccinationModel, VaccinationStatus } from '../../models/Vaccination';
+import { useSelector } from 'react-redux';
+import { RootState } from '../../store';
+import { Response } from '../../server/fetchers/disease/GetDetailed';
+import { Divider } from '../../components';
+import { s } from '../../utils';
 
 
 
@@ -24,6 +31,20 @@ type DiseasRoutParams = {
 
 type DiseasProps = {
 
+}
+
+type Vaccine = {
+    id: number
+    name: string
+    diseaseIds: number[]
+}
+
+type Diseas = {
+    id: number,
+    name: string,
+    detailedShort: string,
+    detailedFull: string,
+    vaccines: Vaccine[],
 }
 
 const useStyles = makeStyles((theme) => ({
@@ -52,39 +73,124 @@ const useStyles = makeStyles((theme) => ({
     takeButton: {
         maxWidth: 160,
         width: "100%"
+    },
+
+    vaccinedNotice: {
+        color: '#67CDFD',
+        border: '1px solid #67CDFD',
+        padding: 5,
+        borderRadius: 2
+    },
+
+    risks: {
+        fontSize: 18,
+        marginBottom: 35
+    },
+
+    line: {
+        display: 'flex',
+        alignItems: 'center',
+        gap: '0 15px'
+    },
+
+    subTitle: {
+        color: '#acacac',
+        fontWeight: 300,
+        fontSize: 18
+    },
+
+    indicator: {
+        height: 12,
+        width: 12,
+        borderRadius: 6,
+        margin: 7
+    },
+
+    lineTitle: {
+        display: 'flex',
+        alignItems: 'center',
+        wordBreak: 'break-all',
+        color: '#acacac',
+        fontWeight: 300
+    },
+
+    vaccineLine: {
+        display: 'flex',
+        gap: '0 15px',
+        alignItems: 'center',
+        justifyContent: 'space-between'
+    },
+
+    green: {
+        backgroundColor: '#3BCF1A',
+    },
+
+    yellow: {
+        backgroundColor: '#FFB800',
+    },
+
+    red: {
+        backgroundColor: '#FF003D',
     }
 }));
 
-type Diseas = {
-    detailedShort: string
-    detailedFull: string
-    id: number
-    name: string
-    vaccines: Vaccine[]
-}
 
+const StepEnum: { [p: string]: number } = {
+    'red': 3,
+    'yellow': 2,
+    'green': 1
+}
+const ColorsEnum: { [p: string]: string } = {
+    '1': 'green',
+    '2': 'yellow',
+    '3': 'red'
+}
+const TextsEnum: { [p: string]: string } = {
+    '1': 'низкий',
+    '2': 'средний',
+    '3': 'высокий'
+}
 
 export const Diseas: React.FC<DiseasProps> = (props) => {
     const classes = useStyles();
     const history = useHistory();
-    const id = useRouteMatch<DiseasRoutParams>().params.id;
+    const currentUser = useSelector((state: RootState) => state.user.currentUser);
+    const diseasId = useRouteMatch<DiseasRoutParams>().params.id;
+
+    const currentRisk = currentUser?.Risks.find((risk) => risk.diseaseId == Number(diseasId));
+
+    const [vaccinations, setVaccinations] = useState<PatientVaccinations>([]);
+    const [vaccines, setVaccines] = useState<Vaccine[]>([]);
 
     const diseasReq = useServer(GetDetailedDisease);
-    const loading = diseasReq.state.fetching;
-    const success = !loading && diseasReq.state.answer.succeeded;
+    const success = !diseasReq.state.fetching && diseasReq.state.answer.succeeded;
     const [diseas, setDiseas] = useState<Diseas | null>(null);
+
+    const vaccinationsRequest = useServer(GetVaccinationByPatient);
+    const vaccinesRequest = useServer(GetVaccines);
+    const loading = vaccinationsRequest.state.fetching || vaccinesRequest.state.fetching || diseasReq.state.fetching;
+    const vaccinationsRequestSuccess = !vaccinationsRequest.state.fetching && vaccinationsRequest.state.answer.succeeded;
+    const vaccinesRequestSuccess = !vaccinesRequest.state.fetching && vaccinesRequest.state.answer.succeeded;
 
     // загрузка информации по болезни
     useEffect(() => {
-        diseasReq.fetch({ diseaseId: Number(id) });
+        diseasReq.fetch({ diseaseId: Number(diseasId) });
     }, []);
 
     // успешная загрузка данных болезни
     useEffect(() => {
         if (success && diseasReq.state.answer?.data !== undefined) {
-            setDiseas(diseasReq.state.answer.data);
+            setDiseas(diseasReq.state.answer.data as any);
         }
     }, [success]);
+
+    // запрашиваем вакцинации и вакцины
+    useEffect(() => {
+        vaccinationsRequest.fetch({
+            patientId: Number(currentUser?.id)
+        });
+        vaccinesRequest.fetch(undefined);
+    }, []);
 
     /**
      * обработка клика кнопки "я привит"
@@ -92,6 +198,41 @@ export const Diseas: React.FC<DiseasProps> = (props) => {
     const takeHandle = () => {
         history.push('/vaccination/add', { type: 'diseas', data: diseas });
     }
+
+    // пришли вакцинации для пациента
+    if (vaccinationsRequestSuccess) {
+        const userVaccinations = vaccinationsRequest.state.answer.data as PatientVaccinations;
+        setVaccinations(userVaccinations);
+        vaccinationsRequest.reload();
+    }
+
+    // пришли вакцины
+    if (vaccinesRequestSuccess) {
+        setVaccines(vaccinesRequest.state.answer.data as Vaccine[]);
+        vaccinesRequest.reload();
+    }
+
+
+    let correctVaccines = [];
+
+    for (const vaccine of vaccines) {
+        const foundVaccination = vaccinations.find((vaccination) => vaccination.name == vaccine.name);
+
+        if (foundVaccination && vaccine.diseaseIds.includes(Number(diseasId))) correctVaccines.push({
+            vaccine,
+            vaccination: foundVaccination,
+            vaccineStatus: VaccinationModel.getVaccinationStatus(foundVaccination)
+        });
+    }
+    let newestVaccine = correctVaccines.sort((l, r) =>
+        StepEnum[r.vaccineStatus.statusColor as string] - StepEnum[r.vaccineStatus.statusColor as string]
+    )[0];
+
+    const isVaccined = Boolean(newestVaccine);
+    const personRisk = String(currentRisk?.risk);
+    const professionalRisk = String((currentRisk?.professionRisk ?? 0) + 1);
+    const regionalRisk = String((currentRisk?.regionRisk ?? 0) + 1);
+
 
     // если данных по болезни не нашлось
     if (!loading && !success) return (
@@ -112,21 +253,104 @@ export const Diseas: React.FC<DiseasProps> = (props) => {
 
                 {!loading &&
                     <Box mb={2}>
-                        <Box mb={2} display="grid" justifyContent="space-between" gridAutoFlow="column" alignItems="center">
+
+                        <Box mb={5} display="grid" justifyContent="space-between" gridAutoFlow="column" alignItems="center">
                             <Box component="h3" className={classes.title}>
                                 {diseas?.name}
                             </Box>
 
-                            <IconButton
-                                classes={{ label: classes.menuButton }}
-                                disabled={loading}
-                                onClick={takeHandle}
-                                color="primary"
-                            >
-                                <AddIcon />
-                                <div>Уже привит</div>
-                            </IconButton>
+                            {isVaccined &&
+                                <div className={classes.vaccinedNotice}>Уже привит</div>
+                            }
+
+                            {!isVaccined &&
+                                <IconButton
+                                    classes={{ label: classes.menuButton }}
+                                    disabled={loading}
+                                    onClick={takeHandle}
+                                    color="primary"
+                                >
+                                    <AddIcon />
+                                    <div>Уже привит</div>
+                                </IconButton>
+                            }
                         </Box>
+
+                        {isVaccined &&
+                            <Box mb={5}>
+
+                                <div className={classes.risks}>
+                                    <Box fontWeight={500} mb={2}>Мои риски заражения: </Box>
+
+                                    <div className={classes.line}>
+                                        <div className={classes.lineTitle}>
+                                            <div className={s(classes.indicator, (classes as any)[ColorsEnum[personRisk]])} />
+                                            Индивидуальный
+                                        </div>
+
+                                        <Box ml="auto">
+                                            {TextsEnum[personRisk]}
+                                        </Box>
+                                    </div>
+
+                                    <Divider color="gray" />
+                                    <div className={classes.line}>
+                                        <div className={classes.lineTitle}>
+                                            <div className={s(classes.indicator, (classes as any)[ColorsEnum[personRisk]])} />
+                                            Профессиональный
+                                        </div>
+
+                                        <Box ml="auto">
+                                            {TextsEnum[personRisk]}
+                                        </Box>
+                                    </div>
+
+                                    <Divider color="gray" />
+                                    <div className={classes.line}>
+                                        <div className={classes.lineTitle}>
+                                            <div className={s(classes.indicator, (classes as any)[ColorsEnum[personRisk]])} />
+                                            Эпидемиологический
+                                        </div>
+
+                                        <Box ml="auto">
+                                            {TextsEnum[personRisk]}
+                                        </Box>
+                                    </div>
+                                </div>
+
+                                <div className={classes.vaccineLine}>
+                                    <div>
+                                        <div className={classes.subTitle}>Защита: </div>
+
+                                        <Link
+                                            className={classes.vaccineLink}
+                                            to={{
+                                                pathname: `/passport/vaccine/${newestVaccine.vaccine.id}`,
+                                                state: newestVaccine.vaccine
+                                            }}
+                                        >
+                                            {newestVaccine.vaccine.name}
+                                        </Link>
+                                    </div>
+
+                                    <div>
+                                        <div className={classes.subTitle}>Срок действия: </div>
+
+                                        {newestVaccine.vaccineStatus.isEternal &&
+                                            <Box fontSize={18} color="#3BCF1A">вечная</Box>
+                                        }
+
+                                        {!newestVaccine.vaccineStatus.isEternal &&
+                                            <div className={classes.subTitle}>
+                                                до {new Date(newestVaccine.vaccineStatus.date).toLocaleDateString('ru')}
+                                            </div>
+                                        }
+                                    </div>
+                                </div>
+
+                            </Box>
+                        }
+
 
                         <Box mb={2}>
                             <MarkDown md={diseas?.detailedFull ?? ""} />
