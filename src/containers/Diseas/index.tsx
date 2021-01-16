@@ -276,48 +276,48 @@ export const Diseas: React.FC<DiseasProps> = (props) => {
                             }
                         </Box>
 
-                        {isVaccined &&
-                            <Box mb={5}>
+                        <Box mb={5}>
 
-                                <div className={classes.risks}>
-                                    <Box fontWeight={500} mb={2}>Мои риски заражения: </Box>
+                            <div className={classes.risks}>
+                                <Box fontWeight={500} mb={2}>Мои риски заражения: </Box>
 
-                                    <div className={classes.line}>
-                                        <div className={classes.lineTitle}>
-                                            <div className={s(classes.indicator, (classes as any)[ColorsEnum[personRisk]])} />
+                                <div className={classes.line}>
+                                    <div className={classes.lineTitle}>
+                                        <div className={s(classes.indicator, (classes as any)[ColorsEnum[personRisk]])} />
                                             Индивидуальный
                                         </div>
 
-                                        <Box ml="auto">
-                                            {TextsEnum[personRisk]}
-                                        </Box>
-                                    </div>
+                                    <Box ml="auto">
+                                        {TextsEnum[personRisk]}
+                                    </Box>
+                                </div>
 
-                                    <Divider color="gray" />
-                                    <div className={classes.line}>
-                                        <div className={classes.lineTitle}>
-                                            <div className={s(classes.indicator, (classes as any)[ColorsEnum[personRisk]])} />
+                                <Divider color="gray" />
+                                <div className={classes.line}>
+                                    <div className={classes.lineTitle}>
+                                        <div className={s(classes.indicator, (classes as any)[ColorsEnum[professionalRisk]])} />
                                             Профессиональный
                                         </div>
 
-                                        <Box ml="auto">
-                                            {TextsEnum[personRisk]}
-                                        </Box>
-                                    </div>
+                                    <Box ml="auto">
+                                        {TextsEnum[professionalRisk]}
+                                    </Box>
+                                </div>
 
-                                    <Divider color="gray" />
-                                    <div className={classes.line}>
-                                        <div className={classes.lineTitle}>
-                                            <div className={s(classes.indicator, (classes as any)[ColorsEnum[personRisk]])} />
+                                <Divider color="gray" />
+                                <div className={classes.line}>
+                                    <div className={classes.lineTitle}>
+                                        <div className={s(classes.indicator, (classes as any)[ColorsEnum[regionalRisk]])} />
                                             Эпидемиологический
                                         </div>
 
-                                        <Box ml="auto">
-                                            {TextsEnum[personRisk]}
-                                        </Box>
-                                    </div>
+                                    <Box ml="auto">
+                                        {TextsEnum[regionalRisk]}
+                                    </Box>
                                 </div>
+                            </div>
 
+                            {isVaccined &&
                                 <div className={classes.vaccineLine}>
                                     <div>
                                         <div className={classes.subTitle}>Защита: </div>
@@ -347,10 +347,8 @@ export const Diseas: React.FC<DiseasProps> = (props) => {
                                         }
                                     </div>
                                 </div>
-
-                            </Box>
-                        }
-
+                            }
+                        </Box>
 
                         <Box mb={2}>
                             <MarkDown md={diseas?.detailedFull ?? ""} />
