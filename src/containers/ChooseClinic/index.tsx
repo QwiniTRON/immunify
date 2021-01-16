@@ -56,9 +56,9 @@ const useStyles = makeStyles({
     minHeight: 160,
     background: 'linear-gradient(180deg, #9BC835 0%, #A8E3F1 100%)',
     borderRadius: '45px 45px 0 0',
-    padding: '20px 20px 55px 20px',
+    padding: '0 20px 55px 20px',
     borderTop: '3px solid #9BC83F',
-    transform: 'translateY(calc(100% - 45px))',
+    transform: 'translateY(calc(100% - 35px))',
     transition: 'transform 0.1s ease'
   },
 
@@ -66,9 +66,13 @@ const useStyles = makeStyles({
     height: 2,
     backgroundColor: '#777',
     borderRadius: 1,
+  },
+
+  subMenuContainer: {
+    padding: 10,
     cursor: 'pointer',
-    width: 50,
     margin: '0 auto 10px',
+    width: 80,
   },
 
   subMenu__open: {
@@ -148,7 +152,7 @@ export const ChooseClinic: React.FC<ChooseClinicProps> = (props) => {
   let subMenuContent: JSX.Element | null = null;
   if (!clinic) {
     subMenuContent = (
-      <Box fontSize={18} fontWeight={500}>
+      <Box fontSize={18} fontWeight={500} color="#fff">
         клиника не выбрана
       </Box>
     );
@@ -224,7 +228,9 @@ export const ChooseClinic: React.FC<ChooseClinicProps> = (props) => {
               </YMaps>
 
               <div className={sif({ [classes.subMenu]: true, [classes.subMenu__open]: subMenuOpen })}>
-                <div className={classes.subMenuCloser} onClick={setSubMenuOpen.bind(null, !subMenuOpen)} />
+                <div className={classes.subMenuContainer} onClick={setSubMenuOpen.bind(null, !subMenuOpen)}>
+                  <div className={classes.subMenuCloser} />
+                </div>
 
                 {subMenuContent}
               </div>
