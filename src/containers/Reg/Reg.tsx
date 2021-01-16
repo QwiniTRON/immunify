@@ -38,6 +38,11 @@ const useStyle = makeStyles({
 
     genderImg: {
         maxWidth: '100%'
+    },
+
+    genderContainer: {
+        display: 'flex',
+        justifyContent: 'space-evenly'
     }
 });
 
@@ -47,7 +52,7 @@ const Reg: React.FC<RegProps> = ({
     register,
     appDataInit
 }) => {
-    const clasess = useStyle();
+    const classes = useStyle();
     const history = useHistory();
     const { token } = useAccessToken();
 
@@ -159,18 +164,19 @@ const Reg: React.FC<RegProps> = ({
                 <form className="reg__form" onSubmit={handleSubmit}>
 
                     <Typography color="error">{errors.sex}</Typography>
-                    <Box display="flex" justifyContent="space-evenly" marginBottom={3}>
+                    <Box marginBottom={3}>
                         <AppRadioGroup onChange={(value: string) => {
                             setInputTouches(Object.assign({}, inputTouches, { sex: true }));
                             setSex(value);
                         }}
                             value={sex}
+                            className={classes.genderContainer}
                         >
                             <AppRadioButton value="man"
                                 text="Мужчина"
                                 component={
                                     (
-                                        <img src={ManImg} className={clasess.genderImg} />
+                                        <img src={ManImg} className={classes.genderImg} />
                                     )
                                 }
                             />
@@ -178,7 +184,7 @@ const Reg: React.FC<RegProps> = ({
                                 text="Женщина"
                                 component={
                                     (
-                                        <img src={WomanImg} className={clasess.genderImg} />
+                                        <img src={WomanImg} className={classes.genderImg} />
                                     )
                                 }
                             />

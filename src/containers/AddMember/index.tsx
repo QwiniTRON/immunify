@@ -56,6 +56,11 @@ const useStyle = makeStyles({
     title: {
         marginTop: 0,
         fontSize: 24
+    },
+
+    genderContainer: {
+        display: 'flex',
+        justifyContent: 'space-evenly'
     }
 });
 
@@ -169,13 +174,14 @@ const AddMember: React.FC<AddMemberProps> = ({
                         <form className="reg__form" onSubmit={handleSubmit}>
 
                             <Typography color="error">{errors.sex}</Typography>
-                            <Box display="flex" justifyContent="space-evenly" marginBottom={3}>
+                            <Box marginBottom={3}>
                                 <AppRadioGroup onChange={(value: string) => {
                                     setInputTouches(Object.assign({}, inputTouches, { sex: true }));
                                     setSex(value);
                                     validate();
                                 }}
                                     value={sex}
+                                    className={classes.genderContainer}
                                 >
                                     <AppRadioButton value="man"
                                         text="Мужчина"
