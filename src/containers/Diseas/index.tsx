@@ -360,7 +360,7 @@ export const Diseas: React.FC<DiseasProps> = (props) => {
                                         <div className={classes.subTitle}>Срок действия: </div>
 
                                         {newestVaccine.vaccineStatus.isEternal &&
-                                            <Box fontSize={18} color="#3BCF1A">вечная</Box>
+                                            <Box fontSize={18} color="#3BCF1A">пожизненная</Box>
                                         }
 
                                         {!newestVaccine.vaccineStatus.isEternal &&

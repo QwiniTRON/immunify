@@ -169,6 +169,10 @@ const useStyles = makeStyles((theme) => ({
   saveButton: {
     maxWidth: 160,
     width: '100%'
+  },
+  
+  callLink: {
+    textDecoration: 'none'
   }
 }));
 //#endregion
@@ -431,21 +435,21 @@ export const LastAppointment: React.FC<LastAppointmentProps> = (props) => {
 
         {!loading && <div className={classes.content}>
 
-          <Box fontSize={18} fontWeight={500}>Контакты:</Box>
-
           <Box fontWeight={400} fontSize={18}>
             {detail?.hospital.name}
           </Box>
+
+          <Box fontSize={18} fontWeight={500}>Контакты:</Box>
 
           <Box mt={1}>
             <Box>
               <ApartmentIcon fontSize="large" className={classes.phoneIcon} /> {detail?.hospital?.name}
             </Box>
             <Box>
-              <CallIcon color="primary" fontSize="large" className={classes.phoneIcon} /> +7 (495) 342-85-01
+              <CallIcon color="primary" fontSize="large" className={classes.phoneIcon} /> <a className={classes.callLink} href={`tel:+${74953428501}`}>+7 (495) 342-85-01</a>
             </Box>
             <Box>
-              <CallIcon color="primary" fontSize="large" className={classes.phoneIcon} /> +7 (495) 342-85-02
+              <CallIcon color="primary" fontSize="large" className={classes.phoneIcon} /> <a className={classes.callLink} href={`tel:+${74953428502}`}>+7 (495) 342-85-02</a>
             </Box>
           </Box>
 
@@ -490,6 +494,7 @@ export const LastAppointment: React.FC<LastAppointmentProps> = (props) => {
                     cancelLabel="отмена"
                     inputVariant="outlined"
                     disablePast
+                    format="MM/dd/yyyy"
                     helperText={error.date}
                     error={Boolean(error.date)}
                     TextFieldComponent={DatePickerInput}

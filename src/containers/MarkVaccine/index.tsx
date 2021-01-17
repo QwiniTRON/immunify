@@ -382,10 +382,7 @@ export const MarkVaccine: React.FC<MarkVaccineProps> = (props) => {
 
                             <div>
                                 <Box fontSize={16} fontWeight={300} textAlign="center" mb={1}>
-                                    {markedVaccines.length > 1 ?
-                                        "добавить ещё" : "Мне сделали несколько прививок?"
-                                    }
-
+                                    Добавить ещё одну прививку
                                 </Box>
 
                                 <div className={classes.commandLine}>

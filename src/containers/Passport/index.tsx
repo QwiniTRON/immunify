@@ -176,7 +176,7 @@ export const Passport: React.FC<PassportProps> = (props) => {
 
 
     return (
-        <Layout title="Иммунный пасспорт" domainPage>
+        <Layout title="Иммунный паспорт" domainPage>
             <PageLayout>
                 <Box paddingX="15px">
 

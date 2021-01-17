@@ -86,6 +86,10 @@ const useStyles = makeStyles({
   takeButton: {
     maxWidth: 160,
     width: '100%'
+  },
+
+  callLink: {
+    textDecoration: 'none'
   }
 });
 
@@ -205,21 +209,21 @@ export const Appointment: React.FC<AppointmentProps> = (props) => {
         {!detailLoading &&
           <div className={classes.content}>
 
-            <Box fontSize={18} fontWeight={500}>Контакты:</Box>
-
             <Box fontWeight={500}>
               {clinicDetails?.name}
             </Box>
+
+            <Box fontSize={18} fontWeight={500}>Контакты:</Box>
 
             <Box mt={4}>
               <Box>
                 <ApartmentIcon fontSize="large" className={classes.phoneIcon} /> {clinicDetails?.regionName}
               </Box>
               <Box>
-                <CallIcon fontSize="large" className={classes.phoneIcon} /> +7 (495) 342-85-01
+                <CallIcon fontSize="large" className={classes.phoneIcon} /> <a className={classes.callLink} href={`tel:+${74953428501}`}>+7 (495) 342-85-01</a>
               </Box>
               <Box>
-                <CallIcon fontSize="large" className={classes.phoneIcon} /> +7 (495) 342-85-02
+                <CallIcon fontSize="large" className={classes.phoneIcon} /> <a className={classes.callLink} href={`tel:+${74953428502}`}>+7 (495) 342-85-02</a>
               </Box>
             </Box>
 
@@ -241,6 +245,7 @@ export const Appointment: React.FC<AppointmentProps> = (props) => {
                     cancelLabel="отмена"
                     inputVariant="outlined"
                     disablePast
+                    format="MM/dd/yyyy"
                     helperText={error.date}
                     error={Boolean(error.date)}
                     TextFieldComponent={DatePickerInput}

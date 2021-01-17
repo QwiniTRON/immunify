@@ -103,8 +103,11 @@ export const Vaccine: React.FC<VaccineProps> = (props) => {
     history.push('/vaccination/add', { type: 'vaccine', data: vaccine });
   }
 
-  const isVaccined = vaccinations.some((vaccination) => vaccination.name == vaccine.name);
-
+  const currentVaccination = vaccinations.find((vaccination) => vaccination.name == vaccine.name);
+  const isVaccined = Boolean(currentVaccination);
+  const vaccinationDate = currentVaccination?.passedStages
+    ?.reduce((result: any, stage: any) => stage.date > result?.stage ? stage : result, currentVaccination?.passedStages?.[0])
+    ?.date;
 
   return (
     <Layout title="" BackButtonCustom={<BackButton simpleBack text="Вернуться к заболеванию" />}>
@@ -152,10 +155,12 @@ export const Vaccine: React.FC<VaccineProps> = (props) => {
               </Box>
 
 
-              <Box mt={3}>
-                <Box fontWeight={500}>Последняя вакцинация:</Box>
-                <Box>Апрель 2019 - ревакцинация</Box>
-              </Box>
+              {isVaccined &&
+                <Box mt={3}>
+                  <Box fontWeight={500}>Последняя вакцинация:</Box>
+                  <Box>{new Date(vaccinationDate).toLocaleDateString('ru')}</Box>
+                </Box>
+              }
             </Box>
           }
 
