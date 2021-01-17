@@ -7,7 +7,7 @@ import AddIcon from '@material-ui/icons/Add';
 import { Layout } from '../../components/Layout/Layout';
 import { PageLayout } from '../../components/UI/PageLayout';
 import { BackButton } from '../../components/BackButton';
-import { Link, useHistory, useLocation, useRouteMatch } from 'react-router-dom';
+import { Link, useHistory, useRouteMatch } from 'react-router-dom';
 import { useServer } from '../../hooks/useServer';
 import { AppLinkButton } from '../../components/UI/AppLinkButton';
 import { GetVaccineById, GetVaccinationByPatient, PatientVaccinations } from '../../server';

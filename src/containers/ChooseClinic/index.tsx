@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
@@ -107,11 +107,14 @@ const useStyles = makeStyles({
   }
 });
 
+
 export const ChooseClinic: React.FC<ChooseClinicProps> = (props) => {
   const classes = useStyles();
   const routeData: ChooseClinicRouteState | undefined = useLocation<ChooseClinicRouteState>().state;
 
   const [subMenuOpen, setSubMenuOpen] = useState(false);
+  const isSubMenuOpen = useRef(subMenuOpen);
+  isSubMenuOpen.current = subMenuOpen;
 
   const clinicsReq = useServer(GetHospitals);
   const loading = clinicsReq.state.fetching;
@@ -122,10 +125,14 @@ export const ChooseClinic: React.FC<ChooseClinicProps> = (props) => {
   const [clinics, setClinics] = useState<Clinic[]>([]);
   const [clinic, setClinic] = useState<Clinic | null>(null);
 
+
+
+  // 
   useEffect(() => {
     clinicsReq.fetch(undefined);
   }, []);
 
+  // 
   useEffect(() => {
     if (success) {
       setClinics(clinicsReq.state.answer.data! as Clinic[]);
@@ -133,7 +140,83 @@ export const ChooseClinic: React.FC<ChooseClinicProps> = (props) => {
     }
   }, [success]);
 
+  // 
+  useEffect(() => {
+    const bottomMenuHeight = 56;
+    let subMenu: HTMLElement | null = null;
+    let subMenuHeight = 0;
+    let isModified = 0;
 
+
+    let mousemoveListener = (e: MouseEvent | TouchEvent) => {
+      if (subMenu) {
+
+        if(e.type == 'mousemove') e.preventDefault();
+
+        const clientY = e instanceof TouchEvent ? e.touches[0]?.clientY ?? 0 : e.clientY;
+        const bottom = Math.max(window.innerHeight - clientY - bottomMenuHeight, 0);
+        const transformProccent = 80 - Math.min(Math.round(bottom / subMenuHeight * 100), 80);
+
+        isModified++;
+
+        subMenu!.style.transform = `translateY(${transformProccent}%)`;
+      }
+    };
+
+    const mousedownListener = (e: MouseEvent | TouchEvent) => {
+      if ((e.target as HTMLElement).closest('#submenuCloser')) {
+        subMenu = (e.target as HTMLElement).closest('#submenu');
+        subMenuHeight = Number(subMenu?.offsetHeight);
+
+        subMenu!.style.transform = isSubMenuOpen.current ? "translateY(0%)" : "translateY(calc(100% - 35px))";
+        subMenu!.style.transition = "none";
+
+        document.addEventListener('mousemove', mousemoveListener);
+        if(e.type == "touchstart") document.addEventListener('touchmove', mousemoveListener);
+      }
+    };
+
+    const mouseupListener = (e: MouseEvent | TouchEvent) => {
+      if (subMenu) {
+        subMenu!.style.cssText = "";
+      }
+
+      if (isModified > 5) {
+        const clientY = e instanceof TouchEvent ? e.changedTouches[0]?.clientY ?? 0 : e.clientY;
+        const bottom = Math.max(window.innerHeight - clientY - bottomMenuHeight, 0);
+        const transformProccent = 80 - Math.min(Math.round(bottom / subMenuHeight * 100), 80);
+
+        if (transformProccent > 40) setSubMenuOpen(false);
+        else setSubMenuOpen(true);
+      }
+
+      isModified = 0;
+
+      document.removeEventListener('mousemove', mousemoveListener);
+      if(e.type == "touchend") document.removeEventListener('touchmove', mousemoveListener);
+    };
+
+    // нажатие
+    document.addEventListener('mousedown', mousedownListener);
+    document.addEventListener('touchstart', mousedownListener);
+
+    // конец действия (отжатие)
+    document.addEventListener('mouseup', mouseupListener);
+    document.addEventListener('touchend', mouseupListener);
+
+
+    return () => {
+      document.removeEventListener('mousedown', mousedownListener);
+      document.removeEventListener('mouseup', mouseupListener);
+      document.removeEventListener('mousemove', mousemoveListener);
+
+      document.removeEventListener('touchstart', mousedownListener);
+      document.removeEventListener('touchend', mouseupListener);
+      document.removeEventListener('touchmove', mousemoveListener);
+    };
+  }, []);
+
+  // 
   const handleTabChange = (event: any, newValue: any) => {
     setTabValue(newValue);
   };
@@ -149,6 +232,7 @@ export const ChooseClinic: React.FC<ChooseClinicProps> = (props) => {
   });
 
 
+  // 
   let subMenuContent: JSX.Element | null = null;
   if (!clinic) {
     subMenuContent = (
@@ -158,6 +242,7 @@ export const ChooseClinic: React.FC<ChooseClinicProps> = (props) => {
     );
   }
 
+  // 
   if (clinic) {
     subMenuContent = (
       <>
@@ -200,16 +285,16 @@ export const ChooseClinic: React.FC<ChooseClinicProps> = (props) => {
             {loading && <Box m={3}><Loader /></Box>}
 
             {!loading && clinics.map((c) => (
-              <Box marginY={2}>
+              <Box marginY={2} key={c.id}>
                 <InfoCard data={[
                   { description: c.address, title: c.name }
                 ]}
                   detailText="Позвонить и записаться"
                   to={`/passport/appointment/${c.id}`}
-                  key={c.id}
                 />
               </Box>
-            ))}
+            ))
+            }
 
           </Box>
         </AppTabPanel>
@@ -227,8 +312,8 @@ export const ChooseClinic: React.FC<ChooseClinicProps> = (props) => {
                 </Map>
               </YMaps>
 
-              <div className={sif({ [classes.subMenu]: true, [classes.subMenu__open]: subMenuOpen })}>
-                <div className={classes.subMenuContainer} onClick={setSubMenuOpen.bind(null, !subMenuOpen)}>
+              <div id="submenu" className={sif({ [classes.subMenu]: true, [classes.subMenu__open]: subMenuOpen })}>
+                <div id="submenuCloser" className={classes.subMenuContainer} onClick={setSubMenuOpen.bind(null, !subMenuOpen)}>
                   <div className={classes.subMenuCloser} />
                 </div>
 

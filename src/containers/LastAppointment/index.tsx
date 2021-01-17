@@ -172,7 +172,8 @@ const useStyles = makeStyles((theme) => ({
   },
   
   callLink: {
-    textDecoration: 'none'
+    textDecoration: 'none',
+    color: 'currentColor'
   }
 }));
 //#endregion

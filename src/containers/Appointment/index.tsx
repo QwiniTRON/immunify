@@ -90,7 +90,8 @@ const useStyles = makeStyles({
   },
 
   callLink: {
-    textDecoration: 'none'
+    textDecoration: 'none',
+    color: 'currentColor'
   }
 });
 
