@@ -298,6 +298,8 @@ export const ReadyPage: React.FC<ReadyPageProps> = (props) => {
                     />
                 </MuiPickersUtilsProvider>
 
+                <Box mb={2}></Box>
+
                 <div className="btns centred">
                     <AppButton className="ready-page__start" onClick={saveHandle} disabled={loading}>
                         Сохранить

@@ -402,16 +402,14 @@ export const Diseas: React.FC<DiseasProps> = (props) => {
                 }
 
                 {/* кнопка записатся */}
-                <Box mt="auto" textAlign="center">
                     <AppLinkButton
                         disabled={loading}
                         to={{
                             pathname: `/passport/take`,
                             state: { type: 'diseas', data: diseas }
                         }}
-                        className={classes.takeButton}
+                        floated
                     > Записаться</AppLinkButton>
-                </Box>
                 
             </PageLayout>
         </Layout>

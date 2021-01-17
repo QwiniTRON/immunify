@@ -70,9 +70,13 @@ const useStyles = makeStyles({
 
   subMenuContainer: {
     padding: 10,
-    cursor: 'pointer',
+    cursor: 'grab',
     margin: '0 auto 10px',
     width: 80,
+
+    '&:active': {
+      cursor: 'grabbing',
+    }
   },
 
   subMenu__open: {
@@ -146,16 +150,16 @@ export const ChooseClinic: React.FC<ChooseClinicProps> = (props) => {
     let subMenu: HTMLElement | null = null;
     let subMenuHeight = 0;
     let isModified = 0;
+    let offsetY = 0;
 
 
     let mousemoveListener = (e: MouseEvent | TouchEvent) => {
       if (subMenu) {
+        e.preventDefault();
 
-        if(e.type == 'mousemove') e.preventDefault();
-
-        const clientY = e instanceof TouchEvent ? e.touches[0]?.clientY ?? 0 : e.clientY;
-        const bottom = Math.max(window.innerHeight - clientY - bottomMenuHeight, 0);
-        const transformProccent = 80 - Math.min(Math.round(bottom / subMenuHeight * 100), 80);
+        const clientY = e.type == 'touchmove' ? (e as any).touches[0]?.clientY ?? 0 : (e as any).clientY;
+        const bottom = Math.max(window.innerHeight - clientY - bottomMenuHeight - offsetY, 0);
+        const transformProccent = 85 - Math.min(Math.round(bottom / (subMenuHeight) * 100), 85);
 
         isModified++;
 
@@ -165,14 +169,20 @@ export const ChooseClinic: React.FC<ChooseClinicProps> = (props) => {
 
     const mousedownListener = (e: MouseEvent | TouchEvent) => {
       if ((e.target as HTMLElement).closest('#submenuCloser')) {
+        if (e.type == 'mousedown') e.preventDefault();
+
         subMenu = (e.target as HTMLElement).closest('#submenu');
         subMenuHeight = Number(subMenu?.offsetHeight);
+
+        const subMenuMetrics = subMenu?.getBoundingClientRect();
+        const clientY = e.type == 'touchstart' ? (e as any).touches[0]?.clientY ?? 0 : (e as any).clientY;
+        offsetY = clientY - Number(subMenuMetrics?.top);
 
         subMenu!.style.transform = isSubMenuOpen.current ? "translateY(0%)" : "translateY(calc(100% - 35px))";
         subMenu!.style.transition = "none";
 
-        document.addEventListener('mousemove', mousemoveListener);
-        if(e.type == "touchstart") document.addEventListener('touchmove', mousemoveListener);
+        document.addEventListener('mousemove', mousemoveListener, {passive: false});
+        if(e.type == "touchstart") document.addEventListener('touchmove', mousemoveListener, {passive: false});
       }
     };
 
@@ -182,9 +192,9 @@ export const ChooseClinic: React.FC<ChooseClinicProps> = (props) => {
       }
 
       if (isModified > 5) {
-        const clientY = e instanceof TouchEvent ? e.changedTouches[0]?.clientY ?? 0 : e.clientY;
-        const bottom = Math.max(window.innerHeight - clientY - bottomMenuHeight, 0);
-        const transformProccent = 80 - Math.min(Math.round(bottom / subMenuHeight * 100), 80);
+        const clientY = e.type == 'touchend' ? (e as any).changedTouches[0]?.clientY ?? 0 : (e as any).clientY;
+        const bottom = Math.max(window.innerHeight - clientY - bottomMenuHeight - offsetY, 0);
+        const transformProccent = 85 - Math.min(Math.round(bottom / subMenuHeight * 100), 85);
 
         if (transformProccent > 40) setSubMenuOpen(false);
         else setSubMenuOpen(true);

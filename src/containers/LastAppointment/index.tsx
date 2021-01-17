@@ -422,7 +422,6 @@ export const LastAppointment: React.FC<LastAppointmentProps> = (props) => {
 
   const isExpired = (Date.parse(detail?.date ?? '') - Date.now()) < 0;
 
-
   return (
     <Layout title="" BackButtonCustom={<BackButton text="Вернуться к списку записей" to={`/calendar`} />}>
       <PageLayout className={classes.root}>
@@ -444,7 +443,7 @@ export const LastAppointment: React.FC<LastAppointmentProps> = (props) => {
 
           <Box mt={1}>
             <Box>
-              <ApartmentIcon fontSize="large" className={classes.phoneIcon} /> {detail?.hospital?.name}
+              <ApartmentIcon fontSize="large" className={classes.phoneIcon} /> Москва
             </Box>
             <Box>
               <CallIcon color="primary" fontSize="large" className={classes.phoneIcon} /> <a className={classes.callLink} href={`tel:+${74953428501}`}>+7 (495) 342-85-01</a>

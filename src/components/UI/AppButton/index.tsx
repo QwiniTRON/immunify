@@ -45,7 +45,7 @@ const useStyles = makeStyles((theme) => ({
     }),
     floated: {
         position: 'fixed',
-        bottom: 75,
+        top: 'calc(var(--full_height) - 130px)',
         margin: '0 auto',
         zIndex: 10,
         left: '50%',

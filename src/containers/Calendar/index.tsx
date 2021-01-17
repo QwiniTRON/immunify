@@ -41,7 +41,7 @@ const useStyles = makeStyles({
 
 const TakePlaceholder: React.FC<any> = (props) => {
     return (
-        <Box textAlign="center" pt={3} mb={8}>
+        <Box textAlign="center" pt={3} mb={3}>
             <TakeCardIcon />
 
             <Box fontSize={18} fontWeight={500} m="0 auto" width={0.5} mt={4}>
@@ -75,7 +75,7 @@ export const Calendar: React.FC<CalendarProps> = (props) => {
 
 
     return (
-        <Layout title="Предстоящие записи" domainPage clearScroll>
+        <Layout title="Предстоящие записи" domainPage>
             <PageLayout className={classes.root}>
                 {loading &&
                     <Box textAlign="center"><CircleLoader /></Box>

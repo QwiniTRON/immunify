@@ -347,7 +347,7 @@ export const MarkVaccine: React.FC<MarkVaccineProps> = (props) => {
                     {(loading || vaccinationCreateLoading) && <Box textAlign="center"><CircleLoader /></Box>}
 
                     {!loading && !vaccinationCreateLoading &&
-                        <div>
+                        <>
                             <Box mb={2} fontSize={24} fontWeight={500}>Проведенные вакцинации</Box>
 
                             {error}
@@ -380,7 +380,7 @@ export const MarkVaccine: React.FC<MarkVaccineProps> = (props) => {
                             }
 
 
-                            <div>
+                            <Box mb={2}>
                                 <Box fontSize={16} fontWeight={300} textAlign="center" mb={1}>
                                     Добавить ещё одну прививку
                                 </Box>
@@ -391,12 +391,12 @@ export const MarkVaccine: React.FC<MarkVaccineProps> = (props) => {
                                         <AddIcon />
                                     </div>
                                 </div>
-                            </div>
+                            </Box>
 
-                            <AppButton floated onClick={saveHandle}>
+                            <AppButton onClick={saveHandle} floated>
                                 Сохранить
                             </AppButton>
-                        </div>
+                        </>
                     }
                 </Box>
             </PageLayout>

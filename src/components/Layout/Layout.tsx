@@ -111,8 +111,6 @@ export const Layout: React.FC<LayoutProps> = ({
                 {children}
             </main>
 
-
-
             {!hideNav &&
                 <div className="layout__navigation">
                     <BottomNavigation
