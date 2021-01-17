@@ -10,6 +10,7 @@ type Response = {
   latitude: string,
   longitude: string,
   regionName: string,
+  address: string,
 };
 
 export const GetDetailedHospital: FetchFunc<Request, Response> = (client, request) =>

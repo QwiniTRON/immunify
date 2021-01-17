@@ -69,7 +69,6 @@ const App: React.FC<AppProps> = function ({
   const isAuth = Boolean(user);
   const { token } = useAccessToken();
 
-
   // инициализация приложения
   useEffect(() => {
     void async function () {
