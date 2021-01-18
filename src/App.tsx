@@ -34,6 +34,10 @@ import { MarkVaccine } from './containers/MarkVaccine';
 import { VaccinationDetails } from './containers/VaccinationDetails';
 
 
+// todo
+// заполнить todo
+
+
 type AppProps = {
   user: any
 

@@ -18,6 +18,7 @@ type CardLinkProps = {
     Icon?: any
 }
 
+//#region styles
 const useStyle = makeStyles((theme) => ({
     root: {
         padding: 15,
@@ -67,6 +68,7 @@ const useStyle = makeStyles((theme) => ({
         verticalAlign: "top"
     }
 }));
+//#endregion
 
 export const CardLink: React.FC<CardLinkProps> = ({
     title,

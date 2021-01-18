@@ -6,6 +6,7 @@ import { ReactComponent as ListIcon } from '../../assets/list.svg';
 import { ReactComponent as PlanetIcon } from '../../assets/planet.svg';
 import { useSelector } from 'react-redux';
 import Box from '@material-ui/core/Box';
+import { getYearOffsetNow } from '../../utils';
 
 import { RootState } from '../../store';
 import { Divider } from '../../components';
@@ -38,6 +39,9 @@ export const UserData: React.FC<UserDataProps> = (props) => {
     const classes = useStyle();
 
     const currentUser = useSelector((state: RootState) => state.user.currentUser);
+
+    // проверка на возраст
+    const isChild = getYearOffsetNow(Number(currentUser?.age)) < 18;
 
     const quizStatus = Boolean(currentUser?.data?.quiz?.isDone);
 
@@ -72,23 +76,27 @@ export const UserData: React.FC<UserDataProps> = (props) => {
                 />
             </div>
 
-            <div className={classes.appcard}>
-                <CardLink
-                    title={professionTitle}
-                    subTitle={professionText}
-                    to={`/profile/${currentUser?.name}/profession`}
-                    Icon={<CaseIcon fontSize="large" className={professionIconClasses} />}
-                />
-            </div>
+            {!isChild &&
+                <div className={classes.appcard}>
+                    <CardLink
+                        title={professionTitle}
+                        subTitle={professionText}
+                        to={`/profile/${currentUser?.name}/profession`}
+                        Icon={<CaseIcon fontSize="large" className={professionIconClasses} />}
+                    />
+                </div>
+            }
 
-            <div className={classes.appcard}>
-                <CardLink
-                    title={regionTitle}
-                    subTitle={regionText}
-                    to={`/profile/${currentUser?.name}/region`}
-                    Icon={<PlanetIcon fontSize="large" className={regionIconClasses} />}
-                />
-            </div>
+            {!isChild &&
+                <div className={classes.appcard}>
+                    <CardLink
+                        title={regionTitle}
+                        subTitle={regionText}
+                        to={`/profile/${currentUser?.name}/region`}
+                        Icon={<PlanetIcon fontSize="large" className={regionIconClasses} />}
+                    />
+                </div>
+            }
         </>
     );
 };

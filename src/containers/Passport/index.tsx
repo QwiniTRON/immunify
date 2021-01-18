@@ -12,10 +12,8 @@ import { UserModel } from '../../models/User';
 import { AppLinkButton } from '../../components/UI/AppLinkButton';
 import { useServer } from '../../hooks';
 import { GetVaccinationByPatient, PatientVaccinations, PatientVaccination, GetVaccines } from '../../server';
-import { Vaccination, VaccinationModel, VaccinationStatus } from '../../models/Vaccination';
+import { VaccinationModel, VaccinationStatus } from '../../models/Vaccination';
 import { CircleLoader } from '../../components/UI/CircleLoader';
-import { AppRadioGroup } from '../../components';
-import { sif } from '../../utils';
 
 
 

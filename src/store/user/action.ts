@@ -121,12 +121,14 @@ export function register(name: string, age: number, sex: Sex, id: string) {
 export function addMember(name: string, age: number, sex: Sex, id: string) {
     return async function (dispatch: Function, getState: Function) {
         
+        let state: RootState = getState();
+
         // добавляем в store нового члена семьи
-        const newMember = new User(name, age, sex, undefined, undefined, undefined, id)
+        const newMember = new User(name, age, sex, undefined, new UserData(undefined, state.user.user?.data?.region, undefined), undefined, id)
         dispatch(addNewMember(newMember));
 
         // обновляем localeStorage пользователя
-        const state: RootState = getState();
+        state = getState();
         try {
             state.user.user && UserModel.saveUser(state.user.user);
         } catch (err) {

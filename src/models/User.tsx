@@ -2,6 +2,7 @@ import { UserStore } from '../store/user';
 import { RootState, store } from '../store';
 import { RiskViewModel } from '../server';
 import { Profession, Region } from '../type';
+import {getYearOffsetNow} from '../utils';
 
 ///////////////////////////////////////////////////////////////////////////////
 //  methodName$suffix - Это тот же метод только с перегрузкой параметров    ///
@@ -41,6 +42,12 @@ export class UserData {
     public region?: RegionData;
     public quiz?: QuizData;
 
+    /**
+     * 
+     * @param {Profession?} profession - профессия
+     * @param {RegionData?} region - регион
+     * @param {QuizData?} quiz - опрос
+     */
     constructor(profession?: Profession, region: RegionData = new RegionData(), quiz: QuizData = new QuizData()) {
         this.profession = profession;
         this.region = region;
@@ -60,6 +67,17 @@ export class User {
     public Risks: RiskViewModel[];
     public id?: string
 
+
+    /**
+     * 
+     * @param {string} name - имя
+     * @param {number} age - возраст(timestamp)
+     * @param {string} sex - пол
+     * @param {User[]?} family - список семьи
+     * @param {UserData?} data - данные(регион, профессия, опрос)
+     * @param {RiskViewModel[]?} Risks - риски
+     * @param {string} id - id из базы
+     */
     public constructor(
         name: string = '',
         age: number = 0,
@@ -172,9 +190,11 @@ export class UserModel {
     static getCompleatedStatus(user: User) {
         let procent = 0;
 
-        if (Boolean(user.data?.profession)) procent += 25;
-        if (Boolean(user.data?.region?.main)) procent += 25;
-        if (user.data?.quiz?.isDone == true) procent += 50;
+        const isChild = getYearOffsetNow(Number(user?.age)) < 18;
+
+        if (Boolean(user.data?.profession)) procent += isChild? 0 : 25;
+        if (Boolean(user.data?.region?.main)) procent += isChild? 0 : 25;
+        if (user.data?.quiz?.isDone == true) procent += isChild? 100 : 50;
 
         return procent;
     }

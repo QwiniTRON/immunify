@@ -1,6 +1,16 @@
 @import "./funcs.scss";
 @import "./vars.scss";
 
+:root {
+    --accentColor: $accentColor;
+    --errorColor: $errorColor;
+    --textColor: $textColor;
+    --mainColor: $mainColor;
+    --fontFamily: $fontFamily;
+    --lineHeigth: $lineHeigth;
+    --fontSize: $fontSize;
+}
+
 *,
 *::after,
 *::before {
