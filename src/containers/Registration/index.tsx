@@ -96,9 +96,11 @@ export const Registration: React.FC = () => {
 
     const vkCallback = (userInfo: any): void => {
       if (userInfo.session !== undefined) {
+        console.log(userInfo);
+          
         GeneratePassword(userInfo.session.user.id).then(pass => {
             externalFetcher.fetch({
-                username: userInfo.userID + 'VK',
+                username: userInfo.session.user.id + 'VK',
                 password: pass,
                 externalAuth: ExternalAuth.VK,
                 identity: userInfo.session.user.id,
