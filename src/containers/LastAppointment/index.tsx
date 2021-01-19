@@ -18,6 +18,13 @@ import AddIcon from '@material-ui/icons/Add';
 import DateRangeIcon from '@material-ui/icons/DateRange';
 import TimerIcon from '@material-ui/icons/Timer';
 import { Link, useHistory, useRouteMatch } from 'react-router-dom';
+import * as ics from 'ics';
+import Menu from '@material-ui/core/Menu';
+import MenuItem from '@material-ui/core/MenuItem';
+import ListItemIcon from '@material-ui/core/ListItemIcon';
+import Typography from '@material-ui/core/Typography';
+import AddAlertIcon from '@material-ui/icons/AddAlert';
+import AppsIcon from '@material-ui/icons/Apps';
 
 import { BackButton } from '../../components/BackButton';
 import { Layout } from '../../components/Layout/Layout';
@@ -297,6 +304,8 @@ export const LastAppointment: React.FC<LastAppointmentProps> = (props) => {
 
   const redirectTimer = useRef<any>(null);
 
+  const [calendarOpen, setCalendarOpen] = useState<any>(null);
+
   const deleteReq = useServer(DeleteVisit);
   const loadingDelete = deleteReq.state.fetching;
   const successDelete = !loadingDelete && deleteReq.state.answer.succeeded;
@@ -359,9 +368,69 @@ export const LastAppointment: React.FC<LastAppointmentProps> = (props) => {
   /**
    * добавление в календарь
    */
-  const addCalendarHandle = () => {
-    var icsMSG = "BEGIN:VCALENDAR\nVERSION:2.0\nPRODID:-//Our Company//NONSGML v1.0//EN\nBEGIN:VEVENT\nUID:me@google.com\nDTSTAMP:20120315T170000Z\nATTENDEE;CN=My Self ;RSVP=TRUE:MAILTO:me@gmail.com\nORGANIZER;CN=Me:MAILTO::me@gmail.com\nDTSTART:" + 'msgData1' + "\nDTEND:" + 'msgData2' + "\nLOCATION:" + 'msgData3' + "\nSUMMARY:Our Meeting Office\nEND:VEVENT\nEND:VCALENDAR";
-    window.open("data:text/calendar;charset=utf8," + escape(icsMSG));
+  const handleAddCalendar = () => {
+    const visitDate = new Date(String(detail?.date));
+    const year = visitDate.getFullYear();
+    const month = visitDate.getMonth() + 1;
+    const day = visitDate.getDate();
+    const hour = visitDate.getHours();
+    const minutes = visitDate.getMinutes();
+
+    const event = {
+      start: [year, month, day, hour, minutes],
+      duration: { hours: 1, minutes: 30 },
+      title: 'Запись на приём',
+      description: `Запись на приём в больницу ${detail?.hospital.name}`,
+      location: 'Москва',
+      // geo: { lat: 40.0095, lon: 105.2669 },
+      categories: ['medicine'],
+      status: 'CONFIRMED',
+      busyStatus: 'BUSY'
+    }
+
+    try {
+      ics.createEvent(event as any, (error: any, eventSource: any) => {
+        if (error) {
+          console.log(error);
+          return;
+        }
+
+        // попытка добавить сгенерированное событие в календарь
+        const type = "data:text/calendar;charset=utf8,";
+        window.open(type + eventSource);
+      })
+    } catch (e) { }
+  }
+
+  /**
+   * добавление события в google календарь
+   */
+  const handleAddCalendarGoogle = () => {
+    const visitDate = new Date(String(detail?.date));
+    const year = visitDate.getFullYear();
+    const month = visitDate.getMonth() + 1;
+    const day = visitDate.getDate();
+    const hour = visitDate.getHours();
+    const minutes = visitDate.getMinutes();
+
+    const googleType = "https://www.google.com/calendar/render?";
+
+    // date format = YYYYmmddThhmmssZ
+    const formatedMonth = String(month).padStart(2, '0');
+    const formatedHours = String(hour).padStart(2, '0');
+    const formatedMinutes = String(minutes).padStart(2, '0');
+    const dateToGoogle = year + formatedMonth + day + 'T' + formatedHours + formatedMinutes + '00' + 'Z';
+
+    const params = new URLSearchParams();
+    params.set('action', 'TEMPLATE');
+    params.set('text', 'Запись на приём');
+    params.set('details', `Запись на приём в клинику${detail?.hospital.name}`);
+    params.set('location', `${"Москва"}`); // add hospital adress
+    params.set('dates', `${dateToGoogle}/${dateToGoogle}`);
+
+
+
+    window.open(googleType + params.toString());
   }
 
   // загрузка информации по визиту
@@ -560,6 +629,7 @@ export const LastAppointment: React.FC<LastAppointmentProps> = (props) => {
               <Divider color="gray" />
 
               <Box display="flex" justifyContent="space-between">
+                {/* отмена записи */}
                 <IconButton
                   classes={{ label: classes.menuButton }}
                   disabled={loading || loadingDelete || loadingUpdate}
@@ -568,10 +638,38 @@ export const LastAppointment: React.FC<LastAppointmentProps> = (props) => {
                   <CloseIcon />
                   <div>Отменить</div>
                 </IconButton>
-                <IconButton classes={{ label: classes.menuButton, root: classes.calendarButton }} onClick={addCalendarHandle} >
+
+                <IconButton
+                  classes={{ label: classes.menuButton, root: classes.calendarButton }}
+                  onClick={(e) => setCalendarOpen(e.currentTarget)} >
                   <DateRangeIcon />
                   <div>В календарь</div>
                 </IconButton>
+                {/* меню выбора календаря */}
+                <Menu
+                  id="simple-menu"
+                  anchorEl={calendarOpen}
+                  open={Boolean(calendarOpen)}
+                  onClose={setCalendarOpen.bind(null, null)}
+
+                >
+                  <MenuItem onClick={handleAddCalendarGoogle}>
+                    <ListItemIcon>
+                      <AddAlertIcon fontSize="small" />
+                    </ListItemIcon>
+
+                    <Typography variant="inherit">google</Typography>
+                  </MenuItem>
+                  <MenuItem onClick={handleAddCalendar}>
+                    <ListItemIcon>
+                      <AppsIcon fontSize="small" />
+                    </ListItemIcon>
+
+                    <Typography variant="inherit">выбрать</Typography>
+                  </MenuItem>
+                </Menu>
+
+                {/* to mark vaccine */}
                 <IconButton
                   classes={{ label: classes.menuButton }}
                   color="primary"

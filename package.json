@@ -25,6 +25,7 @@
     "date-fns": "^2.16.1",
     "google-maps-react": "^2.0.6",
     "http-proxy-middleware": "^1.0.6",
+    "ics": "^2.26.2",
     "node-sass": "^4.14.1",
     "oidc-client": "^1.10.1",
     "react": "^17.0.1",
