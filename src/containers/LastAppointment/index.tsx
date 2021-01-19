@@ -170,7 +170,7 @@ const useStyles = makeStyles((theme) => ({
     maxWidth: 160,
     width: '100%'
   },
-  
+
   callLink: {
     textDecoration: 'none',
     color: 'currentColor'
@@ -356,6 +356,13 @@ export const LastAppointment: React.FC<LastAppointmentProps> = (props) => {
     });
   }
 
+  /**
+   * добавление в календарь
+   */
+  const addCalendarHandle = () => {
+    var icsMSG = "BEGIN:VCALENDAR\nVERSION:2.0\nPRODID:-//Our Company//NONSGML v1.0//EN\nBEGIN:VEVENT\nUID:me@google.com\nDTSTAMP:20120315T170000Z\nATTENDEE;CN=My Self ;RSVP=TRUE:MAILTO:me@gmail.com\nORGANIZER;CN=Me:MAILTO::me@gmail.com\nDTSTART:" + 'msgData1' + "\nDTEND:" + 'msgData2' + "\nLOCATION:" + 'msgData3' + "\nSUMMARY:Our Meeting Office\nEND:VEVENT\nEND:VCALENDAR";
+    window.open("data:text/calendar;charset=utf8," + escape(icsMSG));
+  }
 
   // загрузка информации по визиту
   useEffect(() => {
@@ -561,7 +568,7 @@ export const LastAppointment: React.FC<LastAppointmentProps> = (props) => {
                   <CloseIcon />
                   <div>Отменить</div>
                 </IconButton>
-                <IconButton classes={{ label: classes.menuButton, root: classes.calendarButton }}>
+                <IconButton classes={{ label: classes.menuButton, root: classes.calendarButton }} onClick={addCalendarHandle} >
                   <DateRangeIcon />
                   <div>В календарь</div>
                 </IconButton>

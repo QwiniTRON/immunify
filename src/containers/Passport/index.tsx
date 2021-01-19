@@ -12,9 +12,9 @@ import { UserModel } from '../../models/User';
 import { AppLinkButton } from '../../components/UI/AppLinkButton';
 import { useServer } from '../../hooks';
 import { GetVaccinationByPatient, PatientVaccinations, PatientVaccination, GetVaccines, GetLastPoll } from '../../server';
+import { updateMember } from '../../store/user/action';
 import { VaccinationModel, VaccinationStatus } from '../../models/Vaccination';
 import { CircleLoader } from '../../components/UI/CircleLoader';
-import { updateMember } from '../../store/user/action';
 
 
 

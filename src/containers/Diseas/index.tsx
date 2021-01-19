@@ -311,7 +311,7 @@ export const Diseas: React.FC<DiseasProps> = (props) => {
                 {/* название и отметка */}
                 {!loading &&
                     <Box mb={2}>
-                        <Box mb={5} display="grid" justifyContent="space-between" gridAutoFlow="column" alignItems="center">
+                        <Box mb={5} display="grid" justifyContent="space-between" gridGap="0 10px" gridAutoFlow="column" alignItems="center">
                             <Box component="h3" className={classes.title}>
                                 {diseas?.name}
                             </Box>

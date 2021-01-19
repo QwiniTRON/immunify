@@ -3,13 +3,14 @@ import Typography from '@material-ui/core/Typography';
 import TextField from '@material-ui/core/TextField';
 import Box from '@material-ui/core/Box';
 import { makeStyles } from '@material-ui/core/styles';
-import { connect } from 'react-redux';
+import { connect, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import ruLocale from "date-fns/locale/ru";
 import { DatePicker, MuiPickersUtilsProvider } from '@material-ui/pickers';
 import DateFnsUtils from '@date-io/date-fns';
 import ManImg from '../../assets/man.png';
 import WomanImg from '../../assets/woman.png';
+import { ReactComponent as ShieldIcon } from '../../assets/shield.svg';
 
 import { AppButton } from '../../components/UI/AppButton';
 import { addMember } from '../../store/user/action';
@@ -23,6 +24,7 @@ import { CreatePatient } from '../../server';
 import { Loader } from '../../components/UI/Loader';
 import { s } from '../../utils';
 import { Divider } from '../../components';
+import { AppLinkButton } from '../../components/UI/AppLinkButton';
 
 type AddMemberProps = {
 
@@ -61,7 +63,13 @@ const useStyle = makeStyles({
     genderContainer: {
         display: 'flex',
         justifyContent: 'space-evenly'
-    }
+    },
+
+    regionSet: {
+        margin: '0 auto',
+        width: 160,
+        display: 'block'
+    },
 });
 
 const AddMember: React.FC<AddMemberProps> = ({
@@ -69,6 +77,8 @@ const AddMember: React.FC<AddMemberProps> = ({
 }) => {
     const classes = useStyle();
     const history = useHistory();
+    const mainUser = useSelector((state: RootState) => state.user.user);
+    const hasRegion = Boolean(mainUser?.data?.region?.main);
 
     const addReq = useServer(CreatePatient);
     const loading = addReq.state.fetching;
@@ -89,6 +99,7 @@ const AddMember: React.FC<AddMemberProps> = ({
     });
     const [isValid, setIsValid] = useState(false);
 
+    // запрос добавления нового пациента
     useLayoutEffect(() => {
         if (success) {
             addMember(name, selectedDate?.getTime(), sex, addReq?.state?.answer?.data?.id)
@@ -169,8 +180,29 @@ const AddMember: React.FC<AddMemberProps> = ({
 
                     <Divider />
 
-                    {loading ? <Loader /> :
+                    {!hasRegion &&
+                        <Box>
+                            <Box textAlign="center" mb={4}>
+                                <ShieldIcon />
+                            </Box>
 
+                            <Box color="#FF003D" textAlign="center" fontSize={18}>
+                                * У вас не установлен регион, установите его для добавления нового пациента
+                            </Box>
+
+                            <Box mt={7}>
+                                <AppLinkButton className={classes.regionSet} appColor="linear" to={`/profile/${mainUser?.name}/region`}>
+                                    установить
+                                </AppLinkButton>
+                            </Box>
+                        </Box>
+                    }
+
+                    {hasRegion && loading &&
+                        <Loader />
+                    }
+
+                    {hasRegion && !loading &&
                         <form className="reg__form" onSubmit={handleSubmit}>
 
                             <Typography color="error">{errors.sex}</Typography>
