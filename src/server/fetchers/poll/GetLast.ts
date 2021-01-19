@@ -26,5 +26,5 @@ export type RiskViewModel = {
   professionRisk: RiskCoefficient,
 };
 
-export const GetLastPoll: FetchFunc<Request, RiskViewModel> = (client, request) =>
+export const GetLastPoll: FetchFunc<Request, RiskViewModel[]> = (client, request) =>
   client.get(`/poll/last?patientId=${request.patientId}&professionId=${request.professionId}&regionId=${request.regionId}`);

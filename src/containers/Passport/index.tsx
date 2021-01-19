@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { Layout } from '../../components/Layout/Layout';
 import { ReactComponent as ShieldIcon } from '../../assets/shield.svg';
 import Box from '@material-ui/core/Box';
@@ -11,11 +11,10 @@ import { RootState } from '../../store';
 import { UserModel } from '../../models/User';
 import { AppLinkButton } from '../../components/UI/AppLinkButton';
 import { useServer } from '../../hooks';
-import { GetVaccinationByPatient, PatientVaccinations, PatientVaccination, GetVaccines } from '../../server';
-import { Vaccination, VaccinationModel, VaccinationStatus } from '../../models/Vaccination';
+import { GetVaccinationByPatient, PatientVaccinations, PatientVaccination, GetVaccines, GetLastPoll } from '../../server';
+import { VaccinationModel, VaccinationStatus } from '../../models/Vaccination';
 import { CircleLoader } from '../../components/UI/CircleLoader';
-import { AppRadioGroup } from '../../components';
-import { sif } from '../../utils';
+import { updateMember } from '../../store/user/action';
 
 
 
@@ -98,9 +97,11 @@ const PassportPlaceholder: React.FC<any> = (props) => {
 export const Passport: React.FC<PassportProps> = (props) => {
     const classes = useStyles();
 
-    const currentUser = useSelector((state: RootState) => state.user.currentUser);
+    const currentUser = useSelector((state: RootState) => state.user.currentUser)!;
     const compleatedStatus = UserModel.getCurrentUserDataStatus();
+    const dispatch = useDispatch();
 
+    const [risks, setRisks] = useState(currentUser.Risks);
     const [vaccinations, setVaccinations] = useState<PatientVaccinations>([]);
     const [vaccines, setVaccines] = useState<Vaccine[]>([]);
 
@@ -108,17 +109,32 @@ export const Passport: React.FC<PassportProps> = (props) => {
 
     const vaccinationsRequest = useServer(GetVaccinationByPatient);
     const vaccinesRequest = useServer(GetVaccines);
-    const loading = vaccinationsRequest.state.fetching || vaccinesRequest.state.fetching;
-    const vaccinationsRequestSuccess = !vaccinationsRequest.state.fetching && vaccinationsRequest.state.answer.succeeded;
-    const vaccinesRequestSuccess = !vaccinesRequest.state.fetching && vaccinesRequest.state.answer.succeeded;
+    const getLastPollRequest = useServer(GetLastPoll);
 
     // запрашиваем вакцинации и вакцины
     useEffect(() => {
         vaccinationsRequest.fetch({
-            patientId: Number(currentUser?.id)
+            patientId: Number(currentUser.id)
         });
         vaccinesRequest.fetch(undefined);
+
+        getLastPollRequest.fetch({
+            patientId: global.parseInt(currentUser.id || '0'),
+            professionId: currentUser.data?.profession?.id || 1,
+            regionId: currentUser.data?.region?.main?.id || 1,
+        });
+
+        return () => {
+            vaccinationsRequest.cancel();
+            vaccinesRequest.cancel();
+            getLastPollRequest.cancel();
+        }
     }, []);
+
+    const loading = vaccinationsRequest.state.fetching || vaccinesRequest.state.fetching;
+    const vaccinationsRequestSuccess = !vaccinationsRequest.state.fetching && vaccinationsRequest.state.answer.succeeded;
+    const vaccinesRequestSuccess = !vaccinesRequest.state.fetching && vaccinesRequest.state.answer.succeeded;
+    const getLastPollSuccess = !getLastPollRequest.state.fetching && getLastPollRequest.state.answer.succeeded;
 
     // вакцинации и болезни, на которые они воздействуют
     const vaccinationsForDiseases = useMemo(() => {
@@ -154,8 +170,15 @@ export const Passport: React.FC<PassportProps> = (props) => {
         vaccinesRequest.reload();
     }
 
+    // пришли риски
+    if (getLastPollSuccess) {
+        setRisks(getLastPollRequest.state.answer.data!);
+        dispatch(updateMember({ Risks: (getLastPollRequest.state.answer.data!) }, currentUser.name));
+        getLastPollRequest.reload();
+    }
+
     // отфильтрованные вакцинации для болезней
-    const risksFiltred = currentUser?.Risks?.filter((risk) => {
+    const risksFiltred = risks.filter((risk) => {
         const riskStatus = Math.max(risk.risk, risk.regionRisk + 1, risk.professionRisk + 1);
 
         if (step == "high") {
@@ -214,7 +237,7 @@ export const Passport: React.FC<PassportProps> = (props) => {
                     {compleatedStatus && !loading &&
                         <>
                             <Box fontSize={24} fontWeight={500}>
-                                {currentUser?.name}
+                                {currentUser.name}
                             </Box>
                             <Box mb={2} color="#999" fontSize={18} fontWeight={300}>
                                 Вы ещё не защищены от этих заболеваний
