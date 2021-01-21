@@ -1,32 +1,68 @@
 {
-  "short_name": "Immunify app",
+  "short_name": "Immunify",
   "name": "Immunify",
+  "description": "app for your immunity",
   "icons": [
     {
-      "src": "favicon.png",
-      "sizes": "16x16",
-      "type": "image/x-icon"
-    },
-    {
-      "src": "icon32.png",
-      "sizes": "32x32",
-      "type": "image/x-icon"
-    },
-    {
-      "src": "icon64.png",
-      "sizes": "64x64",
-      "type": "image/x-icon"
-    },
-    {
-      "src": "logo192.png",
-      "type": "image/png",
+      "src": "icons/android-launchericon-192-192.png",
       "sizes": "192x192",
-      "purpose": "any maskable"
+      "purpose": "maskable",
+      "type": "image/png"
     },
     {
-      "src": "logo512.png",
-      "type": "image/png",
-      "sizes": "512x512"
+      "src": "icons/android-launchericon-144-144.png",
+      "sizes": "144x144",
+      "type": "image/png"
+    },
+    {
+      "src": "icons/android-launchericon-96-96.png",
+      "sizes": "96x96",
+      "type": "image/png"
+    },
+    {
+      "src": "icons/android-launchericon-72-72.png",
+      "sizes": "72x72",
+      "type": "image/png"
+    },
+    {
+      "src": "icons/firefox-marketplace-512-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    },
+    {
+      "src": "icons/firefox-general-256-256.png",
+      "sizes": "256x256",
+      "type": "image/png"
+    },
+    {
+      "src": "icons/firefox-general-128-128.png",
+      "sizes": "128x128",
+      "type": "image/png"
+    },
+    {
+      "src": "icons/firefox-general-90-90.png",
+      "sizes": "90x90",
+      "type": "image/png"
+    },
+    {
+      "src": "icons/firefox-general-64-64.png",
+      "sizes": "64x64",
+      "type": "image/png"
+    },
+    {
+      "src": "icons/firefox-general-48-48.png",
+      "sizes": "48x48",
+      "type": "image/png"
+    },
+    {
+      "src": "icons/firefox-general-32-32.png",
+      "sizes": "32x32",
+      "type": "image/png"
+    },
+    {
+      "src": "icons/firefox-general-16-16.png",
+      "sizes": "16x16",
+      "type": "image/png"
     }
   ],
   "start_url": ".",

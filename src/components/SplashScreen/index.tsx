@@ -4,7 +4,7 @@ import Typography from '@material-ui/core/Typography';
 import logo from '../../assets/splashlogo.png';
 
 import './splashcreen.scss';
-import { CircleLoader } from '../UI/CircleLoader';
+import { CircleLoader, CircleLoaderColors } from '../UI/CircleLoader';
 
 
 type SplashScreenProps = {
@@ -17,11 +17,11 @@ const useStyles = makeStyles({
     },
     content: {
         position: 'fixed',
-        width: '50vw',
+        maxWidth: 600,
         left: '50%',
         top: '50%',
         transform: 'translate(-50%, -50%)',
-        textAlign: 'center'
+        textAlign: 'center',
     },
 });
 
@@ -33,7 +33,7 @@ export const SplashScreen: React.FC<SplashScreenProps> = (props) => {
             <div className={classes.content}>
                 <img className={classes.img} src={logo} alt="app logo" />
                 <div>
-                    <CircleLoader />
+                    <CircleLoader color={CircleLoaderColors.linear} />
                 </div>
             </div>
         </div>

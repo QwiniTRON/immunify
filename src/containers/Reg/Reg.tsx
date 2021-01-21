@@ -24,6 +24,7 @@ import { appDataInit } from '../../store/appData/action';
 
 import { useAccessToken } from '../../hooks/useAccessToken';
 import { Divider } from '../../components';
+import { eyars18 } from '../../utils';
 
 
 type RegProps = {
@@ -47,7 +48,13 @@ const useStyle = makeStyles({
 });
 
 
-// todo или формик или переписать под декларатив
+
+
+
+
+const maxDateForMainUser = new Date(Date.now() - eyars18);
+
+
 const Reg: React.FC<RegProps> = ({
     register,
     appDataInit
@@ -219,6 +226,7 @@ const Reg: React.FC<RegProps> = ({
                                 disableFuture
                                 inputVariant="outlined"
                                 clearable
+                                maxDate={maxDateForMainUser}
                                 onBlur={validate}
                                 onFocus={() => setInputTouches(Object.assign({}, inputTouches, { age: true }))}
                             />

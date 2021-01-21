@@ -32,6 +32,7 @@ import { useAccessToken } from './hooks/useAccessToken';
 import { Secure } from './components';
 import { MarkVaccine } from './containers/MarkVaccine';
 import { VaccinationDetails } from './containers/VaccinationDetails';
+import { ErrorBounder } from './components/ErrorBounder';
 
 
 // todo
@@ -120,160 +121,161 @@ const App: React.FC<AppProps> = function ({
     <SplashScreen />
   </div>;
 
-
   return (
-    <div className="App">
-      <Route render={({ location }) => (
-        <TransitionGroup exit={false}>
-          <CSSTransition timeout={150} classNames="page" key={location.key}>
+    <ErrorBounder placeholder={<div>Произошла ошибка перезагрузите приложение</div>} >
+      <div className="App">
+        <Route render={({ location }) => (
+          <TransitionGroup exit={false}>
+            <CSSTransition timeout={150} classNames="page" key={location.key}>
 
-            <Switch location={location}>
+              <Switch location={location}>
 
-              {!isAuth && <Route path={`/reg`} exact>
-                <ApplicationSecure>
-                  <Reg />
-                </ApplicationSecure>
-              </Route>}
+                {!isAuth && <Route path={`/reg`} exact>
+                  <ApplicationSecure>
+                    <Reg />
+                  </ApplicationSecure>
+                </Route>}
 
-              <Route path={`/`} exact>
-                <Secure validation={loginValidation} redirect="/profile">
-                  <MeetingPage />
-                </Secure>
-              </Route>
-
-
-              <Route path={`/login`} exact>
-                <LoginnSecure>
-                  <LoginPage />
-                </LoginnSecure>
-              </Route>
+                <Route path={`/`} exact>
+                  <Secure validation={loginValidation} redirect="/profile">
+                    <MeetingPage />
+                  </Secure>
+                </Route>
 
 
-              <Route path={`/registration`} exact>
-                <LoginnSecure>
-                  <Registration />
-                </LoginnSecure>
-              </Route>
+                <Route path={`/login`} exact>
+                  <LoginnSecure>
+                    <LoginPage />
+                  </LoginnSecure>
+                </Route>
 
-              {/* если пользователь не зарегистрировался, то ему доступен только роут reg - страница входа */}
-              {!isAuth && <Redirect to={`/reg`} />}
 
-              <Route path={`/profile`} exact>
-                <ApplicationSecure>
-                  <Profile />
-                </ApplicationSecure>
-              </Route>
+                <Route path={`/registration`} exact>
+                  <LoginnSecure>
+                    <Registration />
+                  </LoginnSecure>
+                </Route>
 
-              <Route path={`/calendar`} exact>
-                <ApplicationSecure>
-                  <Calendar />
-                </ApplicationSecure>
-              </Route>
+                {/* если пользователь не зарегистрировался, то ему доступен только роут reg - страница входа */}
+                {!isAuth && <Redirect to={`/reg`} />}
 
-              <Route path={`/passport`} exact>
-                <ApplicationSecure>
-                  <Passport />
-                </ApplicationSecure>
-              </Route>
+                <Route path={`/profile`} exact>
+                  <ApplicationSecure>
+                    <Profile />
+                  </ApplicationSecure>
+                </Route>
 
-              <Route path={`/vaccination`} exact>
-                <ApplicationSecure>
-                  <Vaccination />
-                </ApplicationSecure>
-              </Route>
+                <Route path={`/calendar`} exact>
+                  <ApplicationSecure>
+                    <Calendar />
+                  </ApplicationSecure>
+                </Route>
 
-              {/* двух шаговые роуты */}
-              <Route path={`/take/:id`} exact>
-                <ApplicationSecure>
-                  <LastAppointment />
-                </ApplicationSecure>
-              </Route>
+                <Route path={`/passport`} exact>
+                  <ApplicationSecure>
+                    <Passport />
+                  </ApplicationSecure>
+                </Route>
 
-              <Route path={`/passport/take`} exact>
-                <ApplicationSecure>
-                  <ChooseClinic />
-                </ApplicationSecure>
-              </Route>
+                <Route path={`/vaccination`} exact>
+                  <ApplicationSecure>
+                    <Vaccination />
+                  </ApplicationSecure>
+                </Route>
 
-              <Route path={`/passport/:id`} exact>
-                <ApplicationSecure>
-                  <Diseas />
-                </ApplicationSecure>
-              </Route>
+                {/* двух шаговые роуты */}
+                <Route path={`/take/:id`} exact>
+                  <ApplicationSecure>
+                    <LastAppointment />
+                  </ApplicationSecure>
+                </Route>
 
-              <Route path={`/profile/add`} exact>
-                <ApplicationSecure>
-                  <AddMember />
-                </ApplicationSecure>
-              </Route>
+                <Route path={`/passport/take`} exact>
+                  <ApplicationSecure>
+                    <ChooseClinic />
+                  </ApplicationSecure>
+                </Route>
 
-              <Route path={`/profile/:id`} exact>
-                <ApplicationSecure>
-                  <Patient />
-                </ApplicationSecure>
-              </Route>
+                <Route path={`/passport/:id`} exact>
+                  <ApplicationSecure>
+                    <Diseas />
+                  </ApplicationSecure>
+                </Route>
 
-              <Route path={`/calendar/mark`} exact>
-                <ApplicationSecure>
-                  <MarkVaccine />
-                </ApplicationSecure>
-              </Route>
+                <Route path={`/profile/add`} exact>
+                  <ApplicationSecure>
+                    <AddMember />
+                  </ApplicationSecure>
+                </Route>
 
-              <Route path={`/calendar/:id`} exact>
-                <ApplicationSecure>
-                  <LastAppointment />
-                </ApplicationSecure>
-              </Route>
+                <Route path={`/profile/:id`} exact>
+                  <ApplicationSecure>
+                    <Patient />
+                  </ApplicationSecure>
+                </Route>
 
-              <Route path={`/vaccination/add`} exact>
-                <ApplicationSecure>
-                  <ReadyPage />
-                </ApplicationSecure>
-              </Route>
+                <Route path={`/calendar/mark`} exact>
+                  <ApplicationSecure>
+                    <MarkVaccine />
+                  </ApplicationSecure>
+                </Route>
 
-              <Route path={`/vaccination/:id`} exact>
-                <ApplicationSecure>
-                  <VaccinationDetails />
-                </ApplicationSecure>
-              </Route>
+                <Route path={`/calendar/:id`} exact>
+                  <ApplicationSecure>
+                    <LastAppointment />
+                  </ApplicationSecure>
+                </Route>
 
-              {/* трёхуровневые роуты */}
-              <Route path={`/passport/vaccine/:id`} exact>
-                <ApplicationSecure>
-                  <Vaccine />
-                </ApplicationSecure>
-              </Route>
+                <Route path={`/vaccination/add`} exact>
+                  <ApplicationSecure>
+                    <ReadyPage />
+                  </ApplicationSecure>
+                </Route>
 
-              <Route path={`/passport/appointment/:id`} exact>
-                <ApplicationSecure>
-                  <Appointment />
-                </ApplicationSecure>
-              </Route>
+                <Route path={`/vaccination/:id`} exact>
+                  <ApplicationSecure>
+                    <VaccinationDetails />
+                  </ApplicationSecure>
+                </Route>
 
-              <Route path={`/profile/:id/quiz`} exact>
-                <ApplicationSecure>
-                  <Quiz />
-                </ApplicationSecure>
-              </Route>
+                {/* трёхуровневые роуты */}
+                <Route path={`/passport/vaccine/:id`} exact>
+                  <ApplicationSecure>
+                    <Vaccine />
+                  </ApplicationSecure>
+                </Route>
 
-              <Route path={`/profile/:id/profession`} exact>
-                <ApplicationSecure>
-                  <Profession />
-                </ApplicationSecure>
-              </Route>
+                <Route path={`/passport/appointment/:id`} exact>
+                  <ApplicationSecure>
+                    <Appointment />
+                  </ApplicationSecure>
+                </Route>
 
-              <Route path={`/profile/:id/region`} exact>
-                <ApplicationSecure>
-                  <Region />
-                </ApplicationSecure>
-              </Route>
+                <Route path={`/profile/:id/quiz`} exact>
+                  <ApplicationSecure>
+                    <Quiz />
+                  </ApplicationSecure>
+                </Route>
 
-              <Redirect to={`/profile`} />
+                <Route path={`/profile/:id/profession`} exact>
+                  <ApplicationSecure>
+                    <Profession />
+                  </ApplicationSecure>
+                </Route>
 
-            </Switch>
-          </CSSTransition>
-        </TransitionGroup>)} />
-    </div>
+                <Route path={`/profile/:id/region`} exact>
+                  <ApplicationSecure>
+                    <Region />
+                  </ApplicationSecure>
+                </Route>
+
+                <Redirect to={`/profile`} />
+
+              </Switch>
+            </CSSTransition>
+          </TransitionGroup>)} />
+      </div>
+    </ErrorBounder>
   );
 }
 

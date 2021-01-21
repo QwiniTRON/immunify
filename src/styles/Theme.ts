@@ -6,10 +6,13 @@ declare module '@material-ui/core/styles/createMuiTheme' {
     mainColor: PaletteColor
     backColor: PaletteColor
   }
-  // allow configuration using `createMuiTheme`
+  
   interface ThemeOptions {
-    mainColor?: PaletteColor
-    backColor?: PaletteColor
+    colors: {
+      mainColor?: PaletteColor
+      backColor?: PaletteColor
+      mainColor2?: PaletteColor
+    }
   }
 }
 
@@ -34,10 +37,23 @@ const backColor: PaletteColor = {
   light: ''
 }
 
+const mainColor2: PaletteColor = {
+  main: '#67CDFD',
+  contrastText: '#67CDFD',
+  dark: '#47ADDD',
+  light: '#87EDFD'
+}
+
 export const mainTheme = createMuiTheme({
   palette: {
     primary: accentColor,
   },
-  mainColor,
-  backColor
+
+  colors: {
+    mainColor,
+    backColor,
+    mainColor2,
+  }
 });
+
+console.log(mainTheme);

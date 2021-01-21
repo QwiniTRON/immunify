@@ -2,13 +2,15 @@
 @import "./vars.scss";
 
 :root {
-    --accentColor: $accentColor;
-    --errorColor: $errorColor;
-    --textColor: $textColor;
-    --mainColor: $mainColor;
-    --fontFamily: $fontFamily;
-    --lineHeigth: $lineHeigth;
-    --fontSize: $fontSize;
+    --accentColor: #{$accentColor};
+    --errorColor: #{$errorColor};
+    --textColor: #{$textColor};
+    --mainColor: #{$mainColor};
+    --fontFamily: #{$fontFamily};
+    --lineHeigth: #{$lineHeigth};
+    --fontSize: #{$fontSize};
+    --mainColor2: #{$mainColor2};
+    --textColor2: #{$textColor2};
 }
 
 *,

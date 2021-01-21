@@ -215,9 +215,9 @@ export const Appointment: React.FC<AppointmentProps> = (props) => {
               {clinicDetails?.name}
             </Box>
 
-            <Box fontSize={18} fontWeight={500}>Контакты:</Box>
+            <Box fontSize={18} fontWeight={500} mt={4}>Контакты:</Box>
 
-            <Box mt={4}>
+            <Box mt={1}>
               <Box>
                 <ApartmentIcon fontSize="large" className={classes.phoneIcon} /> {clinicDetails?.regionName}
               </Box>

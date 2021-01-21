@@ -194,9 +194,9 @@ export const ChooseClinic: React.FC<ChooseClinicProps> = (props) => {
       if (isModified > 5) {
         const clientY = e.type == 'touchend' ? (e as any).changedTouches[0]?.clientY ?? 0 : (e as any).clientY;
         const bottom = Math.max(window.innerHeight - clientY - bottomMenuHeight - offsetY, 0);
-        const transformProccent = 85 - Math.min(Math.round(bottom / subMenuHeight * 100), 85);
+        const transformProccent = 85 - Math.min(Math.round(bottom / subMenuHeight * 100), 85);        
 
-        if (transformProccent > 40) setSubMenuOpen(false);
+        if (transformProccent < 49) setSubMenuOpen(false);
         else setSubMenuOpen(true);
       }
 

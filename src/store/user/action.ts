@@ -8,6 +8,7 @@ import {
 } from '../consts';
 import { Sex, User, UserAction, UserData } from '../types';
 import { UserModel } from '../../models/User';
+import { eyars18 } from '../../utils';
 
 
 //  ***************************
@@ -124,7 +125,11 @@ export function addMember(name: string, age: number, sex: Sex, id: string) {
         let state: RootState = getState();
 
         // добавляем в store нового члена семьи
-        const newMember = new User(name, age, sex, undefined, new UserData(undefined, state.user.user?.data?.region, undefined), undefined, id)
+        let userData: UserData | undefined = undefined;
+        if(Date.now() - age < eyars18 ) {
+            userData = new UserData(undefined, state.user.user?.data?.region, undefined);
+        }
+        const newMember = new User(name, age, sex, undefined, userData, undefined, id)
         dispatch(addNewMember(newMember));
 
         // обновляем localeStorage пользователя

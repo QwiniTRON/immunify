@@ -12,7 +12,7 @@ export const MeetingPage: React.FC = () => {
                 <h1 className="title">Добро пожаловать в Immunify!</h1>
 
                 <main>
-                    <img src={doctorLogo} alt="doctor" className="auth__img" />
+                    <img src={doctorLogo} alt="immunify" className="auth__img" />
 
                     <div className="auth__buttons">
                         <Link className="button auth__button" to="/registration">

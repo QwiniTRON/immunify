@@ -515,7 +515,7 @@ export const LastAppointment: React.FC<LastAppointmentProps> = (props) => {
             {detail?.hospital.name}
           </Box>
 
-          <Box fontSize={18} fontWeight={500}>Контакты:</Box>
+          <Box fontSize={18} fontWeight={500} mt={4}>Контакты:</Box>
 
           <Box mt={1}>
             <Box>
