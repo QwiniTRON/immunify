@@ -131,12 +131,12 @@ export const ChooseClinic: React.FC<ChooseClinicProps> = (props) => {
 
 
 
-  // 
+  // запрос клиник
   useEffect(() => {
     clinicsReq.fetch(undefined);
   }, []);
 
-  // 
+  // получение клиник
   useEffect(() => {
     if (success) {
       setClinics(clinicsReq.state.answer.data! as Clinic[]);
@@ -144,7 +144,7 @@ export const ChooseClinic: React.FC<ChooseClinicProps> = (props) => {
     }
   }, [success]);
 
-  // 
+  // drag submenu
   useEffect(() => {
     const bottomMenuHeight = 56;
     let subMenu: HTMLElement | null = null;
@@ -153,13 +153,14 @@ export const ChooseClinic: React.FC<ChooseClinicProps> = (props) => {
     let offsetY = 0;
 
 
+    // движение
     let mousemoveListener = (e: MouseEvent | TouchEvent) => {
       if (subMenu) {
         e.preventDefault();
 
         const clientY = e.type == 'touchmove' ? (e as any).touches[0]?.clientY ?? 0 : (e as any).clientY;
         const bottom = Math.max(window.innerHeight - clientY - bottomMenuHeight - offsetY, 0);
-        const transformProccent = 85 - Math.min(Math.round(bottom / (subMenuHeight) * 100), 85);
+        const transformProccent = 85 - Math.min(Math.round(bottom / (subMenuHeight) * 100), 87);
 
         isModified++;
 
@@ -167,43 +168,70 @@ export const ChooseClinic: React.FC<ChooseClinicProps> = (props) => {
       }
     };
 
+    // нажатие
     const mousedownListener = (e: MouseEvent | TouchEvent) => {
       if ((e.target as HTMLElement).closest('#submenuCloser')) {
         if (e.type == 'mousedown') e.preventDefault();
 
+        // меню и его размер
         subMenu = (e.target as HTMLElement).closest('#submenu');
         subMenuHeight = Number(subMenu?.offsetHeight);
 
+        // оффсет и начальное положение
         const subMenuMetrics = subMenu?.getBoundingClientRect();
         const clientY = e.type == 'touchstart' ? (e as any).touches[0]?.clientY ?? 0 : (e as any).clientY;
         offsetY = clientY - Number(subMenuMetrics?.top);
 
+        // определяем начальное положение
         subMenu!.style.transform = isSubMenuOpen.current ? "translateY(0%)" : "translateY(calc(100% - 35px))";
         subMenu!.style.transition = "none";
 
-        document.addEventListener('mousemove', mousemoveListener, {passive: false});
-        if(e.type == "touchstart") document.addEventListener('touchmove', mousemoveListener, {passive: false});
+        isModified++;
+
+        document.addEventListener('mousemove', mousemoveListener, { passive: false });
+        if (e.type == "touchstart") document.addEventListener('touchmove', mousemoveListener, { passive: false });
       }
     };
 
+    // конец перетаскивания
+    const dragEndMenu = (e: any) => {
+      const clientY = e.type == 'touchend' ? (e as any).changedTouches[0]?.clientY ?? 0 : (e as any).clientY;
+      const bottom = Math.max(window.innerHeight - clientY - bottomMenuHeight - offsetY, 0);
+      const transformProccent = Math.min(Math.round(bottom / subMenuHeight * 100), 85);
+
+      if (transformProccent > 45) setSubMenuOpen(true);
+      else setSubMenuOpen(false);
+    }
+
+    // переключение меню
+    const toggleMenu = () => {
+      setSubMenuOpen((state) => !state);
+    }
+
+    // отжатие
     const mouseupListener = (e: MouseEvent | TouchEvent) => {
-      if (subMenu) {
+      if (isModified && subMenu) {
         subMenu!.style.cssText = "";
       }
 
-      if (isModified > 5) {
-        const clientY = e.type == 'touchend' ? (e as any).changedTouches[0]?.clientY ?? 0 : (e as any).clientY;
-        const bottom = Math.max(window.innerHeight - clientY - bottomMenuHeight - offsetY, 0);
-        const transformProccent = 85 - Math.min(Math.round(bottom / subMenuHeight * 100), 85);        
+      // меню двигали
+      if (isModified && isModified > 5) {
+        dragEndMenu(e);
+      }
 
-        if (transformProccent < 49) setSubMenuOpen(false);
-        else setSubMenuOpen(true);
+      // нажали или только тронули
+      if (isModified && isModified < 5) {
+        toggleMenu();
+
+        // после touchend синхронно вызывается mouseup, нам этого не надо
+        if (e.type == "touchend") e.preventDefault();
       }
 
       isModified = 0;
+      subMenu = null;
 
-      document.removeEventListener('mousemove', mousemoveListener);
-      if(e.type == "touchend") document.removeEventListener('touchmove', mousemoveListener);
+      if (e.type == "touchend") document.removeEventListener('touchmove', mousemoveListener);
+      else document.removeEventListener('mousemove', mousemoveListener);
     };
 
     // нажатие
@@ -226,7 +254,7 @@ export const ChooseClinic: React.FC<ChooseClinicProps> = (props) => {
     };
   }, []);
 
-  // 
+  // смена таба
   const handleTabChange = (event: any, newValue: any) => {
     setTabValue(newValue);
   };
@@ -242,7 +270,7 @@ export const ChooseClinic: React.FC<ChooseClinicProps> = (props) => {
   });
 
 
-  // 
+  // содержимое подменю
   let subMenuContent: JSX.Element | null = null;
   if (!clinic) {
     subMenuContent = (
@@ -252,7 +280,7 @@ export const ChooseClinic: React.FC<ChooseClinicProps> = (props) => {
     );
   }
 
-  // 
+  // данные по клиники в подменю
   if (clinic) {
     subMenuContent = (
       <>
@@ -275,6 +303,7 @@ export const ChooseClinic: React.FC<ChooseClinicProps> = (props) => {
     <Layout title="" clearScroll BackButtonCustom={<BackButton simpleBack routeText />} >
       <PageLayout className={classes.root}>
 
+        {/* шапка и пункты меню табов */}
         <Box marginX="20px">
           <Box component="h2" fontSize={24} fontWeight={500} marginY={1}>
             Выберите медцентр
@@ -289,6 +318,7 @@ export const ChooseClinic: React.FC<ChooseClinicProps> = (props) => {
           </Box>
         </Box>
 
+        {/* список клинк */}
         <AppTabPanel value={tabValue} index={0} className={classes.content} >
           <Box p={1} marginX="20px">
 
@@ -309,6 +339,7 @@ export const ChooseClinic: React.FC<ChooseClinicProps> = (props) => {
           </Box>
         </AppTabPanel>
 
+        {/* карта */}
         <AppTabPanel className={classes.mapTab} value={tabValue} index={1}>
 
 
@@ -322,8 +353,9 @@ export const ChooseClinic: React.FC<ChooseClinicProps> = (props) => {
                 </Map>
               </YMaps>
 
+              {/* подменю */}
               <div id="submenu" className={sif({ [classes.subMenu]: true, [classes.subMenu__open]: subMenuOpen })}>
-                <div id="submenuCloser" className={classes.subMenuContainer} onClick={setSubMenuOpen.bind(null, !subMenuOpen)}>
+                <div id="submenuCloser" className={classes.subMenuContainer} >
                   <div className={classes.subMenuCloser} />
                 </div>
 

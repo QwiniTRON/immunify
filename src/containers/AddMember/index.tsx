@@ -25,6 +25,7 @@ import { Loader } from '../../components/UI/Loader';
 import { s } from '../../utils';
 import { Divider } from '../../components';
 import { AppLinkButton } from '../../components/UI/AppLinkButton';
+import { UserModel } from '../../models/User';
 
 type AddMemberProps = {
 
@@ -134,6 +135,9 @@ const AddMember: React.FC<AddMemberProps> = ({
         } else if (!Boolean(selectedDate) && inputTouches.age) {
             errors.age = '* возраст обязателен';
             valid = false;
+        } else if (inputTouches.name && UserModel.existsName(nameText)) {
+            errors.name = '* данный ник уже зарегистрирован';
+            valid = false;
         } else if (!sexText && (inputTouches.name || inputTouches.age)) {
             errors.sex = '* пол обязателен';
             valid = false;
@@ -170,6 +174,7 @@ const AddMember: React.FC<AddMemberProps> = ({
         }
     }
 
+    
     return (
         <Layout title="" BackButtonCustom={<BackButton text="вернуться в профиль" />} hideNav={true}>
             <div className={"reg " + classes.root}>
@@ -233,14 +238,15 @@ const AddMember: React.FC<AddMemberProps> = ({
                                     />
                                 </AppRadioGroup>
                             </Box>
-
-                            <Typography color="error">{errors.name}</Typography>
+                            
                             <TextField
                                 label="Введите имя"
                                 variant="outlined"
                                 className="reg__input"
                                 id="name-input"
                                 value={name}
+                                error={Boolean(errors.name)}
+                                helperText={errors.name}
                                 onBlurCapture={validate}
                                 onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                                     setName(e.target.value);
@@ -248,13 +254,14 @@ const AddMember: React.FC<AddMemberProps> = ({
                                 }}
                             />
 
-                            <Typography color="error">{errors.age}</Typography>
                             <MuiPickersUtilsProvider utils={DateFnsUtils} locale={ruLocale}>
                                 <DatePicker
                                     label="дата рождения"
                                     value={selectedDate}
                                     onChange={handleDateChange as any}
                                     fullWidth
+                                    error={Boolean(errors.age)}
+                                    helperText={errors.age}
                                     cancelLabel="отмена"
                                     format="d MMM yyyy"
                                     disableFuture

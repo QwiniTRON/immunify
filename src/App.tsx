@@ -1,4 +1,4 @@
-import React, { useState, useEffect, FC } from 'react';
+import React, { useState, useEffect, FC, useRef } from 'react';
 import { Switch, Route, Redirect } from 'react-router-dom';
 import { CSSTransition, TransitionGroup } from 'react-transition-group';
 import { connect } from 'react-redux';
@@ -33,6 +33,7 @@ import { Secure } from './components';
 import { MarkVaccine } from './containers/MarkVaccine';
 import { VaccinationDetails } from './containers/VaccinationDetails';
 import { ErrorBounder } from './components/ErrorBounder';
+import { A2hsBunner } from './components/UI/A2hsBunner';
 
 
 // todo
@@ -65,6 +66,11 @@ const LoginnSecure: FC<SecureProps> = (props) => (
   </Secure>
 );
 
+
+/**
+ * APP
+ * 
+ */
 const App: React.FC<AppProps> = function ({
   user,
   userInit,
@@ -73,6 +79,11 @@ const App: React.FC<AppProps> = function ({
   const [isINIT, setIsINIT] = useState(false);
   const isAuth = Boolean(user);
   const { token } = useAccessToken();
+
+  // a2hs banner
+  const [a2hsBunner, seta2hsBunner] = useState(false);
+  const a2hsPrompt = useRef<Event | null>();
+
 
   // инициализация приложения
   useEffect(() => {
@@ -112,9 +123,33 @@ const App: React.FC<AppProps> = function ({
   // отлов a2hs
   useEffect(() => {
     window.addEventListener("beforeinstallprompt", (e) => {
-      console.log(e);
+      e.preventDefault();
+
+      a2hsPrompt.current = e;
+
+      seta2hsBunner(true);
     });
+
+
+    console.log("%c Immunify", "font-size: 36px;font-family: 'Courier New', Courier, monospace;font-weight: bold;color: #9BC83F;background-color: #fff;padding: 5px 20px;");
+    console.log("%c Рады помочь", "font-size: 18px;font-family: 'Courier New', Courier, monospace;font-weight: bold;color: #fff;background-color: #9BC83F;padding: 5px 20px;");
   }, []);
+
+  // согласие на добавление
+  const a2hsAgree = () => {
+    (a2hsPrompt.current as any).prompt();
+
+    seta2hsBunner(false);
+
+    (a2hsPrompt.current as any).userChoice.then((choiceResult: any) => {
+      a2hsPrompt.current = null;
+    });
+  }
+
+  // отмена
+  const a2hsCancel = () => {
+    seta2hsBunner(false);
+  }
 
   // режим загрузки
   if (!isINIT) return <div className="App">
@@ -123,6 +158,11 @@ const App: React.FC<AppProps> = function ({
 
   return (
     <ErrorBounder placeholder={<div>Произошла ошибка перезагрузите приложение</div>} >
+
+      <CSSTransition unmountOnExit mountOnEnter in={a2hsBunner} timeout={300} classNames="fade" >
+        <A2hsBunner onAgree={a2hsAgree} onCancel={a2hsCancel} onClose={() => seta2hsBunner(false)} />
+      </CSSTransition>
+
       <div className="App">
         <Route render={({ location }) => (
           <TransitionGroup exit={false}>

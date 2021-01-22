@@ -65,7 +65,8 @@ const useStyles = makeStyles((theme) => ({
     age: {
         fontSize: 18,
         fontWeight: 300,
-        color: "#ACACAC"
+        color: "#ACACAC",
+        display: 'flex'
     },
 
     active: {
@@ -87,16 +88,22 @@ const useStyles = makeStyles((theme) => ({
         border: '1px solid var(--mainColor2)',
         padding: 5,
         textAlign: 'center',
-        borderRadius: 2,
+        borderRadius: 4,
         position: 'relative',
         zIndex: 5
     },
 
+    chooseButton__active: {
+        color: 'var(--accentColor)',
+        border: '1px solid var(--accentColor)',
+    },
+
     doneIcon: {
-        marginRight: 10,
+        marginRight: 13,
         opacity: 0,
         color: 'var(--mainColor2)',
-        stroke: 'currentColor'
+        stroke: 'currentColor',
+        marginTop: 5
     },
 
     doneIcon__active: {
@@ -104,7 +111,7 @@ const useStyles = makeStyles((theme) => ({
     }
 }));
 
-const DoneIcon: React.FC<{[p: string]: any}> = (props) => (
+const DoneIcon: React.FC<{ [p: string]: any }> = (props) => (
     <svg width="15" height="13" viewBox="0 0 15 13" fill="none" xmlns="http://www.w3.org/2000/svg" {...props}>
         <path d="M2.36172 5.97908L6.48606 10.7368L13.1472 1.85585" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
     </svg>
@@ -150,7 +157,10 @@ export const UserCard: React.FC<UserCardProps> = ({
                     </div>
 
                     {/* <AppCircleProgress progress={progress} isDone={progress == 100} /> */}
-                    <div className={classes.chooseButton}>{active? "Выбран" : "Выбрать"}</div>
+                    <div className={sif({
+                        [classes.chooseButton]: true,
+                        [classes.chooseButton__active]: Boolean(active)
+                    })}>{active ? "Выбран" : "Выбрать"}</div>
                 </div>
             </div>
         </Link>

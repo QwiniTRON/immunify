@@ -224,6 +224,8 @@ const Reg: React.FC<RegProps> = ({
                                 cancelLabel="отмена"
                                 format="d MMM yyyy"
                                 disableFuture
+                                helperText={errors.age}
+                                error={Boolean(errors.age)}
                                 inputVariant="outlined"
                                 clearable
                                 maxDate={maxDateForMainUser}

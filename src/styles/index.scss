@@ -43,11 +43,9 @@ p {
     margin: 0;
 }
 
-
 #root {
     height: 100%;
 }
-
 
 .App {
     max-width: $widthBreak;
@@ -60,25 +58,51 @@ p {
 }
 
 // Page slide animation
-.page-enter .page-anim{
+.page-enter .page-anim {
     opacity: 0;
     transform: translateY(-40%);
 }
-.page-enter-active .page-anim{
+.page-enter-active .page-anim {
     opacity: 1;
     transform: translateY(0);
     transition: opacity 150ms, transform 150ms;
 }
 
-.page-exit .page-anim{
+.page-exit .page-anim {
     opacity: 1;
     transform: scale(1);
 }
 
-.page-exit-active .page-anim{
+.page-exit-active .page-anim {
     opacity: 0;
     transform: scale(0.9);
     transition: opacity 150ms, transform 150ms;
+}
+
+// fade animate
+.fade-enter {
+    opacity: 0;
+    transform: scale(0.9);
+}
+.fade-enter-active {
+    opacity: 1;
+    transform: scale(1);
+    transition: opacity 150ms, transform 150ms;
+}
+
+.fade-exit {
+    opacity: 1;
+    transform: scale(1);
+}
+
+.fade-exit-active {
+    opacity: 0;
+    transform: scale(0.9);
+    transition: opacity 150ms, transform 150ms;
+}
+
+.fade-exit-done {
+    display: none;
 }
 
 .error {

@@ -69,6 +69,7 @@ export class User {
 
 
     /**
+     * Пациент
      * 
      * @param {string} name - имя
      * @param {number} age - возраст(timestamp)
@@ -154,6 +155,7 @@ export class UserModel {
         return newCurrentUser;
     }
 
+
     /**
      * найти пациента среди всех пациентов по главному пользователю
      * 
@@ -182,6 +184,7 @@ export class UserModel {
         return userDataStatus;
     }
 
+
     /**
      * получение процента заполненности данных для пациента
      * 
@@ -197,5 +200,14 @@ export class UserModel {
         if (user.data?.quiz?.isDone == true) procent += isChild? 100 : 50;
 
         return procent;
+    }
+
+
+    static existsName(name: string) {
+        const state: RootState = store.getState();
+
+        const names = [state.user?.user?.name].concat(state.user?.user?.family?.map(p => p.name));
+
+        return names.includes(name);
     }
 }

@@ -55,5 +55,3 @@ export const mainTheme = createMuiTheme({
     mainColor2,
   }
 });
-
-console.log(mainTheme);
