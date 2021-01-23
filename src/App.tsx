@@ -127,7 +127,7 @@ const App: React.FC<AppProps> = function ({
 
       a2hsPrompt.current = e;
 
-      seta2hsBunner(true);
+      if(!Boolean(a2hsPrompt.current)) seta2hsBunner(true);
     });
 
 
@@ -142,7 +142,7 @@ const App: React.FC<AppProps> = function ({
     seta2hsBunner(false);
 
     (a2hsPrompt.current as any).userChoice.then((choiceResult: any) => {
-      a2hsPrompt.current = null;
+      // a2hsPrompt.current = null;
     });
   }
 
