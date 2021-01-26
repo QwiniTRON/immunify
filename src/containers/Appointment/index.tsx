@@ -247,7 +247,7 @@ export const Appointment: React.FC<AppointmentProps> = (props) => {
                     cancelLabel="отмена"
                     inputVariant="outlined"
                     disablePast
-                    format="MM/dd/yyyy"
+                    format="dd/MM/yyyy"
                     helperText={error.date}
                     error={Boolean(error.date)}
                     TextFieldComponent={DatePickerInput}

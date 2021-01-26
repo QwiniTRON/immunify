@@ -12,7 +12,7 @@ import { Layout } from '../../components/Layout/Layout';
 import { useCheckUserDataCompleated } from '../../hooks';
 import { User, UserModel } from '../../models/User';
 import { AppLinkButton } from '../../components/UI/AppLinkButton';
-import { s } from '../../utils';
+import { s, sif } from '../../utils';
 import { getYearOffsetNow } from '../../utils/date';
 
 
@@ -63,7 +63,7 @@ export const Profile: React.FC<ProfileProps> = (props) => {
 
   return (
     <Layout title="Профиль" domainPage>
-      <PageLayout className="profile-page">
+      <PageLayout className={sif({ ["profile-page"]: true, ['profile-page--nobackground']: Number(user?.family?.length) > 0 })}>
 
         <Box fontSize={24} fontWeight="500" p={1} component="h1">Список пользователей</Box>
         <p className="family-page__description">Введите данные о членах вашей семьи, чтобы застраховать их от возможных осложнений</p>

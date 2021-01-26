@@ -570,7 +570,7 @@ export const LastAppointment: React.FC<LastAppointmentProps> = (props) => {
                     cancelLabel="отмена"
                     inputVariant="outlined"
                     disablePast
-                    format="MM/dd/yyyy"
+                    format="dd/MM/yyyy"
                     helperText={error.date}
                     error={Boolean(error.date)}
                     TextFieldComponent={DatePickerInput}
@@ -658,14 +658,14 @@ export const LastAppointment: React.FC<LastAppointmentProps> = (props) => {
                       <AddAlertIcon fontSize="small" />
                     </ListItemIcon>
 
-                    <Typography variant="inherit">google</Typography>
+                    <Typography variant="inherit">В google</Typography>
                   </MenuItem>
                   <MenuItem onClick={handleAddCalendar}>
                     <ListItemIcon>
                       <AppsIcon fontSize="small" />
                     </ListItemIcon>
 
-                    <Typography variant="inherit">выбрать</Typography>
+                    <Typography variant="inherit">В другой</Typography>
                   </MenuItem>
                 </Menu>
 

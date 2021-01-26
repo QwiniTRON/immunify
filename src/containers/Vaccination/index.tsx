@@ -107,7 +107,7 @@ export const Vaccination: React.FC<VaccinationProps> = (props) => {
     <Layout title="Прошедшие вакцинации" domainPage>
       <PageLayout className={classes.page}>
 
-        {vaccinations.state.fetching && <Box m="15px auto"><CircleLoader /></Box>}
+        {vaccinations.state.fetching && <Box textAlign="center"><CircleLoader /></Box>}
 
         {!vaccinations.state.fetching &&
           <>

@@ -34,7 +34,7 @@ const ButtonColors = {
             backgroundColor: 'rgba(155, 200, 63, 0.1)',
         }
     },
-    'default': {color: '#fff'}
+    'default': { color: '#fff' }
 }
 const useStyles = makeStyles((theme) => ({
     root: (props: AppButtonProps) => ({
@@ -47,14 +47,20 @@ const useStyles = makeStyles((theme) => ({
         position: 'fixed',
         top: 'calc(var(--full_height) - 130px)',
         margin: '0 auto',
-        zIndex: 10,
+        zIndex: 1,
         left: '50%',
         transform: 'translateX(-50%)',
         minWidth: 160,
+        width: 'auto',
+        display: 'inline-block',
 
-        ['@media (max-width:319px)']: {
-            bottom: 15
-        }
+        '@supports (position: sticky) or (position: -webkit-sticky)': `
+            position: sticky;
+            bottom: 15px;
+            top: 0;
+            position: -webkit-sticky;
+            position: -moz-sticky;
+        `
     }
 }));
 

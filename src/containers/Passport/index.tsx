@@ -76,14 +76,14 @@ const useStyles = makeStyles({
 
 const PassportPlaceholder: React.FC<any> = (props) => {
     return (
-        <Box textAlign="center" pt={4} mb={8}>
+        <Box textAlign="center" pt={4} mb={11}>
             <ShieldIcon />
 
             <Box fontSize={18} fontWeight={500} m="0 auto" width={0.5} mt={4}>
                 Недостаточно данных
             </Box>
 
-            <Box m="0 auto" width={0.5} mt={1}>
+            <Box m="0 auto" width={0.8} mt={1}>
                 Заполните данные о себе, чтобы изучить личный иммунный паспорт
             </Box>
 

@@ -36,7 +36,8 @@ const useStyles = makeStyles({
     right: 5,
     bottom: 0,
     padding: 10,
-    display: 'flex'
+    display: 'flex',
+    alignItems: 'center'
   },
 
   linkArrow: {

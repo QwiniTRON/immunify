@@ -71,7 +71,7 @@ export const Region: React.FC<RegionProps> = (props) => {
 
     return (
         <Layout title="" BackButtonCustom={<BackButton text="Вернуться в профиль" to={pathToBack} />} >
-            <PageLayout className="region-page">
+            <PageLayout flex className="region-page">
                 <h4 className="region-page__title">В каком регионе Вы проживаете?</h4>
 
                 <Typography color="error">{errors.region}</Typography>

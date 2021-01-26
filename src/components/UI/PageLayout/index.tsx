@@ -5,12 +5,13 @@ import Box from '@material-ui/core/Box';
 
 import './pageLayout.scss';
 
-import { s } from '../../../utils/Styels';
+import { s, sif } from '../../../utils/Styels';
 import { BackButton } from '../../BackButton';
 
 type PageLayoutProps = {
     [p: string]: any
     ButtonBackto?: string
+    flex?: boolean
 }
 
 const useStyle = makeStyles({
@@ -22,12 +23,18 @@ const useStyle = makeStyles({
 export const PageLayout: React.FC<PageLayoutProps> = ({
     ButtonBackto,
     children,
+    flex,
     ...props
 }) => {
     const classes = useStyle(props);
 
     return (
-        <div className={s("page-layout", props.className, 'page-anim')}>
+        <div className={sif({
+            ["page-layout"]: true,
+            [props.className]: true,
+            ['page-anim']: true,
+            ['page-layout--flex']: Boolean(flex)
+        })}>
             {children}
         </div>
     );

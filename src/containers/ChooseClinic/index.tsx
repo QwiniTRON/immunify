@@ -34,9 +34,8 @@ const useStyles = makeStyles({
   },
 
   root: {
-    display: 'flex',
-    flexDirection: 'column',
-    padding: '0'
+    padding: '0',
+    flexGrow: 1
   },
 
   mapTab: {
@@ -44,7 +43,8 @@ const useStyles = makeStyles({
     gridTemplateRows: '100%',
     flexGrow: 1,
     position: 'relative',
-    overflow: 'hidden'
+    overflow: 'hidden',
+    flexBasis: 1
   },
 
   subMenu: {
@@ -301,7 +301,7 @@ export const ChooseClinic: React.FC<ChooseClinicProps> = (props) => {
 
   return (
     <Layout title="" clearScroll BackButtonCustom={<BackButton simpleBack routeText />} >
-      <PageLayout className={classes.root}>
+      <PageLayout flex className={classes.root}>
 
         {/* шапка и пункты меню табов */}
         <Box marginX="20px">

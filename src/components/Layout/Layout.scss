@@ -9,12 +9,16 @@
         align-items: center;
         justify-content: space-between;
         padding: 12px;
+        min-height: 72px;
     }
 
     .layout__content {
         flex-grow: 1;
         overflow: auto;
         background: #FAFAFA;
+        display: flex;
+        flex-flow: column nowrap;
+        z-index: 1;
     }
 
     .layout__background {
@@ -30,15 +34,6 @@
         max-width: 600px;
         width: 100%;
         margin: 0 auto;
-    }
-}
-
-@media (max-height: 319px) {
-    .layout {
-        // padding-bottom: 0;
-        
-        .layout__navigation {
-            // display: none;
-        }
+        position: relative;
     }
 }

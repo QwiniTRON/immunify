@@ -51,8 +51,8 @@ const useStyle = makeStyles({
 
 
 
-
-const maxDateForMainUser = new Date(Date.now() - eyars18);
+const currentDate = new Date();
+const maxDateForMainUser = currentDate.setFullYear(currentDate.getFullYear() - 18);
 
 
 const Reg: React.FC<RegProps> = ({

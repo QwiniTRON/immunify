@@ -21,7 +21,6 @@ const useStyles = makeStyles((theme) => ({
     },
 
     rootLink: {
-        margin: '8px 0',
         textDecoration: 'none',
         display: 'block',
 
@@ -54,19 +53,28 @@ const useStyles = makeStyles((theme) => ({
     },
 
     text: {
-        flexGrow: 1
+        flexGrow: 1,
+        marginRight: 10
     },
 
     title: {
         fontSize: 18,
-        fontWeight: 500
+        fontWeight: 500,
+
+        '@media (max-width: 340px)': {
+            fontSize: 14,
+        }
     },
 
     age: {
         fontSize: 18,
         fontWeight: 300,
         color: "#ACACAC",
-        display: 'flex'
+        display: 'flex',
+
+        '@media (max-width: 340px)': {
+            fontSize: 14,
+        }
     },
 
     active: {
@@ -134,10 +142,10 @@ export const UserCard: React.FC<UserCardProps> = ({
         <Link to={to} className={classes.rootLink}>
             <div className={classes.root}>
                 <div className={classes.content}>
-                    <div className={classes.avatarBlock}>
 
-                    </div>
+                    {/* текст */}
                     <div className={classes.text}>
+                        {/* имя */}
                         <p className={classes.title}>
                             <div className={sif({ [classes.indicator]: true, [classes.active]: Boolean(active) })} /> <span>{title}</span>
                         </p>
@@ -157,10 +165,9 @@ export const UserCard: React.FC<UserCardProps> = ({
                     </div>
 
                     {/* <AppCircleProgress progress={progress} isDone={progress == 100} /> */}
-                    <div className={sif({
-                        [classes.chooseButton]: true,
-                        [classes.chooseButton__active]: Boolean(active)
-                    })}>{active ? "Выбран" : "Выбрать"}</div>
+                    {!active &&
+                        <div className={classes.chooseButton}>Выбрать</div>
+                    }
                 </div>
             </div>
         </Link>
