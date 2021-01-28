@@ -62,23 +62,6 @@ const useStyels = makeStyles({
         fontSize: 18,
         fontWeight: 500
     },
-
-    line: {
-        display: 'flex',
-        alignItems: 'center',
-    },
-
-    icon: {
-        marginLeft: 'auto'
-    },
-
-    virusIcon: {
-        marginLeft: 'auto',
-        color: 'red',
-        fontSize: 16,
-        height: '2em',
-        width: '2em'
-    },
 });
 
 

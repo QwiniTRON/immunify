@@ -73,7 +73,7 @@ export const Profession: React.FC<ProfessionProps> = (props) => {
                     fullWidth
                     renderInput={(params) => <TextField
                         {...params}
-                        label="выбирите профессию"
+                        label="выберите профессию"
                         variant="outlined"
                         helperText={errors.profession}
                         error={Boolean(errors.profession)} />}

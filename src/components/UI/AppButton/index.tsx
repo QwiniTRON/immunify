@@ -43,6 +43,7 @@ const useStyles = makeStyles((theme) => ({
         textAlign: 'center',
         padding: 12
     }),
+
     floated: {
         position: 'fixed',
         top: 'calc(var(--full_height) - 130px)',
@@ -54,13 +55,23 @@ const useStyles = makeStyles((theme) => ({
         width: 'auto',
         display: 'inline-block',
 
-        '@supports (position: sticky) or (position: -webkit-sticky)': `
-            position: sticky;
-            bottom: 15px;
-            top: 0;
-            position: -webkit-sticky;
-            position: -moz-sticky;
-        `
+        '@supports (position: sticky)': {
+            position: 'sticky',
+            bottom: 15,
+            top: 0
+        },
+
+        '@supports (position: -webkit-sticky)': {
+            position: '-webkit-sticky',
+            bottom: 15,
+            top: 0
+        },
+
+        '@supports (position: -moz-sticky)': {
+            position: '-moz-sticky',
+            bottom: 15,
+            top: 0
+        },
     }
 }));
 

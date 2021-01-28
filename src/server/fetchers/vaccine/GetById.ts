@@ -5,10 +5,11 @@ type Request = {
 }
 
 type Vaccines = {
-  id: number,
-  name: string,
-  detailedShort: string,
-  detailedFull: string,
+  id: number
+  name: string
+  detailedShort: string
+  detailedFull: string
+  diseaseIds: number[]
 };
 
 export const GetVaccineById: FetchFunc<Request, Vaccines> = (client, request) =>

@@ -424,11 +424,9 @@ export const LastAppointment: React.FC<LastAppointmentProps> = (props) => {
     const params = new URLSearchParams();
     params.set('action', 'TEMPLATE');
     params.set('text', 'Запись на приём');
-    params.set('details', `Запись на приём в клинику${detail?.hospital.name}`);
+    params.set('details', `Запись на приём в клинику - ${detail?.hospital.name}`);
     params.set('location', `${"Москва"}`); // add hospital adress
     params.set('dates', `${dateToGoogle}/${dateToGoogle}`);
-
-
 
     window.open(googleType + params.toString());
   }

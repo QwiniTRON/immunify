@@ -15,16 +15,15 @@ import { GetDetailedDisease } from '../../server';
 import { AppLinkButton } from '../../components/UI/AppLinkButton';
 import { CircleLoader, CircleLoaderColors } from '../../components/UI/CircleLoader';
 import { MarkDown } from '../../components/MarkDown';
-import { GetVaccinationByPatient, PatientVaccinations, PatientVaccination, GetVaccines } from '../../server';
-import { Vaccination, VaccinationModel, VaccinationStatus } from '../../models/Vaccination';
+import { GetVaccinationByPatient, PatientVaccinations, GetVaccines } from '../../server';
+import { VaccinationModel, VaccinationStatus } from '../../models/Vaccination';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../store';
-import { Response } from '../../server/fetchers/disease/GetDetailed';
 import { Divider } from '../../components';
 import { s } from '../../utils';
 
 
-
+//#region types
 type DiseasRoutParams = {
     id: string
 }
@@ -47,6 +46,26 @@ type Diseas = {
     vaccines: Vaccine[],
 }
 
+type CorrectVaccinationData = {
+    vaccine: Vaccine
+    vaccination: {
+        id: number
+        name: string
+        detailed: string
+        passedStages: {
+            revaccination: boolean
+            stage: number
+            date: string
+            durationStartInMonths: number
+            durationEndInMonths: number
+        }[]
+        totalStages: number[]
+    }
+    vaccineStatus: VaccinationStatus
+}
+//#endregion
+
+//#region styles
 const useStyles = makeStyles((theme) => ({
     title: {
         fontSize: 24,
@@ -91,7 +110,11 @@ const useStyles = makeStyles((theme) => ({
     line: {
         display: 'flex',
         alignItems: 'center',
-        gap: '0 15px'
+        gap: '0 15px',
+
+        '@media (max-width: 354px)': {
+            fontSize: 16
+        }
     },
 
     subTitle: {
@@ -112,7 +135,11 @@ const useStyles = makeStyles((theme) => ({
         alignItems: 'center',
         wordBreak: 'break-all',
         color: '#acacac',
-        fontWeight: 300
+        fontWeight: 300,
+
+        '@media (max-width: 354px)': {
+            fontSize: 16
+        }
     },
 
     vaccineLine: {
@@ -134,8 +161,9 @@ const useStyles = makeStyles((theme) => ({
         backgroundColor: '#FF003D',
     }
 }));
+//#endregion
 
-
+//#region enums
 const StepEnum: { [p: string]: number } = {
     'red': 3,
     'yellow': 2,
@@ -144,22 +172,26 @@ const StepEnum: { [p: string]: number } = {
 const ColorsEnum: { [p: string]: string } = {
     '1': 'green',
     '2': 'yellow',
-    '3': 'red'
+    '3': 'red',
+    '4': 'green'
 }
 const TextsEnum: { [p: string]: string } = {
     '1': 'низкий',
     '2': 'средний',
-    '3': 'высокий'
+    '3': 'высокий',
+    '4': 'минимальный'
 }
 
-
 type RiskTableProps = {
-    personRisk: string
+    personRisk?: string
     professionalRisk: string
     regionalRisk: string
 }
+//#endregion
+
+//#region risktable
 const RiskTable: React.FC<RiskTableProps> = ({
-    personRisk,
+    personRisk = '4',
     professionalRisk,
     regionalRisk
 }) => {
@@ -206,6 +238,7 @@ const RiskTable: React.FC<RiskTableProps> = ({
         </div>
     );
 }
+//#endregion
 
 
 export const Diseas: React.FC<DiseasProps> = (props) => {
@@ -269,24 +302,14 @@ export const Diseas: React.FC<DiseasProps> = (props) => {
         vaccinesRequest.reload();
     }
 
+    // вакцины пройденные пациентом
+    let correctVaccines: CorrectVaccinationData[] = getCorrectVaccinations(vaccines, vaccinations, Number(diseasId));
 
-    let correctVaccines = [];
-
-    for (const vaccine of vaccines) {
-        const foundVaccination = vaccinations.find((vaccination) => vaccination.name == vaccine.name);
-
-        if (foundVaccination && vaccine.diseaseIds.includes(Number(diseasId))) correctVaccines.push({
-            vaccine,
-            vaccination: foundVaccination,
-            vaccineStatus: VaccinationModel.getVaccinationStatus(foundVaccination)
-        });
-    }
-    let newestVaccine = correctVaccines.sort((l, r) =>
-        StepEnum[r.vaccineStatus.statusColor as string] - StepEnum[r.vaccineStatus.statusColor as string]
-    )[0];
+    // самая последняя из пройденных вакцин
+    let newestVaccine = getNewestCorrectVaccination(correctVaccines);
 
     const isVaccined = Boolean(newestVaccine);
-    const personRisk = String(currentRisk?.risk);
+    const personRisk = currentRisk?.risk ? String(currentRisk?.risk) : undefined;
     const professionalRisk = String((currentRisk?.professionRisk ?? 0) + 1);
     const regionalRisk = String((currentRisk?.regionRisk ?? 0) + 1);
 
@@ -402,16 +425,52 @@ export const Diseas: React.FC<DiseasProps> = (props) => {
                 }
 
                 {/* кнопка записатся */}
-                    <AppLinkButton
-                        disabled={loading}
-                        to={{
-                            pathname: `/passport/take`,
-                            state: { type: 'diseas', data: diseas }
-                        }}
-                        floated
-                    > Записаться</AppLinkButton>
-                
+                <AppLinkButton
+                    disabled={loading}
+                    to={{
+                        pathname: `/passport/take`,
+                        state: { type: 'diseas', data: diseas }
+                    }}
+                    floated
+                > Записаться</AppLinkButton>
+
             </PageLayout>
         </Layout>
     );
 };
+
+
+/**
+ * вакцины пройденные пациентом
+ * 
+ * @param {Vaccine[]} vaccines все вакцины
+ * @param {PatientVaccinations} vaccinations пройденные вакцинации
+ * @param {number} diseasId id болезни
+ */
+function getCorrectVaccinations(vaccines: Vaccine[], vaccinations: PatientVaccinations, diseasId: number ) {
+    const resultVaccinatoins = [];
+
+    for (const vaccine of vaccines) {
+        const foundVaccination = vaccinations.find((vaccination) => vaccination.name == vaccine.name);
+
+        if (foundVaccination && vaccine.diseaseIds.includes(Number(diseasId))) resultVaccinatoins.push({
+            vaccine,
+            vaccination: foundVaccination,
+            vaccineStatus: VaccinationModel.getVaccinationStatus(foundVaccination)
+        });
+    }
+
+    return resultVaccinatoins;
+}
+
+/**
+ * получение самой крайней вакцинации
+ * 
+ * @param {CorrectVaccinationData[]} correctVaccines корректные вакцинации
+ */
+function getNewestCorrectVaccination(correctVaccines: CorrectVaccinationData[]) {
+    return correctVaccines.concat().sort((l, r) =>
+        StepEnum[r.vaccineStatus.statusColor as string] - StepEnum[r.vaccineStatus.statusColor as string]
+    )[0];
+}
+

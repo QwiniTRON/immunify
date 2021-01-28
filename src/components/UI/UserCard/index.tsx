@@ -60,6 +60,7 @@ const useStyles = makeStyles((theme) => ({
     title: {
         fontSize: 18,
         fontWeight: 500,
+        color: 'var(--textColor)',
 
         '@media (max-width: 340px)': {
             fontSize: 14,

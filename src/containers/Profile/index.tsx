@@ -66,7 +66,7 @@ export const Profile: React.FC<ProfileProps> = (props) => {
       <PageLayout className={sif({ ["profile-page"]: true, ['profile-page--nobackground']: Number(user?.family?.length) > 0 })}>
 
         <Box fontSize={24} fontWeight="500" p={1} component="h1">Список пользователей</Box>
-        <p className="family-page__description">Введите данные о членах вашей семьи, чтобы застраховать их от возможных осложнений</p>
+        <p className="family-page__description">Введите данные о членах вашей семьи, чтобы защитить их от возможных болезней</p>
 
         <Box className={classes.patientList}>
           <UserCard
