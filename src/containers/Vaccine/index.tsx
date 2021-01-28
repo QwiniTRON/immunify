@@ -10,7 +10,7 @@ import { BackButton } from '../../components/BackButton';
 import { Link, useHistory, useRouteMatch } from 'react-router-dom';
 import { useServer } from '../../hooks/useServer';
 import { AppLinkButton } from '../../components/UI/AppLinkButton';
-import { GetVaccineById, GetVaccinationByPatient, PatientVaccinations } from '../../server';
+import { GetVaccineById, GetVaccinationByPatient, PatientVaccinations, GetDiseases } from '../../server';
 import { CircleLoader } from '../../components/UI/CircleLoader';
 import { MarkDown } from '../../components/MarkDown';
 import { RootState } from '../../store';
@@ -18,6 +18,12 @@ import { useSelector } from 'react-redux';
 
 type VaccineRouteParams = {
   id: string
+}
+
+
+type Diseas = {
+  id: number
+  name: string
 }
 
 type VaccineProps = {}
@@ -43,13 +49,25 @@ const useStyles = makeStyles({
     borderRadius: 2,
     textAlign: 'center'
   },
+
+  linkDiseas: {
+    color: 'var(--textColor)',
+    display: 'inline-block',
+    padding: 5,
+    fontSize: 18,
+
+    '&:visited': {
+      color: 'currentColor'
+    }
+  }
 });
 
 type VaccineType = {
-  id: number,
-  name: string,
-  detailedShort: string,
-  detailedFull: string,
+  id: number
+  name: string
+  detailedShort: string
+  detailedFull: string
+  diseaseIds: number[]
 }
 
 export const Vaccine: React.FC<VaccineProps> = (props) => {
@@ -63,29 +81,42 @@ export const Vaccine: React.FC<VaccineProps> = (props) => {
     name: '',
     detailedFull: '',
     detailedShort: '',
+    diseaseIds: []
   });
   const [vaccinations, setVaccinations] = useState<PatientVaccinations>([]);
+  const [diseases, setDiseases] = useState<Diseas[]>([]);
 
+  const diseasRequest = useServer(GetDiseases);
   const fetcher = useServer(GetVaccineById);
   const vaccinationsRequest = useServer(GetVaccinationByPatient);
 
+
+  // запросы 
   useEffect(() => {
     fetcher.fetch({ id: Number(vaccineId) });
     vaccinationsRequest.fetch({
       patientId: Number(currentUser?.id)
     });
+    diseasRequest.fetch(undefined);
 
     return fetcher.cancel;
   }, []);
 
-  const loading = vaccinationsRequest.state.fetching || fetcher.state.fetching;
+  const loading = diseasRequest.state.fetching || vaccinationsRequest.state.fetching || fetcher.state.fetching;
   const success = !fetcher.state.fetching && fetcher.state.answer.succeeded;
   const vaccinationsSuccess = !vaccinationsRequest.state.fetching && vaccinationsRequest.state.answer.succeeded;
+  const successDiseas = !diseasRequest.state.fetching && diseasRequest.state.answer.succeeded;
 
 
   if (success) {
-    setVaccine(fetcher.state.answer.data!);
+    setVaccine(fetcher.state.answer.data! as VaccineType);
     fetcher.reload();
+  }
+
+  // пришли болезни
+  if (successDiseas) {
+    setDiseases(diseasRequest.state.answer.data as Diseas[]);
+    diseasRequest.reload();
   }
 
   // пришли вакцинации для пациента
@@ -109,6 +140,9 @@ export const Vaccine: React.FC<VaccineProps> = (props) => {
     ?.reduce((result: any, stage: any) => stage.date > result?.stage ? stage : result, currentVaccination?.passedStages?.[0])
     ?.date;
 
+  const relatedDiseases = diseases.filter(diseas => vaccine.diseaseIds.includes(diseas.id));
+
+  
   return (
     <Layout title="" BackButtonCustom={<BackButton simpleBack text="Вернуться к заболеванию" />}>
       <PageLayout>
@@ -152,6 +186,20 @@ export const Vaccine: React.FC<VaccineProps> = (props) => {
 
               <Box mb={2}>
                 <MarkDown md={vaccine.detailedFull} />
+              </Box>
+
+              {/* список связанных болезней */}
+              <Box>
+                Болезни:
+              </Box>
+              <Box>
+                {relatedDiseases.map(rd =>
+                (
+                  <div key={rd.id}>
+                    <Link className={classes.linkDiseas} to={`/passport/${rd.id}`}> {rd.name} </Link>
+                  </div>
+                ))
+                }
               </Box>
 
 
