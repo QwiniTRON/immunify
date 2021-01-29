@@ -39,11 +39,7 @@ const useStyels = makeStyles({
     subTitle: {
         fontSize: 16,
         fontWeight: 300,
-        color: '#999'
-    },
-
-    text: {
-        fontSize: 18,
+        color: '#acacac'
     },
 
     head: {
@@ -80,33 +76,30 @@ export const DiseasCard: React.FC<DiseasCardProps> = ({
     const classes = useStyels();
 
 
-    let shieldIcon = <ShieldNoneIcon className="icon" />;
+    let shieldIcon = <ShieldLowIcon className="icon" />;
     if (vaccination?.vaccinationStatus?.statusColor == "red") shieldIcon = <ShieldLowIcon className="icon" />;
     if (vaccination?.vaccinationStatus?.statusColor == "yellow") shieldIcon = <ShieldMedIcon className="icon" />;
     if (vaccination?.vaccinationStatus?.statusColor == "green") shieldIcon = <ShieldFullIcon className="icon" />;
 
 
     let riskStatus = Math.max(risk.risk, risk.regionRisk + 1, risk.regionRisk + 1);
-    let currentRisk = <div className="text">Низкий</div>;
-    if (riskStatus == 2) currentRisk = <div className="text">Средний</div>;
-    if (riskStatus == 3) currentRisk = <div className="text">Высокий</div>;
+    let currentRisk = 'Низкий';
+    if (riskStatus == 2) currentRisk = 'Средний';
+    if (riskStatus == 3) currentRisk = 'Высокий';
 
 
     let riskMarker = MarkersEnum[riskStatus];
 
 
     let vaccinationStatus = 'Отсутствует';
-    let saveMarker = 'text--red';
     if (vaccination?.vaccinationStatus?.statusColor == "red") {
         vaccinationStatus = "Истекла";
     }
     if (vaccination?.vaccinationStatus?.statusColor == "yellow") {
         vaccinationStatus = "Частичная";
-        saveMarker = "text--yellow";
     }
     if (vaccination?.vaccinationStatus?.statusColor == "green") {
         vaccinationStatus = "Полная";
-        saveMarker = "text--green";
     }
 
 
@@ -119,24 +112,18 @@ export const DiseasCard: React.FC<DiseasCardProps> = ({
                     <ArrowForwardIosIcon classes={{ root: classes.linkIcon }} />
                 </div>
 
-                <div className="line">
-                    <div>
+                <div>
+                    <div className="line">
                         <div className={classes.subTitle}>Риск заражения:</div>
 
-                        <div className={classes.text}>{currentRisk}</div>
+                        <div className={classes.subTitle}>Защита: </div>
                     </div>
 
-                    <div>
-                        <div className="diseas-card__def-text">Защита: </div>
+                    <div className="line">
+                        <div className="text"> <VirusIcon className="virusIcon" /> {currentRisk} </div>
 
-                        <div className={s(classes.text, saveMarker)}>{vaccinationStatus}</div>
+                        <div className="text">{vaccinationStatus} {shieldIcon}</div>
                     </div>
-                </div>
-
-                <div className="line">
-                    <VirusIcon className="virusIcon" />
-
-                    {shieldIcon}
                 </div>
             </Paper>
         </Link>

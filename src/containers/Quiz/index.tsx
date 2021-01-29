@@ -158,7 +158,7 @@ export const Quiz: React.FC<QuizProps> = (props) => {
 
     return (
         <Layout title="" BackButtonCustom={<BackButton to={pathToBack} text="Вернуться в профиль" />} >
-            <PageLayout className="quiz-page">
+            <PageLayout flex className="quiz-page">
                 <LinearProgress variant="determinate" value={quizProgress} />
                 {/* <p>вопрос {`${quiz.currentStep + 1}/${quizQuestions.length}`}</p> */}
                 {/* {isNotCurrentAnswer && (<p className={classes.notice}>ответьте на этот вопрос</p>)} */}

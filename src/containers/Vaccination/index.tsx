@@ -123,6 +123,8 @@ export const Vaccination: React.FC<VaccinationProps> = (props) => {
                 </>
             }
 
+            <Box mb={2} />
+
             <AppLinkButton to="/vaccination/add" floated appColor="linear">
               Добавить
             </AppLinkButton>

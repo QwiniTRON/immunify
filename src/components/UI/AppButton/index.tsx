@@ -9,6 +9,7 @@ export type AppButtonProps = {
     [p: string]: any
     floated?: boolean
     appColor?: 'linear' | 'white'
+    minWidth?: boolean
 }
 
 const ButtonColors = {
@@ -44,6 +45,10 @@ const useStyles = makeStyles((theme) => ({
         padding: 12
     }),
 
+    minWidth: {
+        minWidth: 160
+    },
+
     floated: {
         position: 'fixed',
         top: 'calc(var(--full_height) - 130px)',
@@ -71,7 +76,7 @@ const useStyles = makeStyles((theme) => ({
             position: '-moz-sticky',
             bottom: 15,
             top: 0
-        },
+        }
     }
 }));
 
@@ -83,7 +88,11 @@ export const AppButton: React.FC<AppButtonProps> = (props) => {
             color="primary"
             variant="contained"
             classes={{
-                root: sif({ [classes.root]: true, [classes.floated]: Boolean(props.floated) })
+                root: sif({
+                    [classes.root]: true,
+                    [classes.floated]: Boolean(props.floated),
+                    [classes.minWidth]: Boolean(props.minWidth)
+                })
             }}
             className='app-button'
             {...props}>

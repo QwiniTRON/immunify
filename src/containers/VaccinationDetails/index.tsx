@@ -28,7 +28,7 @@ const useStyles = makeStyles({
   stageIcon: {
     width: 40,
     height: 40,
-    backgroundColor: '#9BC83F',
+    backgroundColor: 'var(--accentColor)',
     color: 'white',
     lineHeight: '35px',
     textAlign: 'center',
@@ -187,6 +187,8 @@ export const VaccinationDetails: React.FC<VaccinationDetailsProps> = (props) => 
           <Box fontSize={24} fontWeight={500}>
             {vaccination?.name}
           </Box>
+
+          {/* <Link to={`/passport/vaccine/${vaccination?.vaccineId}`}></Link> */}
 
           <Box marginY={1}>
             <MarkDown md={vaccination?.detailedShort ?? ''} />

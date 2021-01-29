@@ -125,9 +125,9 @@ const App: React.FC<AppProps> = function ({
     window.addEventListener("beforeinstallprompt", (e) => {
       e.preventDefault();
 
-      a2hsPrompt.current = e;
-
       if(!Boolean(a2hsPrompt.current)) seta2hsBunner(true);
+      
+      a2hsPrompt.current = e;
     });
 
 

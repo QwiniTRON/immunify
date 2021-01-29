@@ -36,6 +36,7 @@ import { GetVisitById } from '../../server/fetchers/hospitalVisit/GetById';
 import { DeleteVisit } from '../../server/fetchers/hospitalVisit';
 import { UpdateVisit } from '../../server/fetchers/hospitalVisit/Update';
 import { CircleLoader } from '../../components/UI/CircleLoader';
+import { GetDetailedHospital } from '../../server';
 
 
 type LastAppointmentProps = {}
@@ -51,6 +52,15 @@ type AppointmentDetail = {
     id: number
     name: string
   }
+}
+
+type ClinicDetailed = {
+  latitude: string
+  longitude: string
+  address: string,
+  id: number
+  name: string
+  regionName: string
 }
 
 //#region стили
@@ -298,13 +308,19 @@ export const LastAppointment: React.FC<LastAppointmentProps> = (props) => {
   const appointmentId = useRouteMatch<LastAppointmentParams>().params.id;
 
   const appointmentDetailReq = useServer(GetVisitById);
-  const loading = appointmentDetailReq.state.fetching;
-  const success = !loading && appointmentDetailReq.state.answer.succeeded;
+  const success = !appointmentDetailReq.state.fetching && appointmentDetailReq.state.answer.succeeded;
   const [detail, setDetail] = useState<AppointmentDetail | null>(null);
+  const [hospital, setHospital] = useState<ClinicDetailed | null>(null);
 
   const redirectTimer = useRef<any>(null);
 
   const [calendarOpen, setCalendarOpen] = useState<any>(null);
+
+  const clinicReq = useServer(GetDetailedHospital);
+  const loadingClinic = clinicReq.state.fetching;
+  const successClinic = !loadingClinic && clinicReq.state.answer.succeeded;
+
+  const loading = appointmentDetailReq.state.fetching || loadingClinic;
 
   const deleteReq = useServer(DeleteVisit);
   const loadingDelete = deleteReq.state.fetching;
@@ -381,7 +397,7 @@ export const LastAppointment: React.FC<LastAppointmentProps> = (props) => {
       duration: { hours: 1, minutes: 30 },
       title: 'Запись на приём',
       description: `Запись на приём в больницу ${detail?.hospital.name}`,
-      location: 'Москва',
+      location: hospital?.address,
       // geo: { lat: 40.0095, lon: 105.2669 },
       categories: ['medicine'],
       status: 'CONFIRMED',
@@ -425,7 +441,7 @@ export const LastAppointment: React.FC<LastAppointmentProps> = (props) => {
     params.set('action', 'TEMPLATE');
     params.set('text', 'Запись на приём');
     params.set('details', `Запись на приём в клинику - ${detail?.hospital.name}`);
-    params.set('location', `${"Москва"}`); // add hospital adress
+    params.set('location', `${hospital?.address}`); // add hospital adress
     params.set('dates', `${dateToGoogle}/${dateToGoogle}`);
 
     window.open(googleType + params.toString());
@@ -452,6 +468,12 @@ export const LastAppointment: React.FC<LastAppointmentProps> = (props) => {
     }
   }, [success]);
 
+  // информация по клинике
+  useEffect(() => {
+    if (detail) {
+      clinicReq.fetch({ id: Number(detail.hospital.id) });
+    }
+  }, [detail]);
 
   // успешное удаление визита
   useEffect(() => {
@@ -486,6 +508,10 @@ export const LastAppointment: React.FC<LastAppointmentProps> = (props) => {
     );
   }
 
+  if (successClinic) {
+    setHospital(clinicReq.state.answer.data as ClinicDetailed);
+    clinicReq.reload();
+  }
 
   // если визит был обновлён, показываем вставку для обновления
   if (successUpdate) {
@@ -495,6 +521,7 @@ export const LastAppointment: React.FC<LastAppointmentProps> = (props) => {
   }
 
   const isExpired = (Date.parse(detail?.date ?? '') - Date.now()) < 0;
+
 
   return (
     <Layout title="" BackButtonCustom={<BackButton text="Вернуться к списку записей" to={`/calendar`} />}>
@@ -517,7 +544,7 @@ export const LastAppointment: React.FC<LastAppointmentProps> = (props) => {
 
           <Box mt={1}>
             <Box>
-              <ApartmentIcon fontSize="large" className={classes.phoneIcon} /> Москва
+              <ApartmentIcon fontSize="large" className={classes.phoneIcon} /> {hospital?.address}
             </Box>
             <Box>
               <CallIcon color="primary" fontSize="large" className={classes.phoneIcon} /> <a className={classes.callLink} href={`tel:+${74953428501}`}>+7 (495) 342-85-01</a>

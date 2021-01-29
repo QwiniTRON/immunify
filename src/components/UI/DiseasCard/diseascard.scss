@@ -4,22 +4,27 @@
     align-items: center;
     justify-content: space-between;
     margin: 10px 0;
+    gap: 0 10px;
   }
 
   .icon {
-    font-size: 20px;
+    font-size: 14px;
     height: 2em;
     width: 2em;
     margin: 0 5px;
+    display: inline-block;
+    vertical-align: middle;
   }
 
   .virusIcon {
-    color: rgb(180, 0, 0);
+    color: #FF003D;
     stroke: #000;
     font-size: 12px;
     height: 2em;
     width: 2em;
     margin: 0 5px;
+    display: inline-block;
+    vertical-align: middle;
   }
 
   .text {
@@ -41,37 +46,18 @@
     font-weight: 300;
     color: "#999";
   }
+}
 
-  &.red {
-    .virusIcon {
-      font-size: 20px;
-    }
-
-    .text {
-      color: #ed1c24;
-    }
+.diseas-card.red {
+}
+.diseas-card.yellow {
+  .virusIcon {
+    color: #ffb800;
   }
-
-  &.yellow {
-    .virusIcon {
-      font-size: 16px;
-      color: #ff6666;
-      stroke: none;
-    }
-
-    .text {
-      color: #ffb800;
-    }
-  }
-
-  &.green {
-    .virusIcon {
-      color: #ffcccc;
-      stroke: none;
-    }
-
-    .text {
-      color: #3bcf1a;
-    }
+}
+.diseas-card.green {
+  .virusIcon {
+    color: #3bcf1a;
+    stroke: none;
   }
 }

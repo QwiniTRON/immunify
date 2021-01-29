@@ -23,6 +23,7 @@ type LayoutProps = {
     domainPage?: boolean
     clearScroll?: boolean
     background?: boolean
+    toolMenu?: React.ReactElement
 }
 
 const useStyles = makeStyles((theme) => ({
@@ -64,6 +65,7 @@ export const Layout: React.FC<LayoutProps> = ({
     BackButtonCustom,
     domainPage,
     clearScroll,
+    toolMenu,
     background
 }) => {
     const classes = useStyles();
@@ -81,6 +83,7 @@ export const Layout: React.FC<LayoutProps> = ({
             [classes.layout]: true,
             [classes.layout__hideNav]: Boolean(hideNav)
         })}>
+            {/* header */}
             {!hideHeader &&
                 <header className={sif({
                     ["layout__header"]: true,
@@ -98,7 +101,7 @@ export const Layout: React.FC<LayoutProps> = ({
                 </header>}
 
 
-
+            {/* content */}
             <main
                 className={
                     sif({
@@ -111,6 +114,10 @@ export const Layout: React.FC<LayoutProps> = ({
                 {children}
             </main>
 
+            {/* подменю */}
+            {toolMenu}
+
+            {/* navigation */}
             {!hideNav &&
                 <div className="layout__navigation">
                     <BottomNavigation

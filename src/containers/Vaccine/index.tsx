@@ -15,6 +15,7 @@ import { CircleLoader } from '../../components/UI/CircleLoader';
 import { MarkDown } from '../../components/MarkDown';
 import { RootState } from '../../store';
 import { useSelector } from 'react-redux';
+import { SubMenuContainer } from '../../components';
 
 type VaccineRouteParams = {
   id: string
@@ -142,9 +143,27 @@ export const Vaccine: React.FC<VaccineProps> = (props) => {
 
   const relatedDiseases = diseases.filter(diseas => vaccine.diseaseIds.includes(diseas.id));
 
-  
+
+  // кнопка записатся
+  const subMenu =
+    (
+      <SubMenuContainer>
+        <AppLinkButton
+          minWidth
+          to={
+            { pathname: '/passport/take', state: { type: 'vaccine', data: vaccine } }
+          } className={classes.linkButton}
+          disabled={loading}>
+          Записаться
+        </AppLinkButton>
+      </SubMenuContainer>
+    );
+
   return (
-    <Layout title="" BackButtonCustom={<BackButton simpleBack text="Вернуться к заболеванию" />}>
+    <Layout
+      title=""
+      BackButtonCustom={<BackButton simpleBack text="Вернуться к заболеванию" />}
+      toolMenu={subMenu}>
       <PageLayout>
 
         <Box p="15px">
@@ -213,15 +232,6 @@ export const Vaccine: React.FC<VaccineProps> = (props) => {
           }
 
         </Box>
-
-
-        <AppLinkButton to={
-          { pathname: '/passport/take', state: { type: 'vaccine', data: vaccine } }
-        } className={classes.linkButton}
-          disabled={loading}
-          floated>
-          Записаться
-        </AppLinkButton>
 
       </PageLayout>
     </Layout >

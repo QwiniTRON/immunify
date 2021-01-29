@@ -83,7 +83,7 @@ const PassportPlaceholder: React.FC<any> = (props) => {
                 Недостаточно данных
             </Box>
 
-            <Box m="0 auto" width={0.8} mt={1}>
+            <Box m="0 auto" width={0.8} mt={1} mb={2}>
                 Заполните данные о себе, чтобы изучить личный иммунный паспорт
             </Box>
 
@@ -209,7 +209,7 @@ export const Passport: React.FC<PassportProps> = (props) => {
 
                     {!compleatedStatus && !loading && <PassportPlaceholder />}
 
-                    {/* {compleatedStatus && !loading &&
+                    {/* фильтр {compleatedStatus && !loading &&
                         <>
                             <Box fontSize={24} fontWeight={500}>Риски</Box>
 

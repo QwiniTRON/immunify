@@ -219,7 +219,7 @@ export const Appointment: React.FC<AppointmentProps> = (props) => {
 
             <Box mt={1}>
               <Box>
-                <ApartmentIcon fontSize="large" className={classes.phoneIcon} /> {clinicDetails?.regionName}
+                <ApartmentIcon fontSize="large" className={classes.phoneIcon} /> {clinicDetails?.address}
               </Box>
               <Box>
                 <CallIcon fontSize="large" className={classes.phoneIcon} /> <a className={classes.callLink} href={`tel:+${74953428501}`}>+7 (495) 342-85-01</a>

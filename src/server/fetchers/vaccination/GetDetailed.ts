@@ -10,6 +10,7 @@ export type DetailedVaccinationType = {
   detailedShort: string,
   stages: DetailedVaccinationStageType[],
   totalStages:DetailedVaccinationStageTotalType[]
+  vaccineId: number
 };
 
 type DetailedVaccinationStageType = {

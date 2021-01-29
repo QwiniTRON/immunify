@@ -20,16 +20,14 @@ const useStyles = makeStyles({
     
     floated: {
         position: 'fixed',
-        bottom: 65,
+        bottom: 'var(--navigationMenuHeight)',
         left: 0,
         right: 0,
         maxWidth: 600,
         margin: '0 auto',
         zIndex: 10,
-
-        ['@media (max-height:319px)']: {
-            bottom: 15
-        }
+        backgroundColor: '#fff',
+        boxShadow: '0 -8px 11px -8px #666'
     }
 });
 

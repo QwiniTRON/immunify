@@ -19,7 +19,7 @@ import { GetVaccinationByPatient, PatientVaccinations, GetVaccines } from '../..
 import { VaccinationModel, VaccinationStatus } from '../../models/Vaccination';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../store';
-import { Divider } from '../../components';
+import { AppButtonGroup, Divider, SubMenuContainer } from '../../components';
 import { s } from '../../utils';
 
 
@@ -251,14 +251,16 @@ export const Diseas: React.FC<DiseasProps> = (props) => {
 
     const [vaccinations, setVaccinations] = useState<PatientVaccinations>([]);
     const [vaccines, setVaccines] = useState<Vaccine[]>([]);
-
-    const diseasReq = useServer(GetDetailedDisease);
-    const success = !diseasReq.state.fetching && diseasReq.state.answer.succeeded;
     const [diseas, setDiseas] = useState<Diseas | null>(null);
 
+    // запросы
+    const diseasReq = useServer(GetDetailedDisease);
     const vaccinationsRequest = useServer(GetVaccinationByPatient);
     const vaccinesRequest = useServer(GetVaccines);
+
+    // статусы
     const loading = vaccinationsRequest.state.fetching || vaccinesRequest.state.fetching || diseasReq.state.fetching;
+    const success = !diseasReq.state.fetching && diseasReq.state.answer.succeeded;
     const vaccinationsRequestSuccess = !vaccinationsRequest.state.fetching && vaccinationsRequest.state.answer.succeeded;
     const vaccinesRequestSuccess = !vaccinesRequest.state.fetching && vaccinesRequest.state.answer.succeeded;
 
@@ -325,8 +327,26 @@ export const Diseas: React.FC<DiseasProps> = (props) => {
     );
 
 
+    // кнопка записатся
+    const subMenu =
+        (
+            <SubMenuContainer>
+                <AppLinkButton
+                    minWidth
+                    disabled={loading}
+                    to={{
+                        pathname: `/passport/take`,
+                        state: { type: 'diseas', data: diseas }
+                    }}
+                > Записаться</AppLinkButton>
+            </SubMenuContainer>
+        );
+
     return (
-        <Layout title="" BackButtonCustom={<BackButton text="Вернуться к иммунному паспорту" />} >
+        <Layout
+            title=""
+            BackButtonCustom={<BackButton text="Вернуться к иммунному паспорту" />}
+            toolMenu={subMenu}>
             <PageLayout className="diseas-page">
 
                 {loading && <Box textAlign="center"><CircleLoader color={CircleLoaderColors.linear} /></Box>}
@@ -343,6 +363,7 @@ export const Diseas: React.FC<DiseasProps> = (props) => {
                                 <div className={classes.vaccinedNotice}>Я привит</div>
                             }
 
+                            {/* переход на readyPage */}
                             {!isVaccined &&
                                 <IconButton
                                     classes={{ label: classes.menuButton }}
@@ -423,17 +444,6 @@ export const Diseas: React.FC<DiseasProps> = (props) => {
                         </Box>
                     </Box>
                 }
-
-                {/* кнопка записатся */}
-                <AppLinkButton
-                    disabled={loading}
-                    to={{
-                        pathname: `/passport/take`,
-                        state: { type: 'diseas', data: diseas }
-                    }}
-                    floated
-                > Записаться</AppLinkButton>
-
             </PageLayout>
         </Layout>
     );
@@ -447,7 +457,7 @@ export const Diseas: React.FC<DiseasProps> = (props) => {
  * @param {PatientVaccinations} vaccinations пройденные вакцинации
  * @param {number} diseasId id болезни
  */
-function getCorrectVaccinations(vaccines: Vaccine[], vaccinations: PatientVaccinations, diseasId: number ) {
+function getCorrectVaccinations(vaccines: Vaccine[], vaccinations: PatientVaccinations, diseasId: number) {
     const resultVaccinatoins = [];
 
     for (const vaccine of vaccines) {
