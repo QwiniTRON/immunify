@@ -60,7 +60,6 @@ const useStyles = makeStyles((theme) => ({
         zIndex: 1,
         left: '50%',
         transform: 'translateX(-50%)',
-        minWidth: 160,
         width: 'auto',
         display: 'inline-block',
 

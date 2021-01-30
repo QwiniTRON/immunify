@@ -226,7 +226,7 @@ export const Layout: React.FC<LayoutProps> = ({
                         <Box fontSize={24} fontWeight={500}> {mainUser?.email} </Box>
 
                         <div className="links">
-                            <Link to="#" className="links__link" onClick={setAsideMenu.bind(null, false)}>
+                            <Link to="/about" className="links__link" onClick={setAsideMenu.bind(null, false)}>
                                 <InfoIcon className="links__icon" /> <span>О приложении</span>
                             </Link>
 

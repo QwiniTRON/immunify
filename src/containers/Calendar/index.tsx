@@ -109,7 +109,8 @@ export const Calendar: React.FC<CalendarProps> = (props) => {
                             pathname: `/passport/take`
                         }}
                         appColor="linear"
-                        className={classes.takeButton}
+                        floated
+                        minWidth
                     > Записаться
                     </AppLinkButton>
                 </Box>

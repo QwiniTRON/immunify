@@ -23,6 +23,7 @@ import { Appointment } from '../containers/Appointment';
 import { Quiz } from '../containers/Quiz';
 import { Profession } from '../containers/Profession';
 import { Region } from '../containers/Region';
+import { About } from '../containers/About';
 
 type AppRoutesProps = {
   isUserData: boolean
@@ -78,6 +79,12 @@ export const AppRoutes: React.FC<AppRoutesProps> = ({ isUserData, location }) =>
       <Route path={`/passport`} exact>
         <ApplicationSecure>
           <Passport />
+        </ApplicationSecure>
+      </Route>
+
+      <Route path={`/about`} exact>
+        <ApplicationSecure>
+          <About />
         </ApplicationSecure>
       </Route>
 

@@ -87,7 +87,7 @@ const PassportPlaceholder: React.FC<any> = (props) => {
                 Заполните данные о себе, чтобы изучить личный иммунный паспорт
             </Box>
 
-            <AppLinkButton to={`/profile`} appColor="linear" floated>
+            <AppLinkButton to={`/profile`} appColor="linear" floated minWidth>
                 Добавить
             </AppLinkButton>
         </Box>
