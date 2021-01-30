@@ -10,6 +10,7 @@ import {
 import { Sex, User, UserAction, UserData } from '../types';
 import { UserModel } from '../../models/User';
 import { eyars18 } from '../../utils';
+import { AppModel } from '../../models/App';
 
 
 //  ***************************
@@ -95,6 +96,13 @@ export function setCurrentUser(member: User): UserAction {
  */
 export function login() {
     return async function (dispatch: Function, getState: Function) { }
+}
+
+export function exit () {
+    return async function (dispatch: Function, getState: Function) { 
+        dispatch(clearUserStore());
+        AppModel.clearAppData();
+    }
 }
 
 

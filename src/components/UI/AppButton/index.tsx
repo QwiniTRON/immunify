@@ -46,7 +46,11 @@ const useStyles = makeStyles((theme) => ({
     }),
 
     minWidth: {
-        minWidth: 160
+        minWidth: 160,
+
+        '@media (max-width: 350px)': {
+            minWidth: 120
+        }
     },
 
     floated: {

@@ -5,12 +5,13 @@ import { makeStyles } from '@material-ui/core/styles';
 import BottomNavigation from '@material-ui/core/BottomNavigation';
 import BottomNavigationAction from '@material-ui/core/BottomNavigationAction';
 import { Link, useHistory, useLocation } from 'react-router-dom';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import Box from '@material-ui/core/Box';
 import { ReactComponent as InfoIcon } from '../../assets/info.svg';
 import { ReactComponent as ExitIcon } from '../../assets/exit.svg';
 import MenuIcon from '@material-ui/icons/Menu';
 import IconButton from '@material-ui/core/IconButton';
+import { CSSTransition } from 'react-transition-group';
 
 import "./Layout.scss";
 
@@ -19,6 +20,11 @@ import { RootState } from '../../store';
 import { BackButton } from '../BackButton';
 import { sif } from '../../utils/Styels';
 import { FamilyIcon, DoneIcon, ListIcon, PasportIcon } from '../../components/UI/Icons/Icons';
+import { AppModal } from '../UI/AppModal';
+import { AppButton } from '../UI';
+import { exit } from '../../store/user/action';
+import { useAccessToken } from '../../hooks';
+
 
 type LayoutProps = {
     title: string
@@ -75,18 +81,24 @@ export const Layout: React.FC<LayoutProps> = ({
     background
 }) => {
     const classes = useStyles();
+
+    const dispatch = useDispatch();
     const history = useHistory();
+    const {set: setToken} = useAccessToken();
+
     const locationData = useLocation();
     const currentUser = useSelector((state: RootState) => state.user.currentUser);
     const mainUser = useSelector((state: RootState) => state.user.user);
+
     const [asideMenu, setAsideMenu] = useState(false);
+    const [exitModal, setExitModal] = useState(false);
 
     // определяем в какой мы находимся сущности(разделе)
     const parentRoute = '/' + locationData.pathname.split('/')[1];
 
     // handle back click
     useEffect(() => {
-        const toggleAsideMenu = (e: Event) => {setAsideMenu(false)};
+        const toggleAsideMenu = (e: Event) => { setAsideMenu(false) };
 
         window.addEventListener('popstate', toggleAsideMenu);
 
@@ -94,6 +106,12 @@ export const Layout: React.FC<LayoutProps> = ({
             window.removeEventListener('popstate', toggleAsideMenu);
         }
     }, []);
+
+
+    const exitHandle = () => {
+        dispatch(exit());
+        setToken("");
+    }
 
 
     return (
@@ -212,14 +230,26 @@ export const Layout: React.FC<LayoutProps> = ({
                                 <InfoIcon className="links__icon" /> <span>О приложении</span>
                             </Link>
 
-                            <Link to="#" className="links__link" onClick={setAsideMenu.bind(null, false)}>
+                            <div className="links__link" onClick={() => setExitModal(true)}>
                                 <ExitIcon className="links__icon" /> <span>Выход</span>
-                            </Link>
+                            </div>
                         </div>
                     </div>
 
                 </div>
             }
+
+            {/* модальное окно предложения выйти */}
+            <CSSTransition timeout={300} in={exitModal} classNames="fade" mountOnEnter unmountOnExit>
+                <AppModal onClose={setExitModal.bind(null, false)}>
+                    <Box component="h2" textAlign="center" >выйти из аккаунта?</Box>
+
+                    <Box display="flex" justifyContent="space-between" mt={5}>
+                        <AppButton minWidth onClick={() => exitHandle()}>да</AppButton>
+                        <AppButton minWidth appColor="white" onClick={setExitModal.bind(null, false)}>нет</AppButton>
+                    </Box>
+                </AppModal>
+            </CSSTransition>
 
         </div>
     );

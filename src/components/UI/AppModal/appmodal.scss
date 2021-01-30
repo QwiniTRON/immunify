@@ -1,0 +1,46 @@
+.app-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: 50px 10px;
+  overflow-y: auto;
+  z-index: var(--modalZI, 25);
+  display: flex;
+  place-items: center;
+
+  .app-modal__overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.4);
+
+    cursor: pointer;
+  }
+
+  .app-modal__content {
+    position: relative;
+    min-width: 280px;
+    width: 80vh;
+    max-width: 580px;
+    padding: 10px;
+    padding-top: 30px;
+
+    background-color: #fff;
+    border-radius: 5px;
+    margin: auto;
+  }
+
+  .app-modal__closer {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+
+    font-size: 32px;
+    color: #acacac;
+    cursor: pointer;
+  }
+}
