@@ -1,13 +1,12 @@
-import React, { FC } from 'react';
+import React, { FC, useEffect } from 'react';
 import googlelogo from '../../assets/google.png';
 import vklogo from '../../assets/vk.png';
 import facebooklogo from '../../assets/facebook.png';
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 
 import { useForm } from 'react-hook-form';
 
 import { useServer } from '../../hooks/useServer';
-import { useAccessToken } from '../../hooks/useAccessToken';
 
 import { GoogleLogin, GoogleLoginResponse, GoogleLoginResponseOffline } from 'react-google-login';
 import FacebookLogin from 'react-facebook-login/dist/facebook-login-render-props';
@@ -20,6 +19,8 @@ import {
 } from '../../server';
 
 import './loginpage.scss';
+import { UserModel } from '../../models/User';
+import { useAccessToken } from '../../hooks';
 
 type Form = {
   username: string,
@@ -27,6 +28,7 @@ type Form = {
 }
 
 export const LoginPage: FC = () => {
+  const history = useHistory();
   const loginFetcher = useServer(Login);
   const externalLoginFetcher = useServer(ExternalLogin);
   const { set: setToken } = useAccessToken();
@@ -35,6 +37,7 @@ export const LoginPage: FC = () => {
     register,
     handleSubmit,
     errors,
+    getValues
   } = useForm<Form>();
 
   const onSubmit = (data: Form) => {
@@ -49,16 +52,22 @@ export const LoginPage: FC = () => {
   const successExternal = !loading && externalLoginFetcher.state.answer.succeeded;
 
   const error = !loading && (loginFetcher.state.answer.errorMessage || externalLoginFetcher.state.answer.errorMessage || "");
+  
 
   if (successLogin) {
+    UserModel.CurrentUserEmail = getValues().username;
+    UserModel.chekUserEmail();
+    
     setToken(loginFetcher.state.answer.data?.token || "");
-    window.location.href = "/profile";
+
     loginFetcher.reload();
   }
 
   if (successExternal) {
+    UserModel.chekUserEmail();
+
     setToken(externalLoginFetcher.state.answer.data?.token || "");
-    window.location.href = "/profile";
+
     externalLoginFetcher.reload();
   }
 
@@ -69,6 +78,8 @@ export const LoginPage: FC = () => {
     }
 
     if (isGoogleResponse(response)) {
+      UserModel.CurrentUserEmail = response.profileObj.email;
+
       externalLoginFetcher.fetch({
         externalAuth: ExternalAuth.Google,
         identity: response.googleId,
@@ -83,6 +94,8 @@ export const LoginPage: FC = () => {
 
   const facebookCallback = (userInfo: any): void => {
     if (userInfo.userID !== undefined) {
+      UserModel.CurrentUserEmail = userInfo.email;
+
       externalLoginFetcher.fetch({
         externalAuth: ExternalAuth.Facebook,
         identity: userInfo.userID,
@@ -92,6 +105,8 @@ export const LoginPage: FC = () => {
 
   const vkCallback = (userInfo: any): void => {
     if (userInfo.session !== undefined) {
+      UserModel.CurrentUserEmail = userInfo.session.user.email;
+
       externalLoginFetcher.fetch({
         externalAuth: ExternalAuth.VK,
         identity: userInfo.session.user.id,

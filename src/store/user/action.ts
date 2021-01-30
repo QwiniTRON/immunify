@@ -4,7 +4,8 @@ import {
     USER_ADD_MEMBER,
     USER_SET_CURRENT_USER,
     USER_UPDATE_BY_NAME,
-    USER_SET_DATA
+    USER_SET_DATA,
+    USER_CLEAR
 } from '../consts';
 import { Sex, User, UserAction, UserData } from '../types';
 import { UserModel } from '../../models/User';
@@ -24,6 +25,12 @@ export function setUser(user: User): UserAction {
     return {
         type: USER_SET_USER,
         user
+    }
+}
+
+export function clearUserStore(): UserAction {
+    return {
+        type: USER_CLEAR
     }
 }
 
@@ -87,7 +94,7 @@ export function setCurrentUser(member: User): UserAction {
  * login
  */
 export function login() {
-    return async function (dispatch: Function, getState: Function) {}
+    return async function (dispatch: Function, getState: Function) { }
 }
 
 
@@ -99,9 +106,9 @@ export function login() {
  * @param {Sex} sex пол
  * @param {string} id id из базы
  */
-export function register(name: string, age: number, sex: Sex, id: string) {
+export function register(name: string, age: number, sex: Sex, email: string, id: string) {
     return async function (dispatch: Function, getState: Function) {
-        const user: User = new User(name, age, sex, undefined, undefined, undefined, id);
+        const user: User = new User(name, age, sex, undefined, undefined, undefined, email, id);
 
         UserModel.saveUser(user);
         dispatch(setUser(user));
@@ -121,15 +128,15 @@ export function register(name: string, age: number, sex: Sex, id: string) {
  */
 export function addMember(name: string, age: number, sex: Sex, id: string) {
     return async function (dispatch: Function, getState: Function) {
-        
+
         let state: RootState = getState();
 
         // добавляем в store нового члена семьи
         let userData: UserData | undefined = undefined;
-        if(Date.now() - age < eyars18 ) {
+        if (Date.now() - age < eyars18) {
             userData = new UserData(undefined, state.user.user?.data?.region, undefined);
         }
-        const newMember = new User(name, age, sex, undefined, userData, undefined, id)
+        const newMember = new User(name, age, sex, undefined, userData, undefined, undefined, id)
         dispatch(addNewMember(newMember));
 
         // обновляем localeStorage пользователя
@@ -232,6 +239,8 @@ export function userInit() {
 
                 return true;
             } else {
+                dispatch(clearUserStore());
+
                 return false;
             }
         } catch (err) {

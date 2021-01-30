@@ -11,15 +11,18 @@ import './styles/index.scss';
 import { mainTheme } from './styles/Theme';
 import { store } from "./store";
 import { AppRouter } from './router';
+import { AppAccessTokenProvider } from './hooks';
 
 
 ReactDOM.render(
   <Provider store={store}>
-    <AppRouter>
-      <ThemeProvider theme={mainTheme}>
-        <App />
-      </ThemeProvider>
-    </AppRouter>
+    <ThemeProvider theme={mainTheme}>
+      <AppRouter>
+        <AppAccessTokenProvider>
+          <App />
+        </AppAccessTokenProvider>
+      </AppRouter>
+    </ThemeProvider>
   </Provider>,
   document.getElementById('root')
 );

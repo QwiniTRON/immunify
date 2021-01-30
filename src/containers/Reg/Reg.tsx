@@ -22,9 +22,10 @@ import { CreatePatient } from '../../server';
 import { useServer } from '../../hooks/useServer';
 import { appDataInit } from '../../store/appData/action';
 
-import { useAccessToken } from '../../hooks/useAccessToken';
+import { useAccessToken } from '../../hooks/';
 import { Divider } from '../../components';
 import { eyars18 } from '../../utils';
+import { UserModel } from '../../models/User';
 
 
 type RegProps = {
@@ -88,7 +89,7 @@ const Reg: React.FC<RegProps> = ({
 
     useLayoutEffect(() => {
         if (success) {
-            register(name, selectedDate?.getTime(), sex, addReq.state?.answer?.data?.id)
+            register(name, selectedDate?.getTime(), sex, UserModel.CurrentUserEmail, addReq.state?.answer?.data?.id)
                 .then(() => {
                     history.push(`/profile/${name.trim()}`);
                 });

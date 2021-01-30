@@ -61,7 +61,7 @@ export const BackButton: React.FC<BackButtonProps> = ({
         )
     }
 
-    if (pathToBack == '/' && !Boolean(to)) return (<SubstituteComponent></SubstituteComponent>);
+    if (pathToBack == '/' && !Boolean(to)) return (null);
 
     return (
         <Link to={to || pathToBack} className={classes.root}>

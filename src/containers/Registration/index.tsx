@@ -7,7 +7,7 @@ import { GoogleLogin, GoogleLoginResponse, GoogleLoginResponseOffline } from 're
 import FacebookLogin from 'react-facebook-login/dist/facebook-login-render-props';
 
 import { useServer } from '../../hooks/useServer';
-import { useAccessToken } from '../../hooks/useAccessToken';
+import { useAccessToken } from '../../hooks/';
 
 import { Register, ExternalRegister, ExternalAuth } from '../../server';
 
@@ -15,6 +15,7 @@ import './Registration.scss';
 import { useForm } from 'react-hook-form';
 import { GeneratePassword } from '../../utils';
 import VkLogin from 'react-vkontakte-login';
+import { UserModel } from '../../models/User';
 
 type Form = {
   username: string,
@@ -47,14 +48,19 @@ export const Registration: React.FC = () => {
     const error = !loading && (registerFetcher.state.answer.errorMessage || externalFetcher.state.answer.errorMessage || "");
   
     if (successRegister) {
+        UserModel.CurrentUserEmail = getValues().username;
+        UserModel.chekUserEmail();
+
         setToken(registerFetcher.state.answer.data?.token || "");
-        window.location.href = "/profile";
+
         registerFetcher.reload();
     }  
 
     if (successExternal) {
+        UserModel.chekUserEmail();
+
         setToken(externalFetcher.state.answer.data?.token || "");
-        window.location.href = "/profile";
+
         externalFetcher.reload();
     }
   
@@ -65,6 +71,9 @@ export const Registration: React.FC = () => {
       }
   
       if (isGoogleResponse(response)) {
+        console.log(response);
+        UserModel.CurrentUserEmail = response.profileObj.email;
+
         GeneratePassword(response.googleId).then(pass => {            
             externalFetcher.fetch({
                 username: response.googleId + 'Google',
@@ -96,7 +105,6 @@ export const Registration: React.FC = () => {
 
     const vkCallback = (userInfo: any): void => {
       if (userInfo.session !== undefined) {
-        console.log(userInfo);
           
         GeneratePassword(userInfo.session.user.id).then(pass => {
             externalFetcher.fetch({

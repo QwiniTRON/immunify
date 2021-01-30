@@ -4,7 +4,8 @@ import {
     USER_ADD_MEMBER,
     USER_SET_CURRENT_USER,
     USER_UPDATE_BY_NAME,
-    USER_SET_DATA
+    USER_SET_DATA,
+    USER_CLEAR
 } from '../consts';
 import {
     UserAction,
@@ -51,7 +52,7 @@ const updateByName = (state: UserStore = initialState, action: UserAction) => {
 
 const addMember = (state: UserStore = initialState, action: UserAction) => {
     if (action.type !== USER_ADD_MEMBER) return state;
-    
+
     const user: User = state.user!;
     user?.family.push(action.member);
     return Object.assign({}, state);
@@ -68,12 +69,20 @@ const setUserData = (state: UserStore = initialState, action: UserAction) => {
 }
 
 
+function clearStore(state: UserStore = initialState, action: UserAction) {
+    if (action.type !== USER_CLEAR) return state;
+
+    return initialState;
+}
+
+
 const handlerDictionary: { [p: string]: any } = {
     [USER_SET_DATA]: setUserData,
     [USER_ADD_MEMBER]: addMember,
     [USER_UPDATE_BY_NAME]: updateByName,
     [USER_SET_CURRENT_USER]: setCurrentUser,
-    [USER_SET_USER]: setUser
+    [USER_SET_USER]: setUser,
+    [USER_CLEAR]: clearStore
 }
 
 

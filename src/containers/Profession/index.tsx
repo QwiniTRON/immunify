@@ -14,13 +14,12 @@ import { RootState } from '../../store';
 import { updateCurrentUserData } from '../../store/user/action';
 import { Layout } from '../../components/Layout/Layout';
 import { BackButton } from '../../components/BackButton';
-import { useIsEmptyFamily } from '../../hooks';
+import { useAccessToken, useIsEmptyFamily } from '../../hooks';
 import { Profession as ProfessionType } from '../../type';
 import { claculateRisks } from '../../store/appData/action';
 import { useTimerFunction } from '../../hooks/timerFunction';
 import { useHistory } from 'react-router-dom';
 
-import { useAccessToken } from '../../hooks/useAccessToken';
 import { AppButtonGroup } from '../../components';
 
 type ProfessionProps = {

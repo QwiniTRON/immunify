@@ -16,16 +16,13 @@ import { AppButton } from '../../components/UI/AppButton';
 import { updateCurrentUserData } from '../../store/user/action';
 import { RootState } from '../../store';
 import { Layout } from '../../components/Layout/Layout';
-import { useIsEmptyFamily } from '../../hooks';
 import { BackButton } from '../../components/BackButton';
-import { Region as RegionType } from '../../type';
 
-import { useAccessToken } from '../../hooks/useAccessToken';
+import { useAccessToken } from '../../hooks/';
 
 import { claculateRisks } from '../../store/appData/action';
 import { useHistory } from 'react-router-dom';
 import { useTimerFunction } from '../../hooks/timerFunction';
-import { AppButtonGroup } from '../../components';
 
 
 

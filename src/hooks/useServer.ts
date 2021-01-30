@@ -3,7 +3,7 @@ import { useState, useRef } from 'react';
 import { StorageReturnType, StorageAnswer, FetchFunc } from '../server/types';
 import { AxiosFetcher } from '../server';
 
-import { useAccessToken } from './useAccessToken';
+import { useAccessToken } from './';
 
 type Reload = {
   reload: () => void;

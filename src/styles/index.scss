@@ -12,6 +12,9 @@
     --mainColor2: #{$mainColor2};
     --textColor2: #{$textColor2};
     --navigationMenuHeight: #{$navigationMenuHeight};
+    --modalZI: #{$modalZI};
+    --mainMenulZI: #{$mainMenulZI};
+    --animationBasisTime: #{$animationBasisTime};
 }
 
 *,
@@ -79,6 +82,7 @@ p {
     transform: scale(0.9);
     transition: opacity 150ms, transform 150ms;
 }
+// Page slide animation
 
 // fade animate
 .fade-enter {
@@ -109,3 +113,4 @@ p {
 .error {
     color: $errorColor;
 }
+// fade animate

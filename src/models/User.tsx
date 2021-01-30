@@ -2,7 +2,7 @@ import { UserStore } from '../store/user';
 import { RootState, store } from '../store';
 import { RiskViewModel } from '../server';
 import { Profession, Region } from '../type';
-import {getYearOffsetNow} from '../utils';
+import { getYearOffsetNow } from '../utils';
 
 ///////////////////////////////////////////////////////////////////////////////
 //  methodName$suffix - Это тот же метод только с перегрузкой параметров    ///
@@ -59,12 +59,13 @@ export class UserData {
  * класс пользователя - пациента
  */
 export class User {
-    public name: string;
-    public age: number;
-    public sex: 'man' | 'woman';
-    public family: User[];
-    public data?: UserData;
-    public Risks: RiskViewModel[];
+    public name: string
+    public age: number
+    public sex: 'man' | 'woman'
+    public family: User[]
+    public data?: UserData
+    public Risks: RiskViewModel[]
+    public email: string
     public id?: string
 
 
@@ -77,6 +78,7 @@ export class User {
      * @param {User[]?} family - список семьи
      * @param {UserData?} data - данные(регион, профессия, опрос)
      * @param {RiskViewModel[]?} Risks - риски
+     * @param {string} email - email главного пользователя
      * @param {string} id - id из базы
      */
     public constructor(
@@ -86,6 +88,7 @@ export class User {
         family: User[] = [],
         data: UserData = new UserData(),
         Risks: RiskViewModel[] = [],
+        email: string = '',
         id?: string
     ) {
         this.name = name;
@@ -94,20 +97,39 @@ export class User {
         this.family = family;
         this.data = data;
         this.Risks = Risks;
+        this.email = email;
         this.id = id;
     }
 }
+
 
 export class UserModel {
 
     private static userDataStoreKey = 'appUser'
     private static currentUserStoreKey = 'currentUser'
+    private static mainUserEmail = 'mainuseremail'
 
 
+    /**
+     * 
+     */
     static get CurrentUser() {
         return localStorage.getItem(UserModel.currentUserStoreKey);
     }
 
+    /**
+     * 
+     */
+    static set CurrentUserEmail(value: string) {
+        localStorage.setItem(UserModel.mainUserEmail, value);
+    }
+
+    /**
+     * 
+     */
+    static get CurrentUserEmail() {
+        return localStorage.getItem(UserModel.mainUserEmail) || '';
+    }
 
     /**
      * сохранение пользователя в хранилище
@@ -117,6 +139,38 @@ export class UserModel {
     static saveUser(user: User) {
         const stateForSave = JSON.stringify(user);
         localStorage.setItem(UserModel.userDataStoreKey, stateForSave);
+    }
+
+    /**
+     * проверка email, если вошли с другого аккаунта, то мы чистим store
+     * 
+     * @param email 
+     */
+    static chekUserEmail(email: string = UserModel.CurrentUserEmail) {
+        const storeData = localStorage.getItem(UserModel.userDataStoreKey);
+
+        if (!storeData) return;
+
+        try {
+            const user: User = JSON.parse(storeData);
+
+            if (user) {
+                if (email != user.email) {
+                    UserModel.clearStorage();
+                    return false;
+                }
+            }
+        } catch (err) { }
+
+        return true;
+    }
+
+    /**
+     * удалить данные о пользователе
+     */
+    static clearStorage() {
+        localStorage.removeItem(UserModel.userDataStoreKey);
+        localStorage.removeItem(UserModel.currentUserStoreKey);
     }
 
 
@@ -195,9 +249,9 @@ export class UserModel {
 
         const isChild = getYearOffsetNow(Number(user?.age)) < 18;
 
-        if (Boolean(user.data?.profession)) procent += isChild? 0 : 25;
-        if (Boolean(user.data?.region?.main)) procent += isChild? 0 : 25;
-        if (user.data?.quiz?.isDone == true) procent += isChild? 100 : 50;
+        if (Boolean(user.data?.profession)) procent += isChild ? 0 : 25;
+        if (Boolean(user.data?.region?.main)) procent += isChild ? 0 : 25;
+        if (user.data?.quiz?.isDone == true) procent += isChild ? 100 : 50;
 
         return procent;
     }

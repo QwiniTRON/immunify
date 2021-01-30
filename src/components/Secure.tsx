@@ -1,7 +1,7 @@
 import React, { FC } from 'react';
 import { Redirect, useHistory, useLocation } from 'react-router-dom';
 
-import { useAccessToken } from '../hooks/useAccessToken';
+import { useAccessToken } from '../hooks/';
 
 type Props = {
   children: JSX.Element,

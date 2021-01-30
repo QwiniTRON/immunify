@@ -11,7 +11,7 @@ import Snackbar from '@material-ui/core/Snackbar';
 import MuiAlert from '@material-ui/lab/Alert';
 import { useHistory } from 'react-router-dom';
 
-import { useAccessToken } from '../../hooks/useAccessToken';
+import { useAccessToken } from '../../hooks/';
 
 import './quiz.scss';
 

@@ -1,14 +1,20 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import Avatar from '@material-ui/core/Avatar';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import BottomNavigation from '@material-ui/core/BottomNavigation';
 import BottomNavigationAction from '@material-ui/core/BottomNavigationAction';
-import { useHistory, useLocation } from 'react-router-dom';
+import { Link, useHistory, useLocation } from 'react-router-dom';
 import { useSelector } from 'react-redux';
-import Background from '../../assets/backgroundgeneral.svg';
+import Box from '@material-ui/core/Box';
+import { ReactComponent as InfoIcon } from '../../assets/info.svg';
+import { ReactComponent as ExitIcon } from '../../assets/exit.svg';
+import MenuIcon from '@material-ui/icons/Menu';
+import IconButton from '@material-ui/core/IconButton';
 
 import "./Layout.scss";
+
+import MainLogo from '../../assets/splashlogo.png';
 import { RootState } from '../../store';
 import { BackButton } from '../BackButton';
 import { sif } from '../../utils/Styels';
@@ -72,9 +78,22 @@ export const Layout: React.FC<LayoutProps> = ({
     const history = useHistory();
     const locationData = useLocation();
     const currentUser = useSelector((state: RootState) => state.user.currentUser);
+    const mainUser = useSelector((state: RootState) => state.user.user);
+    const [asideMenu, setAsideMenu] = useState(false);
 
     // определяем в какой мы находимся сущности(разделе)
     const parentRoute = '/' + locationData.pathname.split('/')[1];
+
+    // handle back click
+    useEffect(() => {
+        const toggleAsideMenu = (e: Event) => {setAsideMenu(false)};
+
+        window.addEventListener('popstate', toggleAsideMenu);
+
+        return () => {
+            window.removeEventListener('popstate', toggleAsideMenu);
+        }
+    }, []);
 
 
     return (
@@ -91,6 +110,16 @@ export const Layout: React.FC<LayoutProps> = ({
                 })}>
                     {BackButtonCustom ? BackButtonCustom : <BackButton />}
 
+                    {domainPage &&
+                        <IconButton
+                            edge="start"
+                            className="aside-menu__toggler"
+                            aria-label="menu"
+                            onClick={setAsideMenu.bind(null, !asideMenu)}>
+                            <MenuIcon />
+                        </IconButton>
+                    }
+
                     <Typography className={classes.title} variant="h3">
                         {titleCurrentName ? currentUser?.name : title}
                     </Typography>
@@ -98,7 +127,8 @@ export const Layout: React.FC<LayoutProps> = ({
                     <Avatar className={classes.avatar}>
                         {currentUser ? currentUser.name[0] + currentUser.name.slice(-1) : "😎"}
                     </Avatar>
-                </header>}
+                </header>
+            }
 
 
             {/* content */}
@@ -164,6 +194,33 @@ export const Layout: React.FC<LayoutProps> = ({
                         />
                     </BottomNavigation>
                 </div>}
+
+            {/* боковое меню */}
+            {Boolean(domainPage) &&
+                <div className={sif({
+                    ["aside-menu-container"]: true,
+                    ["aside-menu-container--active"]: asideMenu
+                })}>
+                    <div className="aside-menu__overlay" onClick={setAsideMenu.bind(null, !asideMenu)} />
+                    <div className="aside-menu">
+                        <img src={MainLogo} alt="immunify" className="aside-menu__logo" />
+
+                        <Box fontSize={24} fontWeight={500}> {mainUser?.email} </Box>
+
+                        <div className="links">
+                            <Link to="#" className="links__link" onClick={setAsideMenu.bind(null, false)}>
+                                <InfoIcon className="links__icon" /> <span>О приложении</span>
+                            </Link>
+
+                            <Link to="#" className="links__link" onClick={setAsideMenu.bind(null, false)}>
+                                <ExitIcon className="links__icon" /> <span>Выход</span>
+                            </Link>
+                        </div>
+                    </div>
+
+                </div>
+            }
+
         </div>
     );
 };
