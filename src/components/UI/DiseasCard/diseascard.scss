@@ -29,6 +29,8 @@
 
   .text {
     font-size: 18px;
+
+    
   }
   .text--red {
     color: #ed1c24;
@@ -45,6 +47,13 @@
     font-size: 16px;
     font-weight: 300;
     color: "#999";
+  }
+
+
+  @media (max-width: 340px) {
+    .text {
+      font-size: 14px;
+    }
   }
 }
 

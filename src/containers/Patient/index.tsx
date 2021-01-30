@@ -3,6 +3,8 @@ import { useDispatch, useStore } from 'react-redux';
 import { useHistory, useRouteMatch } from 'react-router-dom';
 import Box from '@material-ui/core/Box';
 
+import "./patient.scss";
+
 import { Layout } from '../../components/Layout/Layout';
 import { AppButton } from '../../components/UI/AppButton';
 import { PageLayout } from '../../components/UI/PageLayout';
@@ -59,7 +61,7 @@ export const Patient: React.FC<PatientProps> = (props) => {
 
   return (
     <Layout title="" BackButtonCustom={<BackButton text="Вернуться к пациентам" />} background>
-      <PageLayout>
+      <PageLayout className="patient-page">
         <Box pb={8} p="15px">
           <UserData />
 
@@ -67,6 +69,7 @@ export const Patient: React.FC<PatientProps> = (props) => {
             floated
             disabled={!UserModel.getCurrentUserDataStatus()}
             onClick={() => history.push(`/passport`)}
+            className="patient-page__pasport"
             appColor="linear">
             иммунный паспорт
           </AppButton>
