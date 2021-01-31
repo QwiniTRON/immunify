@@ -4,5 +4,9 @@ type Response = {
   id: number,
 };
 
-export const CreatePatient: FetchFunc<undefined, Response> = (client, request) =>
+type Request = {
+  SavePersonality?: boolean
+}
+
+export const CreatePatient: FetchFunc<Request, Response> = (client, request) =>
   client.post('/patient', request);

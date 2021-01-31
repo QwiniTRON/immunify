@@ -5,7 +5,8 @@ import {
     USER_UPDATE_BY_NAME,
     USER_SET_DATA,
     APPDATA_SET_DATA,
-    USER_CLEAR
+    USER_CLEAR,
+    USER_CHANGE_LOADING
 } from './consts';
 import { User, QuizAnswer, RegionData, UserData } from '../models/User';
 import { AppDataStore } from './appData';
@@ -18,6 +19,11 @@ type userSetUser = {
 
 type userClearStore = {
     type: typeof USER_CLEAR
+}
+
+type userChangeLoading = {
+    type: typeof USER_CHANGE_LOADING,
+    loading: boolean
 }
 
 type userSetData = {
@@ -47,7 +53,8 @@ export type UserAction = userSetUser |
     userUpdateByName |
     userAddMember |
     userSetData |
-    userClearStore
+    userClearStore |
+    userChangeLoading
 
 
 

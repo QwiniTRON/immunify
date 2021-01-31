@@ -64,6 +64,13 @@ const useStyles = makeStyles((theme) => ({
 
     layout__hideNav: {
         paddingBottom: 0
+    },
+
+    exitButtons: {
+        display: 'flex',
+        marginTop: 40,
+        gap: '0 10',
+        justifyContent: 'space-between'
     }
 }));
 
@@ -226,9 +233,9 @@ export const Layout: React.FC<LayoutProps> = ({
                         <Box fontSize={24} fontWeight={500}> {mainUser?.email} </Box>
 
                         <div className="links">
-                            <Link to="/about" className="links__link" onClick={setAsideMenu.bind(null, false)}>
+                            <a href="https://Immunify.co/" target="_blank" className="links__link" onClick={setAsideMenu.bind(null, false)}>
                                 <InfoIcon className="links__icon" /> <span>О приложении</span>
-                            </Link>
+                            </a>
 
                             <div className="links__link" onClick={() => setExitModal(true)}>
                                 <ExitIcon className="links__icon" /> <span>Выход</span>
@@ -240,14 +247,14 @@ export const Layout: React.FC<LayoutProps> = ({
             }
 
             {/* модальное окно предложения выйти */}
-            <CSSTransition timeout={300} in={exitModal} classNames="fade" mountOnEnter unmountOnExit>
+            <CSSTransition timeout={300} in={exitModal} classNames="fade2" mountOnEnter unmountOnExit>
                 <AppModal onClose={setExitModal.bind(null, false)}>
-                    <Box component="h2" textAlign="center" >выйти из аккаунта?</Box>
+                    <Box component="h2" textAlign="center" >Выйти из аккаунта?</Box>
 
-                    <Box display="flex" justifyContent="space-between" mt={5}>
+                    <div className={classes.exitButtons}>
                         <AppButton minWidth onClick={() => exitHandle()}>да</AppButton>
                         <AppButton minWidth appColor="white" onClick={setExitModal.bind(null, false)}>нет</AppButton>
-                    </Box>
+                    </div>
                 </AppModal>
             </CSSTransition>
 

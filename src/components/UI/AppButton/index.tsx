@@ -10,6 +10,7 @@ export type AppButtonProps = {
     floated?: boolean
     appColor?: 'linear' | 'white'
     minWidth?: boolean
+    fixed?: boolean
 }
 
 const ButtonColors = {
@@ -42,13 +43,14 @@ const useStyles = makeStyles((theme) => ({
         borderRadius: 45,
         ...ButtonColors[props.appColor ?? 'default'],
         textAlign: 'center',
-        padding: 12
+        padding: 12,
+        display: 'inline-block'
     }),
 
     minWidth: {
         minWidth: 160,
 
-        '@media (max-width: 350px)': {
+        '@media (max-width: 360px)': {
             minWidth: 120
         }
     },
@@ -80,6 +82,17 @@ const useStyles = makeStyles((theme) => ({
             bottom: 15,
             top: 0
         }
+    },
+
+    fixed: {
+        position: 'fixed',
+        top: 'calc(var(--full_height) - 130px)',
+        margin: '0 auto',
+        zIndex: 1,
+        left: '50%',
+        transform: 'translateX(-50%)',
+        width: 'auto',
+        display: 'inline-block',
     }
 }));
 
@@ -94,6 +107,7 @@ export const AppButton: React.FC<AppButtonProps> = (props) => {
                 root: sif({
                     [classes.root]: true,
                     [classes.floated]: Boolean(props.floated),
+                    [classes.fixed]: Boolean(props.fixed),
                     [classes.minWidth]: Boolean(props.minWidth)
                 })
             }}

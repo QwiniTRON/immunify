@@ -47,15 +47,17 @@ const initialState = {
  * }
  */
 
-export const useServer = <TRequest, TData>(
-  fetchFunction: FetchFunc<TRequest, TData>,
-): StorageReturnType<TRequest, TData> & Reload => {
+export function useServer<TRequest, TData>
+  (
+    fetchFunction: FetchFunc<TRequest, TData>,
+): StorageReturnType<TRequest, TData> & Reload  {
   const [fetching, setFetching] = useState(false);
   const [answer, setAnswer] = useState<StorageAnswer<TData>>(initialState);
+  const [isFetched, setIsFatched] = useState(false);
 
   const { token, set: setToken } = useAccessToken();
   let { current } = useRef(new AxiosFetcher(fetchFunction, token));
-  
+
   const fetch = (request: TRequest) => {
     reload();
     setFetching(true);
@@ -65,11 +67,13 @@ export const useServer = <TRequest, TData>(
       .then((result) => {
         setFetching(false);
         setAnswer(result);
+        setIsFatched(true);
       });
   };
 
   const reload = () => {
     setAnswer(initialState);
+    setIsFatched(false);
     current = new AxiosFetcher(fetchFunction, token);
   };
 
@@ -80,6 +84,7 @@ export const useServer = <TRequest, TData>(
     },
     fetch,
     cancel: current.Cancel.bind(current),
-    reload
+    reload,
+    isFetched
   };
 };

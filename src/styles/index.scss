@@ -69,7 +69,7 @@ p {
 .page-enter-active .page-anim {
     opacity: 1;
     transform: translateY(0);
-    transition: opacity 150ms, transform 150ms;
+    transition: opacity 200ms, transform 200ms;
 }
 
 .page-exit .page-anim {
@@ -114,3 +114,28 @@ p {
     color: $errorColor;
 }
 // fade animate
+
+// fade2 animate
+.fade2-enter {
+    opacity: 0;
+}
+.fade2-enter-active {
+    opacity: 1;
+    transform: scale(1);
+    transition: opacity 150ms, transform 150ms;
+}
+
+.fade2-exit {
+    opacity: 1;
+    transform: scale(1);
+}
+
+.fade2-exit-active {
+    opacity: 0;
+    transition: opacity 150ms, transform 150ms;
+}
+
+.fade2-exit-done {
+    display: none;
+}
+// fade2 animate

@@ -1,15 +1,18 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { useAccessToken } from '../hooks';
+import { useAccessToken, useGetPersonality } from '../hooks';
+import { UserModel } from '../models/User';
 import { appDataInit } from '../store/appData/action';
 import { userInit } from '../store/user/action';
 
 
-export function useAppInitLogick () {
+export function useAppInitLogick() {
   const dispatch = useDispatch();
 
   const [isINIT, setIsINIT] = useState(false);
   const { token } = useAccessToken();
+
+  const [getPersonality, loadingPersonality, isGetPersonalityFetched] = useGetPersonality();
 
   const appInit = () => {
     void async function () {
@@ -17,6 +20,13 @@ export function useAppInitLogick () {
 
       if (token.length > 0) {
         await dispatch(appDataInit(token));
+      }
+
+      if (token.length > 0 && !isGetPersonalityFetched) {
+        const userData = UserModel.MainUser;
+        if (!userData) {
+          getPersonality();
+        }
       }
 
       setIsINIT(true);
@@ -27,5 +37,5 @@ export function useAppInitLogick () {
   // при смене токена мы проверяем пользователя
   useEffect(appInit, [token]);
 
-  return {isINIT};
+  return { isINIT };
 }

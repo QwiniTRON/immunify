@@ -1,5 +1,9 @@
 .patient-page {
-  .patient-page__pasport {
-    transform: translateX(-24%);
+
+  
+  @media (max-width: 340px) {
+    .patient-page__pasport {
+      transform: translateX(-24%);
+    }
   }
 }

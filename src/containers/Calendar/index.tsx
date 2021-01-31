@@ -102,14 +102,13 @@ export const Calendar: React.FC<CalendarProps> = (props) => {
                     </Box>
                 }
 
-                <Box mt="auto" textAlign="center">
+                <Box mt="auto" textAlign="center" mb={2}>
                     <AppLinkButton
                         disabled={loading}
                         to={{
                             pathname: `/passport/take`
                         }}
                         appColor="linear"
-                        floated
                         minWidth
                     > Записаться
                     </AppLinkButton>

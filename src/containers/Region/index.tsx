@@ -18,7 +18,7 @@ import { RootState } from '../../store';
 import { Layout } from '../../components/Layout/Layout';
 import { BackButton } from '../../components/BackButton';
 
-import { useAccessToken } from '../../hooks/';
+import { useAccessToken, useServer, useUpdatePersonality } from '../../hooks/';
 
 import { claculateRisks } from '../../store/appData/action';
 import { useHistory } from 'react-router-dom';
@@ -35,6 +35,10 @@ export const Region: React.FC<RegionProps> = (props) => {
     const dispatch = useDispatch();
     const history = useHistory();
     const { token } = useAccessToken();
+
+    const mainUser = useSelector((state: RootState) => state.user.user);
+    const updatePersonality = useUpdatePersonality();
+
 
     const regions = useSelector((state: RootState) => state.appData.regions) ?? [];
     const currentUser = useSelector((state: RootState) => state.user.currentUser);
@@ -62,6 +66,11 @@ export const Region: React.FC<RegionProps> = (props) => {
                 setOpen(true);
                 performTimer(() => history.push(pathToBack), timeToBack);
                 dispatch(claculateRisks(token));
+
+                // обновление персональных данных
+                if(mainUser?.savePersonality) {
+                    updatePersonality();
+                }
             });
     }
 

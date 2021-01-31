@@ -63,8 +63,8 @@ const App: React.FC<AppProps> = function (props) {
 
       <div className="App">
         <Route render={({ location }) => (
-          <TransitionGroup exit={false} >
-            <CSSTransition timeout={150} classNames="page" key={location.key}>
+          <TransitionGroup exit={false}>
+            <CSSTransition timeout={200} classNames="page" key={location.key} unmountOnExit>
 
               <AppRoutes isUserData={isUserData} location={location} />
 

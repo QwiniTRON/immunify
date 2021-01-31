@@ -26,6 +26,7 @@ import { s } from '../../utils';
 import { Divider } from '../../components';
 import { AppLinkButton } from '../../components/UI/AppLinkButton';
 import { UserModel } from '../../models/User';
+import { useUpdatePersonality } from '../../hooks';
 
 type AddMemberProps = {
 
@@ -85,6 +86,8 @@ const AddMember: React.FC<AddMemberProps> = ({
     const loading = addReq.state.fetching;
     const success = !loading && addReq.state.answer.succeeded;
 
+    const updatePersonality = useUpdatePersonality();
+
     const [sex, setSex] = useState('');
     const [name, setName] = useState('');
     const [selectedDate, handleDateChange] = useState<Date | null>(null);
@@ -105,6 +108,10 @@ const AddMember: React.FC<AddMemberProps> = ({
         if (success) {
             addMember(name, selectedDate?.getTime(), sex, addReq?.state?.answer?.data?.id)
                 .then((r: any) => {
+                    if(mainUser?.savePersonality) {
+                        updatePersonality();
+                    }
+
                     history.push(`/profile/${name}`);
                     addReq.reload();
                 });
@@ -170,7 +177,7 @@ const AddMember: React.FC<AddMemberProps> = ({
         const [valid, errors] = validate();
 
         if (valid) {
-            addReq.fetch(undefined);
+            addReq.fetch({});
         }
     }
 

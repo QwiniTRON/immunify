@@ -67,6 +67,7 @@ export class User {
     public Risks: RiskViewModel[]
     public email: string
     public id?: string
+    public savePersonality: boolean
 
 
     /**
@@ -80,6 +81,7 @@ export class User {
      * @param {RiskViewModel[]?} Risks - риски
      * @param {string} email - email главного пользователя
      * @param {string} id - id из базы
+     * @param {boolean} savePersonality - разрешение на синхронизацию данных
      */
     public constructor(
         name: string = '',
@@ -89,7 +91,8 @@ export class User {
         data: UserData = new UserData(),
         Risks: RiskViewModel[] = [],
         email: string = '',
-        id?: string
+        id?: string,
+        savePersonality: boolean = false
     ) {
         this.name = name;
         this.age = age;
@@ -99,6 +102,7 @@ export class User {
         this.Risks = Risks;
         this.email = email;
         this.id = id;
+        this.savePersonality = savePersonality;
     }
 }
 
@@ -115,6 +119,10 @@ export class UserModel {
      */
     static get CurrentUser() {
         return localStorage.getItem(UserModel.currentUserStoreKey);
+    }
+
+    static get MainUser() {
+        return localStorage.getItem(UserModel.userDataStoreKey);
     }
 
     /**

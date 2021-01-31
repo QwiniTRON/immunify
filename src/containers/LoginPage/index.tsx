@@ -20,7 +20,7 @@ import {
 
 import './loginpage.scss';
 import { UserModel } from '../../models/User';
-import { useAccessToken } from '../../hooks';
+import { useAccessToken, useGetPersonality } from '../../hooks';
 
 type Form = {
   username: string,
@@ -31,7 +31,7 @@ export const LoginPage: FC = () => {
   const history = useHistory();
   const loginFetcher = useServer(Login);
   const externalLoginFetcher = useServer(ExternalLogin);
-  const { set: setToken } = useAccessToken();
+  const { set: setToken, token } = useAccessToken();
 
   const {
     register,
@@ -52,16 +52,20 @@ export const LoginPage: FC = () => {
   const successExternal = !loading && externalLoginFetcher.state.answer.succeeded;
 
   const error = !loading && (loginFetcher.state.answer.errorMessage || externalLoginFetcher.state.answer.errorMessage || "");
-  
+
 
   if (successLogin) {
     UserModel.CurrentUserEmail = getValues().username;
     UserModel.chekUserEmail();
-    
+
     setToken(loginFetcher.state.answer.data?.token || "");
 
     loginFetcher.reload();
   }
+
+  useEffect(() => {
+    
+  }, [token]);
 
   if (successExternal) {
     UserModel.chekUserEmail();
@@ -160,7 +164,7 @@ export const LoginPage: FC = () => {
 
 
           <div className="login__buttons">
-            <button className="button button--app" disabled={loading} type="submit">войти</button>
+            <button className="button button--app" disabled={loading as boolean} type="submit">войти</button>
           </div>
         </form>
 

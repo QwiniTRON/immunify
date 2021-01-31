@@ -206,4 +206,21 @@
             width: 30px;
         }
     }
+
+    .registration-page__personality {
+        margin-bottom: 25px;
+    }
+}
+
+
+@media (max-height: 600px) {
+    .registration-page {
+        .title {
+            margin: 10px 0;
+        }
+
+        .input-group {
+            margin: 25px 0;
+        }
+    }
 }
