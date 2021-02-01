@@ -82,7 +82,7 @@ export const DiseasCard: React.FC<DiseasCardProps> = ({
     if (vaccination?.vaccinationStatus?.statusColor == "green") shieldIcon = <ShieldFullIcon className="icon" />;
 
 
-    let riskStatus = Math.max(risk.risk, risk.regionRisk + 1, risk.regionRisk + 1);
+    let riskStatus = Math.max(risk.risk, risk.regionRisk + 1, risk.professionRisk + 1);
     let currentRisk = 'Низкий';
     if (riskStatus == 2) currentRisk = 'Средний';
     if (riskStatus == 3) currentRisk = 'Высокий';
