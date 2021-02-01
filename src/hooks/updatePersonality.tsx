@@ -1,7 +1,7 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { useServer } from '.';
-import { UserModel } from "../models/User";
+import { UserModel } from "../models/User/User";
 import { UpdatePersonality } from '../server';
 import { RootState } from "../store";
 import { decodeUserPersonality } from '../utils';

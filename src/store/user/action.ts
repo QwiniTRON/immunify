@@ -9,9 +9,10 @@ import {
     USER_CHANGE_LOADING
 } from '../consts';
 import { Sex, User, UserAction, UserData } from '../types';
-import { UserModel } from '../../models/User';
+import { UserModel } from '../../models/User/User';
 import { eyars18 } from '../../utils';
 import { AppModel } from '../../models/App';
+import { LoginMark } from '../../models';
 
 
 //  ***************************
@@ -130,7 +131,7 @@ export function exit() {
  * @param {string} id id из базы
  * @param {boolean} savePersonality разрешение на синхронизацию данных с сервером
  */
-export function register(name: string, age: number, sex: Sex, email: string, id: string, savePersonality: boolean) {
+export function register(name: string, age: number, sex: Sex, email: LoginMark, id: string, savePersonality: boolean) {
     return async function (dispatch: Function, getState: Function) {
         const user: User = new User(
             name,

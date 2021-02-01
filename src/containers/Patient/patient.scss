@@ -1,9 +1,9 @@
 .patient-page {
-
-  
-  @media (max-width: 340px) {
-    .patient-page__pasport {
-      transform: translateX(-24%);
-    }
+  .patient-page__pasport {
+    position: sticky;
+    bottom: 15px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
   }
 }

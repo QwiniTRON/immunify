@@ -8,7 +8,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import { DiseasCard } from '../../components/UI/DiseasCard';
 import { PageLayout } from '../../components/UI/PageLayout';
 import { RootState } from '../../store';
-import { UserModel } from '../../models/User';
+import { UserModel } from '../../models/User/User';
 import { AppLinkButton } from '../../components/UI/AppLinkButton';
 import { useServer } from '../../hooks';
 import { GetVaccinationByPatient, PatientVaccinations, PatientVaccination, GetVaccines, GetLastPoll } from '../../server';

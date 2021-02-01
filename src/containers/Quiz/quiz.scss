@@ -1,5 +1,6 @@
 .quiz-page {
     padding: 20px;
+    padding-bottom: 60px;
 
     .quiz-button {
         max-width: 160px;
@@ -30,5 +31,15 @@
         > button:first-child {
             margin-right: 25px;
         }
+    }
+
+    .btns {
+        margin: 0 auto;
+        position: fixed;
+        top: calc(var(--vh) * 100 - 130px);
+        left: 0;
+        right: 0;
+        max-width: var(--widthBreak, 600px);
+        padding: 0 20px;
     }
 }

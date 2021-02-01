@@ -22,7 +22,7 @@ import { updateCurrentUserData } from '../../store/user/action';
 import { QuizAnswer } from '../../store/types';
 import { Layout } from '../../components/Layout/Layout';
 import { BackButton } from '../../components/BackButton';
-import { QuizData } from '../../models/User';
+import { QuizData } from '../../models/User/User';
 import { useTimerFunction } from '../../hooks/timerFunction';
 import { UpdatePersonality } from '../../server';
 
@@ -37,6 +37,16 @@ const useStyles = makeStyles((theme) => ({
 
     radio: {
         marginBottom: 18
+    },
+
+    answer: {
+        display: 'block',
+        marginBottom: 18
+    },
+
+    noticeMessage: {
+        zIndex: 25,
+        bottom: 65
     }
 }));
 
@@ -156,7 +166,7 @@ export const Quiz: React.FC<QuizProps> = (props) => {
                 dispatch(claculateRisks(token));
 
                 // обновление персональных данных
-                if(mainUser?.savePersonality) {
+                if (mainUser?.savePersonality) {
                     updatePersonality();
                 }
             });
@@ -166,7 +176,7 @@ export const Quiz: React.FC<QuizProps> = (props) => {
 
     return (
         <Layout title="" BackButtonCustom={<BackButton to={pathToBack} text="Вернуться в профиль" />} >
-            <PageLayout flex className="quiz-page">
+            <PageLayout className="quiz-page">
                 <LinearProgress variant="determinate" value={quizProgress} />
                 {/* <p>вопрос {`${quiz.currentStep + 1}/${quizQuestions.length}`}</p> */}
                 {/* {isNotCurrentAnswer && (<p className={classes.notice}>ответьте на этот вопрос</p>)} */}
@@ -177,40 +187,48 @@ export const Quiz: React.FC<QuizProps> = (props) => {
                         aria-label="answer"
                         name="quiz"
                         value={Number(selectedAnswer)}
-                        onChange={setAnswer}>
+                        onChange={setAnswer}
+                        classes={{root: classes.answer}}>
                         {currentQuestion.answers.map((answer) => (
-                            <FormControlLabel classes={{ root: classes.radio }} key={answer.id} value={answer.id} control={<Radio color="primary" />} label={answer.text} />
+                            <FormControlLabel 
+                            key={answer.id} 
+                            value={answer.id} 
+                            control={<Radio color="primary" />} 
+                            label={answer.text}
+                            classes={{root: classes.answer}} />
                         ))}
                     </RadioGroup>
                 </FormControl>
 
                 <div className="btns">
-
                     <AppButton
                         onClick={backQuestion}
                         disabled={quiz.currentStep === 0}
                         className="quiz-button"
-                        color="default">назад</AppButton>
+                        color="default"
+                        minWidth>назад</AppButton>
 
                     {!(quiz.currentStep + 1 === quizQuestions.length) && <AppButton
                         onClick={nextQuestion}
                         disabled={isNotCurrentAnswer || quiz.currentStep + 1 === quizQuestions.length}
                         className="quiz-button"
-                        color="primary">далее</AppButton>}
+                        color="primary"
+                        minWidth>далее</AppButton>}
 
                     {quiz.currentStep + 1 === quizQuestions.length && <AppButton
                         onClick={finishQuiz}
                         disabled={isNotCurrentAnswer}
                         appColor="linear"
                         className="quiz-button"
-                        color="primary">завершить</AppButton>}
+                        color="primary"
+                        minWidth>завершить</AppButton>}
                 </div>
 
 
-                <Snackbar open={open} autoHideDuration={3000} onClose={() => setOpen(false)}>
+                <Snackbar open={open} autoHideDuration={1500} onClose={() => setOpen(false)} className={classes.noticeMessage}>
                     <MuiAlert onClose={() => setOpen(false)} elevation={6} variant="filled">
                         данные сохранены.
-                </MuiAlert>
+                    </MuiAlert>
                 </Snackbar>
             </PageLayout>
         </Layout>

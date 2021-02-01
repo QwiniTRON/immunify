@@ -1,4 +1,4 @@
-import { UserModel } from '../../models/User';
+import { UserModel } from '../../models/User/User';
 import {
     USER_SET_USER,
     USER_ADD_MEMBER,

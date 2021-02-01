@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { useServer } from '.';
-import { UserModel } from '../models/User';
+import { UserModel } from '../models/User/User';
 import { GetPersonality } from '../server';
 import { setUser, changeUserLoading } from '../store/user/action';
 import { encodeUserPersonality } from '../utils';

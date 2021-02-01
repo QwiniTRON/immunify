@@ -14,12 +14,12 @@
     }
 
     .layout__content {
-        flex-grow: 1;
         overflow: auto;
         background: #fafafa;
         display: flex;
         flex-flow: column nowrap;
         z-index: 1;
+        flex: 1 1 auto;
     }
 
     .layout__background {
@@ -73,13 +73,16 @@
 
     .links {
         .links__link {
-            display: block;
-
             margin: 40px 0;
             font-size: 18px;
+            padding: 10px 5px;
+            height: 58px;
 
             color: #000;
             text-decoration: none;
+
+            display: flex;
+            align-items: center;
 
             cursor: pointer;
 
@@ -89,10 +92,9 @@
         }
 
         .links__icon {
-            display: inline-block;
-            vertical-align: middle;
-
             margin-right: 10px;
+            width: 33px;
+            height: 33px;
         }
     }
 }

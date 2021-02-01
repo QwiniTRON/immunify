@@ -7,7 +7,7 @@ import BottomNavigationAction from '@material-ui/core/BottomNavigationAction';
 import { Link, useHistory, useLocation } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import Box from '@material-ui/core/Box';
-import { ReactComponent as InfoIcon } from '../../assets/info.svg';
+import InfoImg from '../../assets/info.png';
 import { ReactComponent as ExitIcon } from '../../assets/exit.svg';
 import MenuIcon from '@material-ui/icons/Menu';
 import IconButton from '@material-ui/core/IconButton';
@@ -91,7 +91,7 @@ export const Layout: React.FC<LayoutProps> = ({
 
     const dispatch = useDispatch();
     const history = useHistory();
-    const {set: setToken} = useAccessToken();
+    const { set: setToken } = useAccessToken();
 
     const locationData = useLocation();
     const currentUser = useSelector((state: RootState) => state.user.currentUser);
@@ -99,6 +99,8 @@ export const Layout: React.FC<LayoutProps> = ({
 
     const [asideMenu, setAsideMenu] = useState(false);
     const [exitModal, setExitModal] = useState(false);
+
+    const userEmail = mainUser?.email?.Value ?? mainUser?.name;
 
     // определяем в какой мы находимся сущности(разделе)
     const parentRoute = '/' + locationData.pathname.split('/')[1];
@@ -230,11 +232,15 @@ export const Layout: React.FC<LayoutProps> = ({
                     <div className="aside-menu">
                         <img src={MainLogo} alt="immunify" className="aside-menu__logo" />
 
-                        <Box fontSize={24} fontWeight={500}> {mainUser?.email} </Box>
+                        <Box fontSize={24} fontWeight={500}>
+                            {
+                                userEmail
+                            }
+                        </Box>
 
                         <div className="links">
                             <a href="https://Immunify.co/" target="_blank" className="links__link" onClick={setAsideMenu.bind(null, false)}>
-                                <InfoIcon className="links__icon" /> <span>О приложении</span>
+                                <img className="links__icon" alt="info" src={InfoImg} /> <span>О приложении</span>
                             </a>
 
                             <div className="links__link" onClick={() => setExitModal(true)}>

@@ -1,8 +1,9 @@
-import { UserStore } from '../store/user';
-import { RootState, store } from '../store';
-import { RiskViewModel } from '../server';
-import { Profession, Region } from '../type';
-import { getYearOffsetNow } from '../utils';
+import { UserStore } from '../../store/user';
+import { RootState, store } from '../../store';
+import { RiskViewModel } from '../../server';
+import { Profession, Region } from '../../type';
+import { getYearOffsetNow } from '../../utils';
+import { LoginMark } from './LoginMark';
 
 ///////////////////////////////////////////////////////////////////////////////
 //  methodName$suffix - Это тот же метод только с перегрузкой параметров    ///
@@ -65,7 +66,7 @@ export class User {
     public family: User[]
     public data?: UserData
     public Risks: RiskViewModel[]
-    public email: string
+    public email?: LoginMark
     public id?: string
     public savePersonality: boolean
 
@@ -79,7 +80,7 @@ export class User {
      * @param {User[]?} family - список семьи
      * @param {UserData?} data - данные(регион, профессия, опрос)
      * @param {RiskViewModel[]?} Risks - риски
-     * @param {string} email - email главного пользователя
+     * @param {LoginMark} email - email главного пользователя
      * @param {string} id - id из базы
      * @param {boolean} savePersonality - разрешение на синхронизацию данных
      */
@@ -90,7 +91,7 @@ export class User {
         family: User[] = [],
         data: UserData = new UserData(),
         Risks: RiskViewModel[] = [],
-        email: string = '',
+        email?: LoginMark,
         id?: string,
         savePersonality: boolean = false
     ) {
@@ -163,7 +164,7 @@ export class UserModel {
             const user: User = JSON.parse(storeData);
 
             if (user) {
-                if (email != user.email) {
+                if (email != user.email?.Value) {
                     UserModel.clearStorage();
                     return false;
                 }

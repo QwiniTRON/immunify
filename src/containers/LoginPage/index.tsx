@@ -19,8 +19,9 @@ import {
 } from '../../server';
 
 import './loginpage.scss';
-import { UserModel } from '../../models/User';
+import { UserModel } from '../../models/User/User';
 import { useAccessToken, useGetPersonality } from '../../hooks';
+import { LoginMark, LoginTypeEnum } from '../../models';
 
 type Form = {
   username: string,
@@ -54,8 +55,11 @@ export const LoginPage: FC = () => {
   const error = !loading && (loginFetcher.state.answer.errorMessage || externalLoginFetcher.state.answer.errorMessage || "");
 
 
+  /**
+   * успешный стандартный вход
+   */
   if (successLogin) {
-    UserModel.CurrentUserEmail = getValues().username;
+    UserModel.CurrentUserEmail = new LoginMark(LoginTypeEnum.Simple, getValues().username).toJSON();
     UserModel.chekUserEmail();
 
     setToken(loginFetcher.state.answer.data?.token || "");
@@ -63,10 +67,9 @@ export const LoginPage: FC = () => {
     loginFetcher.reload();
   }
 
-  useEffect(() => {
-    
-  }, [token]);
-
+  /**
+   * успешный вход через сети
+   */
   if (successExternal) {
     UserModel.chekUserEmail();
 
@@ -75,6 +78,11 @@ export const LoginPage: FC = () => {
     externalLoginFetcher.reload();
   }
 
+  /**
+   * положительный ответ входа через Google
+   * 
+   * @param response 
+   */
   const responseGoogle = (response: GoogleLoginResponse | GoogleLoginResponseOffline): void => {
 
     function isGoogleResponse(obj: any): obj is GoogleLoginResponse {
@@ -82,7 +90,7 @@ export const LoginPage: FC = () => {
     }
 
     if (isGoogleResponse(response)) {
-      UserModel.CurrentUserEmail = response.profileObj.email;
+      UserModel.CurrentUserEmail = new LoginMark(LoginTypeEnum.Google, response.profileObj.email).toJSON();
 
       externalLoginFetcher.fetch({
         externalAuth: ExternalAuth.Google,
@@ -91,14 +99,24 @@ export const LoginPage: FC = () => {
     }
   }
 
+  /**
+   * отрицательный овтет входа через Google
+   * 
+   * @param response
+   */
   const failureResponseGoogle = (response: GoogleLoginResponse): void => {
     // Show error maybe?
     console.log(response.profileObj.googleId);
   }
 
+  /**
+   * ответ входа через facebook
+   * 
+   * @param userInfo 
+   */
   const facebookCallback = (userInfo: any): void => {
     if (userInfo.userID !== undefined) {
-      UserModel.CurrentUserEmail = userInfo.email;
+      UserModel.CurrentUserEmail = new LoginMark(LoginTypeEnum.Facebook, userInfo.email).toJSON();
 
       externalLoginFetcher.fetch({
         externalAuth: ExternalAuth.Facebook,
@@ -107,9 +125,14 @@ export const LoginPage: FC = () => {
     }
   }
 
+  /**
+   * ответ входа через вк
+   * 
+   * @param userInfo 
+   */
   const vkCallback = (userInfo: any): void => {
     if (userInfo.session !== undefined) {
-      UserModel.CurrentUserEmail = userInfo.session.user.email;
+      UserModel.CurrentUserEmail = new LoginMark(LoginTypeEnum.VK, userInfo.session.user.href).toJSON();
 
       externalLoginFetcher.fetch({
         externalAuth: ExternalAuth.VK,
@@ -117,6 +140,7 @@ export const LoginPage: FC = () => {
       });
     }
   }
+
 
   return (
     <div className="login-page">

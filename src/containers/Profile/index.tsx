@@ -10,7 +10,7 @@ import { PageLayout } from '../../components/UI/PageLayout';
 import { UserCard } from '../../components/UI/UserCard';
 import { Layout } from '../../components/Layout/Layout';
 import { useCheckUserDataCompleated } from '../../hooks';
-import { User, UserModel } from '../../models/User';
+import { User, UserModel } from '../../models/User/User';
 import { AppLinkButton } from '../../components/UI/AppLinkButton';
 import { s, sif } from '../../utils';
 import { getYearOffsetNow } from '../../utils/date';

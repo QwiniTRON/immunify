@@ -44,7 +44,8 @@ const useStyles = makeStyles((theme) => ({
         ...ButtonColors[props.appColor ?? 'default'],
         textAlign: 'center',
         padding: 12,
-        display: 'inline-block'
+        display: 'inline-block',
+        minHeight: 48
     }),
 
     minWidth: {

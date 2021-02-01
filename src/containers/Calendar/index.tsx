@@ -44,7 +44,7 @@ const TakePlaceholder: React.FC<any> = (props) => {
         <Box textAlign="center" pt={3} mb={3}>
             <TakeCardIcon />
 
-            <Box fontSize={18} fontWeight={500} m="0 auto" width={0.5} mt={4}>
+            <Box fontSize={18} fontWeight={500} m="0 auto" width={0.9} mt={4}>
                 У Вас нет предстоящих записей
             </Box>
         </Box>
@@ -102,7 +102,7 @@ export const Calendar: React.FC<CalendarProps> = (props) => {
                     </Box>
                 }
 
-                <Box mt="auto" textAlign="center" mb={2}>
+                <Box mt="auto" textAlign="center" mb={5}>
                     <AppLinkButton
                         disabled={loading}
                         to={{

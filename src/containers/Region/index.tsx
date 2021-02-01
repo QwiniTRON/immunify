@@ -68,7 +68,7 @@ export const Region: React.FC<RegionProps> = (props) => {
                 dispatch(claculateRisks(token));
 
                 // обновление персональных данных
-                if(mainUser?.savePersonality) {
+                if (mainUser?.savePersonality) {
                     updatePersonality();
                 }
             });
@@ -78,57 +78,59 @@ export const Region: React.FC<RegionProps> = (props) => {
     return (
         <Layout title="" BackButtonCustom={<BackButton text="Вернуться в профиль" to={pathToBack} />} >
             <PageLayout flex className="region-page">
-                <h4 className="region-page__title">В каком регионе Вы проживаете?</h4>
+                <div className="region-page__content">
+                    <h4 className="region-page__title">В каком регионе Вы проживаете?</h4>
 
-                <Typography color="error">{errors.region}</Typography>
-                <Autocomplete
-                    id="combo-region-main"
-                    options={regions}
-                    getOptionLabel={(option) => option.name}
-                    value={region?.main}
-                    fullWidth
-                    renderInput={(params) =>
-                        <TextField
-                            {...params}
-                            helperText={errors.region}
-                            error={Boolean(errors.region)}
-                            label="выбирите регион"
-                            variant="outlined" />
+                    <Typography color="error">{errors.region}</Typography>
+                    <Autocomplete
+                        id="combo-region-main"
+                        options={regions}
+                        getOptionLabel={(option) => option.name}
+                        value={region?.main}
+                        fullWidth
+                        renderInput={(params) =>
+                            <TextField
+                                {...params}
+                                helperText={errors.region}
+                                error={Boolean(errors.region)}
+                                label="выбирите регион"
+                                variant="outlined" />
+                        }
+                        onChange={(event, newValue) => {
+                            setRegion(Object.assign({}, region, { main: newValue }));
+                        }}
+                    />
+
+                    <FormControlLabel className="region-page__work"
+                        control={
+                            <Checkbox
+                                checked={otherWork}
+                                onChange={(e) => setOtherWork(e.target.checked)}
+                                color="primary"
+                            />}
+                        label="Я работаю в другом регионе"
+                    />
+
+                    {otherWork &&
+                        <Box mt={2} mb={12}>
+                            <h4 className="region-page__title">В каком регионе Вы работаете?</h4>
+                            <Typography color="error">{errors.workRegion}</Typography>
+                            <Autocomplete
+                                id="combo-region-work"
+                                options={regions}
+                                getOptionLabel={(option) => option.name}
+                                value={region?.work}
+                                fullWidth
+                                renderInput={(params) => <TextField {...params} label="выбирите регион" variant="outlined" />}
+                                onChange={(event, newValue) => {
+                                    setRegion(Object.assign({}, region, { work: newValue }));
+                                }}
+                            />
+                        </Box>
                     }
-                    onChange={(event, newValue) => {
-                        setRegion(Object.assign({}, region, { main: newValue }));
-                    }}
-                />
 
-                <FormControlLabel className="region-page__work"
-                    control={
-                        <Checkbox
-                            checked={otherWork}
-                            onChange={(e) => setOtherWork(e.target.checked)}
-                            color="primary"
-                        />}
-                    label="Я работаю в другом регионе"
-                />
-
-                {otherWork &&
-                    <Box mt={2}>
-                        <h4 className="region-page__title">В каком регионе Вы работаете?</h4>
-                        <Typography color="error">{errors.workRegion}</Typography>
-                        <Autocomplete
-                            id="combo-region-work"
-                            options={regions}
-                            getOptionLabel={(option) => option.name}
-                            value={region?.work}
-                            fullWidth
-                            renderInput={(params) => <TextField {...params} label="выбирите регион" variant="outlined" />}
-                            onChange={(event, newValue) => {
-                                setRegion(Object.assign({}, region, { work: newValue }));
-                            }}
-                        />
-                    </Box>
-                }
-
-                <div className="btns">
+                </div>
+                <div className="region-page__buttons">
                     <AppButton className="region-page__save region-button" color="default">отмена</AppButton>
                     <AppButton className="region-page__save region-button" onClick={handleEdit}>сохранить</AppButton>
                 </div>

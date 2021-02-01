@@ -28,7 +28,7 @@ import { appDataInit } from '../../store/appData/action';
 import { useAccessToken } from '../../hooks/';
 import { Divider } from '../../components';
 import { decodeUserPersonality, eyars18 } from '../../utils';
-import { UserModel } from '../../models/User';
+import { UserModel } from '../../models/User/User';
 import { CircleLoader } from '../../components/UI/CircleLoader';
 
 
@@ -98,7 +98,8 @@ const Reg: React.FC<RegProps> = ({
 
     useLayoutEffect(() => {
         if (success) {
-            register(name, selectedDate?.getTime(), sex, UserModel.CurrentUserEmail, addReq.state?.answer?.data?.id, personality)
+            const uesrEmail = UserModel.CurrentUserEmail? JSON.parse(UserModel.CurrentUserEmail) : undefined;
+            register(name, selectedDate?.getTime(), sex, uesrEmail, addReq.state?.answer?.data?.id, personality)
                 .then(() => {
                     const userData = UserModel.MainUser;
 
@@ -191,7 +192,7 @@ const Reg: React.FC<RegProps> = ({
 
 
                 <form className="reg__form" onSubmit={handleSubmit}>
-                    {loading || userLoading &&
+                    {(loading || userLoading) &&
                         <Box textAlign="center" height="450px" display="flex" justifyContent="center" alignItems="center"><CircleLoader /></Box>
                     }
 

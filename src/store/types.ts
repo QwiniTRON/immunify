@@ -8,7 +8,7 @@ import {
     USER_CLEAR,
     USER_CHANGE_LOADING
 } from './consts';
-import { User, QuizAnswer, RegionData, UserData } from '../models/User';
+import { User, QuizAnswer, RegionData, UserData } from '../models/User/User';
 import { AppDataStore } from './appData';
 
 // USER

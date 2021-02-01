@@ -15,7 +15,8 @@ import './Registration.scss';
 import { useForm } from 'react-hook-form';
 import { GeneratePassword } from '../../utils';
 import VkLogin from 'react-vkontakte-login';
-import { UserModel } from '../../models/User';
+import { UserModel } from '../../models/User/User';
+import { LoginMark, LoginTypeEnum } from '../../models';
 
 type Form = {
     username: string,
@@ -54,7 +55,7 @@ export const Registration: React.FC = () => {
     const error = !loading && (registerFetcher.state.answer.errorMessage || externalFetcher.state.answer.errorMessage || "");
 
     if (successRegister) {
-        UserModel.CurrentUserEmail = getValues().username;
+        UserModel.CurrentUserEmail = new LoginMark(LoginTypeEnum.Simple, getValues().username).toJSON();
         UserModel.chekUserEmail();
 
         setToken(registerFetcher.state.answer.data?.token || "");
@@ -77,8 +78,7 @@ export const Registration: React.FC = () => {
         }
 
         if (isGoogleResponse(response)) {
-            console.log(response);
-            UserModel.CurrentUserEmail = response.profileObj.email;
+            UserModel.CurrentUserEmail = new LoginMark(LoginTypeEnum.Google, response.profileObj.email).toJSON();
 
             GeneratePassword(response.googleId).then(pass => {
                 externalFetcher.fetch({
@@ -98,6 +98,8 @@ export const Registration: React.FC = () => {
 
     const facebookCallback = (userInfo: any): void => {
         if (userInfo.userID !== undefined) {
+            UserModel.CurrentUserEmail = new LoginMark(LoginTypeEnum.Facebook, userInfo.profileObj.email).toJSON();
+
             GeneratePassword(userInfo.userID).then(pass => {
                 externalFetcher.fetch({
                     username: userInfo.userID + 'Facebook',
@@ -111,6 +113,10 @@ export const Registration: React.FC = () => {
 
     const vkCallback = (userInfo: any): void => {
         if (userInfo.session !== undefined) {
+            UserModel.CurrentUserEmail = new LoginMark(LoginTypeEnum.VK, userInfo.session.user.href).toJSON();
+            
+            console.log(userInfo);
+            
 
             GeneratePassword(userInfo.session.user.id).then(pass => {
                 externalFetcher.fetch({

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { useAccessToken, useGetPersonality } from '../hooks';
-import { UserModel } from '../models/User';
+import { UserModel } from '../models/';
 import { appDataInit } from '../store/appData/action';
 import { userInit } from '../store/user/action';
 

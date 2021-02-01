@@ -8,14 +8,14 @@ import "./patient.scss";
 import { Layout } from '../../components/Layout/Layout';
 import { AppButton } from '../../components/UI/AppButton';
 import { PageLayout } from '../../components/UI/PageLayout';
-import { UserModel } from '../../models/User';
+import { UserModel } from '../../models/User/User';
 import { changeCurrentUser } from '../../store/user/action';
 import { UserData } from '../UserData';
 import { BackButton } from '../../components/BackButton';
 import { useServer } from '../../hooks/useServer';
 import { GetQuestionnaire } from '../../server';
 import { RootState } from '../../store';
-import {setData} from '../../store/appData/action';
+import { setData } from '../../store/appData/action';
 import { getYearOffsetNow } from '../../utils';
 
 
@@ -36,7 +36,7 @@ export const Patient: React.FC<PatientProps> = (props) => {
 
   useLayoutEffect(() => {
     void async function () {
-      
+
       await dispatch(changeCurrentUser(id));
 
       const currentState: RootState = store.getState();
@@ -49,7 +49,7 @@ export const Patient: React.FC<PatientProps> = (props) => {
   }, []);
 
   useEffect(() => {
-    if(success) {
+    if (success) {
       const data = appDataRequest.state.answer.data;
 
       dispatch(setData(data as object));
@@ -65,14 +65,14 @@ export const Patient: React.FC<PatientProps> = (props) => {
         <Box pb={8} p="15px">
           <UserData />
 
-          <AppButton
-            floated
-            disabled={!UserModel.getCurrentUserDataStatus()}
-            onClick={() => history.push(`/passport`)}
-            className="patient-page__pasport"
-            appColor="linear">
-            иммунный паспорт
+          <div className="patient-page__pasport">
+            <AppButton
+              disabled={!UserModel.getCurrentUserDataStatus()}
+              onClick={() => history.push(`/passport`)}
+              appColor="linear">
+              иммунный паспорт
           </AppButton>
+          </div>
         </Box>
       </PageLayout>
     </Layout>

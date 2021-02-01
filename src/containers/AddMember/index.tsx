@@ -25,7 +25,7 @@ import { Loader } from '../../components/UI/Loader';
 import { s } from '../../utils';
 import { Divider } from '../../components';
 import { AppLinkButton } from '../../components/UI/AppLinkButton';
-import { UserModel } from '../../models/User';
+import { UserModel } from '../../models/User/User';
 import { useUpdatePersonality } from '../../hooks';
 
 type AddMemberProps = {
