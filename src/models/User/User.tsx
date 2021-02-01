@@ -155,7 +155,7 @@ export class UserModel {
      * 
      * @param email 
      */
-    static chekUserEmail(email: string = UserModel.CurrentUserEmail) {
+    static chekUserEmail(email?: string) {
         const storeData = localStorage.getItem(UserModel.userDataStoreKey);
 
         if (!storeData) return;
@@ -164,7 +164,10 @@ export class UserModel {
             const user: User = JSON.parse(storeData);
 
             if (user) {
-                if (email != user.email?.Value) {
+                const loginEmail = email? email : JSON.parse(UserModel.CurrentUserEmail || '{"Value": ""}');
+
+                if (loginEmail != user.email?.Value) {
+                    
                     UserModel.clearStorage();
                     return false;
                 }
