@@ -164,7 +164,7 @@ export class UserModel {
             const user: User = JSON.parse(storeData);
 
             if (user) {
-                const loginEmail = email? email : JSON.parse(UserModel.CurrentUserEmail || '{"Value": ""}');
+                const loginEmail = email? email : JSON.parse(UserModel.CurrentUserEmail || '{"Value": ""}').Value;
 
                 if (loginEmail != user.email?.Value) {
                     
