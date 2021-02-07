@@ -98,7 +98,7 @@ export const Registration: React.FC = () => {
 
     const facebookCallback = (userInfo: any): void => {
         if (userInfo.userID !== undefined) {
-            UserModel.CurrentUserEmail = new LoginMark(LoginTypeEnum.Facebook, userInfo.profileObj.email).toJSON();
+            UserModel.CurrentUserEmail = new LoginMark(LoginTypeEnum.Facebook, 'facebook: ' + userInfo.name).toJSON();
 
             GeneratePassword(userInfo.userID).then(pass => {
                 externalFetcher.fetch({

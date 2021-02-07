@@ -116,7 +116,7 @@ export const LoginPage: FC = () => {
    */
   const facebookCallback = (userInfo: any): void => {
     if (userInfo.userID !== undefined) {
-      UserModel.CurrentUserEmail = new LoginMark(LoginTypeEnum.Facebook, userInfo.email).toJSON();
+      UserModel.CurrentUserEmail = new LoginMark(LoginTypeEnum.Facebook, 'facebook: ' + userInfo.name).toJSON();
 
       externalLoginFetcher.fetch({
         externalAuth: ExternalAuth.Facebook,
