@@ -28,7 +28,7 @@ const useStyles = makeStyles({
   stageIcon: {
     width: 40,
     height: 40,
-    backgroundColor: '#9BC83F',
+    backgroundColor: 'var(--accentColor)',
     color: 'white',
     lineHeight: '35px',
     textAlign: 'center',
@@ -75,6 +75,13 @@ const useStyles = makeStyles({
       height: 85,
       border: "1px dashed #D7D7D7"
     }
+  },
+
+  vaccineLink: {
+    color: '#000',
+    fontSize: 18,
+    marginBottom: 20,
+    display: 'block'
   }
 });
 
@@ -180,6 +187,7 @@ export const VaccinationDetails: React.FC<VaccinationDetailsProps> = (props) => 
     }
   };
 
+
   return (
     <Layout title="" BackButtonCustom={<BackButton to="/vaccination" text="Вернуться к вакцинациям" />}>
       <PageLayout>
@@ -187,6 +195,8 @@ export const VaccinationDetails: React.FC<VaccinationDetailsProps> = (props) => 
           <Box fontSize={24} fontWeight={500}>
             {vaccination?.name}
           </Box>
+
+          <Link className={classes.vaccineLink} to={`/passport/vaccine/${vaccination?.vaccineId}`}>подробнее о вакцине</Link>
 
           <Box marginY={1}>
             <MarkDown md={vaccination?.detailedShort ?? ''} />

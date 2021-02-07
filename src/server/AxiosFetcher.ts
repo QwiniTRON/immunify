@@ -18,7 +18,7 @@ export class AxiosFetcher<TRequest, TData> {
       try {
         return (await fetchFunc(this.httpClient, request)).data;
       } catch {
-        window.location.href = '/';
+        // window.location.href = '/';
         localStorage.setItem('token', '');
         return {
           succeeded: false,

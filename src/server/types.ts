@@ -2,11 +2,12 @@ import { AxiosInstance, AxiosResponse } from 'axios';
 
 export type StorageReturnType<TRequest, TData> = {
   state: {
-    fetching: boolean;
-    answer: StorageAnswer<TData | undefined>;
+    fetching: boolean
+    answer: StorageAnswer<TData | undefined>
   };
-  fetch: (request: TRequest) => void;
-  cancel: () => void;
+  fetch: (request: TRequest) => void
+  cancel: () => void
+  isFetched: boolean
 };
 
 export type FetchFunc<TRequest = undefined, TData = undefined> = (

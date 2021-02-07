@@ -44,7 +44,7 @@ const TakePlaceholder: React.FC<any> = (props) => {
         <Box textAlign="center" pt={3} mb={3}>
             <TakeCardIcon />
 
-            <Box fontSize={18} fontWeight={500} m="0 auto" width={0.5} mt={4}>
+            <Box fontSize={18} fontWeight={500} m="0 auto" width={0.9} mt={4}>
                 У Вас нет предстоящих записей
             </Box>
         </Box>
@@ -82,11 +82,11 @@ export const Calendar: React.FC<CalendarProps> = (props) => {
                 }
 
                 {
-                    !loading && visits.length == 0 &&
+                    !loading && (visitsList.state.answer.data as any)?.length == 0 &&
                     <TakePlaceholder />
                 }
 
-                {!loading && visits.length > 0 &&
+                {!loading && (visitsList.state.answer.data as any)?.length > 0 &&
                     <Box p="10px 20px">
                         <Box mb={2} fontSize={24} fontWeight={500}>Вы записаны на прием</Box>
 
@@ -102,14 +102,14 @@ export const Calendar: React.FC<CalendarProps> = (props) => {
                     </Box>
                 }
 
-                <Box mt="auto" textAlign="center">
+                <Box mt="auto" textAlign="center" mb={5}>
                     <AppLinkButton
                         disabled={loading}
                         to={{
                             pathname: `/passport/take`
                         }}
                         appColor="linear"
-                        className={classes.takeButton}
+                        minWidth
                     > Записаться
                     </AppLinkButton>
                 </Box>

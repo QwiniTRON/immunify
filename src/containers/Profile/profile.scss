@@ -2,4 +2,8 @@
     padding: 10px 20px;
 
     background: url('../../assets/familyShield.svg') center 80% fixed no-repeat;
+
+    &--nobackground {
+        background: none;
+    }
 }

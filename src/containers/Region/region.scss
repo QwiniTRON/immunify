@@ -40,7 +40,16 @@
         }
     }
 
-    
+    .region-page__buttons {
+        display: flex;
+        justify-content: space-between;
+        padding: 10px;
+        flex: 0 0 auto;
+    }
+
+    .region-page__content {
+        flex: 1 1 auto;
+    }
 }
 
 .btns {

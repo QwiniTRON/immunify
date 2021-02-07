@@ -27,7 +27,8 @@ const useStyle = makeStyles((theme) => ({
         position: 'relative',
         display: 'flex',
         alignItems: 'center',
-        borderRadius: 10
+        borderRadius: 10,
+        textAlign: 'left'
     },
     rootLink: {
         textDecoration: 'none'

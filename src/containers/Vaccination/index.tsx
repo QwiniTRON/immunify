@@ -21,7 +21,7 @@ type VaccinationProps = {}
 
 const VaccinationPlaceholder: React.FC = () => {
   return (
-    <Box>
+    <div>
       <Box textAlign="center" mt={1}>
         <VaccinationIcon />
       </Box>
@@ -29,13 +29,17 @@ const VaccinationPlaceholder: React.FC = () => {
       <Box fontSize={24} fontWeight={500} textAlign="center" width={0.8} m="16px auto">
         У Вас нет отмеченных вакцинаций
       </Box>
-    </Box>
+    </div>
   );
 }
 
 const useStyles = makeStyles({
   page: {
-    padding: '20px 20px 85px 20px'
+    padding: '20px'
+  },
+
+  takeButton: {
+    top: '85vh'
   }
 });
 
@@ -74,12 +78,12 @@ export const Vaccination: React.FC<VaccinationProps> = (props) => {
     if (lastVaccination.revaccination || lastVaccination.stage !== Math.max.apply(null, vaccine.totalStages)) {
       let startDate = new Date(lastVaccination.date);
       startDate = new Date(startDate.setMonth(startDate.getMonth() + lastVaccination.durationStartInMonths));
-  
+
       let endDate = new Date(lastVaccination.date);
       endDate = new Date(endDate.setMonth(endDate.getMonth() + lastVaccination.durationEndInMonths));
-  
+
       const currentDate = new Date();
-  
+
       if (currentDate >= startDate) {
         if (currentDate <= endDate) color = 'yellow';
         else color = 'red';
@@ -107,7 +111,7 @@ export const Vaccination: React.FC<VaccinationProps> = (props) => {
     <Layout title="Прошедшие вакцинации" domainPage>
       <PageLayout className={classes.page}>
 
-        {vaccinations.state.fetching && <Box m="15px auto"><CircleLoader /></Box>}
+        {vaccinations.state.fetching && <Box textAlign="center"><CircleLoader /></Box>}
 
         {!vaccinations.state.fetching &&
           <>
@@ -123,7 +127,9 @@ export const Vaccination: React.FC<VaccinationProps> = (props) => {
                 </>
             }
 
-            <AppLinkButton to="/vaccination/add" floated appColor="linear">
+            <Box mb={5} />
+
+            <AppLinkButton className={classes.takeButton} to="/vaccination/add" floated minWidth appColor="linear">
               Добавить
             </AppLinkButton>
           </>

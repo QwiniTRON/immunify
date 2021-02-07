@@ -14,14 +14,13 @@ import { RootState } from '../../store';
 import { updateCurrentUserData } from '../../store/user/action';
 import { Layout } from '../../components/Layout/Layout';
 import { BackButton } from '../../components/BackButton';
-import { useIsEmptyFamily } from '../../hooks';
+import { useAccessToken } from '../../hooks';
 import { Profession as ProfessionType } from '../../type';
 import { claculateRisks } from '../../store/appData/action';
 import { useTimerFunction } from '../../hooks/timerFunction';
 import { useHistory } from 'react-router-dom';
 
-import { useAccessToken } from '../../hooks/useAccessToken';
-import { AppButtonGroup } from '../../components';
+import { useUpdatePersonality } from '../../hooks/updatePersonality';
 
 type ProfessionProps = {
 
@@ -33,10 +32,14 @@ export const Profession: React.FC<ProfessionProps> = (props) => {
     const dispatch = useDispatch();
     const history = useHistory();
     const { token } = useAccessToken();
+    const updatePersonality = useUpdatePersonality();
+
+    const mainUser = useSelector((state: RootState) => state.user.user);
 
     const professions = useSelector((state: RootState) => state.appData.professions);
     const currentUser = useSelector((state: RootState) => state.user.currentUser);
     const pathToBack = `/profile/${currentUser?.name}`;
+
 
     const [performTimer, cancelTimer] = useTimerFunction();
     const [open, setOpen] = useState(false);
@@ -56,12 +59,17 @@ export const Profession: React.FC<ProfessionProps> = (props) => {
                 setOpen(true);
                 performTimer(() => history.push(pathToBack), timeToBack);
                 dispatch(claculateRisks(token));
+
+                // обновление персональных данных
+                if(mainUser?.savePersonality) {
+                    updatePersonality();
+                }
             });
     }
 
     return (
         <Layout title="" BackButtonCustom={<BackButton text="Вернуться в профиль" to={pathToBack} />} >
-            <PageLayout className="profession-page">
+            <PageLayout flex className="profession-page">
                 <h4 className="region-page__title">Чем вы занимаетесь?</h4>
 
                 <Typography color="error">{errors.profession}</Typography>
@@ -73,7 +81,7 @@ export const Profession: React.FC<ProfessionProps> = (props) => {
                     fullWidth
                     renderInput={(params) => <TextField
                         {...params}
-                        label="выбирите профессию"
+                        label="выберите профессию"
                         variant="outlined"
                         helperText={errors.profession}
                         error={Boolean(errors.profession)} />}

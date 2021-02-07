@@ -1,6 +1,6 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/styles';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import Box from '@material-ui/core/Box';
 
 import './profile.scss';
@@ -10,10 +10,11 @@ import { PageLayout } from '../../components/UI/PageLayout';
 import { UserCard } from '../../components/UI/UserCard';
 import { Layout } from '../../components/Layout/Layout';
 import { useCheckUserDataCompleated } from '../../hooks';
-import { User, UserModel } from '../../models/User';
+import { User, UserModel } from '../../models/User/User';
 import { AppLinkButton } from '../../components/UI/AppLinkButton';
-import { s } from '../../utils';
+import { s, sif } from '../../utils';
 import { getYearOffsetNow } from '../../utils/date';
+import { changeCurrentUser } from '../../store/user/action';
 
 
 type ProfileProps = {
@@ -50,6 +51,8 @@ const useStyle = makeStyles({
 export const Profile: React.FC<ProfileProps> = (props) => {
   const classes = useStyle();
 
+  const dispatch = useDispatch();
+
   const currentUser = useSelector((state: RootState) => state.user.currentUser);
   const user = useSelector((state: RootState) => state.user.user);
   const idUserDataCompleate = useCheckUserDataCompleated();
@@ -63,36 +66,39 @@ export const Profile: React.FC<ProfileProps> = (props) => {
 
   return (
     <Layout title="Профиль" domainPage>
-      <PageLayout className="profile-page">
+      <PageLayout className={sif({ ["profile-page"]: true, ['profile-page--nobackground']: Number(user?.family?.length) > 0 })}>
 
         <Box fontSize={24} fontWeight="500" p={1} component="h1">Список пользователей</Box>
-        <p className="family-page__description">Введите данные о членах вашей семьи, чтобы застраховать их от возможных осложнений</p>
+        <p className="family-page__description">Введите данные о членах вашей семьи, чтобы защитить их от возможных болезней</p>
 
         <Box className={classes.patientList}>
-          <UserCard
-            active={user == currentUser}
-            progress={UserModel.getCompleatedStatus(user as User)}
-            title={String(user?.name)}
-            to={`/profile/${user?.name}`}
-            avatarLetters={String(user?.name)[0]}
-            subtitle={(user?.sex == 'man' ? 'мужской' : 'женский') + ', ' + getYearOffsetNow(Number(user?.age))}
-            classes={{ root: classes.userCard }} />
+          <div key={user?.name} onClick={() => dispatch(changeCurrentUser(String(user?.name)))}>
+            <UserCard
+              active={user == currentUser}
+              progress={UserModel.getCompleatedStatus(user as User)}
+              title={String(user?.name)}
+              to={`/profile/${user?.name}`}
+              avatarLetters={String(user?.name)[0]}
+              subtitle={(user?.sex == 'man' ? 'мужской' : 'женский') + ', ' + getYearOffsetNow(Number(user?.age))}
+              classes={{ root: classes.userCard }} />
+          </div>
 
           {user?.family.map((u) => {
             return (
-              <UserCard
-                key={u.name}
-                active={u == currentUser}
-                progress={UserModel.getCompleatedStatus(u)}
-                title={String(u?.name)}
-                subtitle={(u.sex == 'man' ? 'мужской' : 'женский') + ', ' + getYearOffsetNow(u.age)}
-                to={`/profile/${u?.name}`}
-                avatarLetters={String(u?.name)[0]}
-                classes={{ root: classes.patientCard }} />
+              <div key={u.name} onClick={() => dispatch(changeCurrentUser(u.name))}>
+                <UserCard
+                  active={u == currentUser}
+                  progress={UserModel.getCompleatedStatus(u)}
+                  title={String(u?.name)}
+                  subtitle={(u.sex == 'man' ? 'мужской' : 'женский') + ', ' + getYearOffsetNow(u.age)}
+                  to={`/profile/${u?.name}`}
+                  avatarLetters={String(u?.name)[0]}
+                  classes={{ root: classes.patientCard }} />
+              </div>
             )
           })}
 
-          <AppLinkButton className={s("family-page__add", classes.addButton)} to="/profile/add" >Добавить пользователя</AppLinkButton>
+          <AppLinkButton className={classes.addButton} to="/profile/add" >Добавить пользователя</AppLinkButton>
         </Box>
 
       </PageLayout>

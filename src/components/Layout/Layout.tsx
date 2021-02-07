@@ -1,18 +1,30 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import Avatar from '@material-ui/core/Avatar';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import BottomNavigation from '@material-ui/core/BottomNavigation';
 import BottomNavigationAction from '@material-ui/core/BottomNavigationAction';
-import { useHistory, useLocation } from 'react-router-dom';
-import { useSelector } from 'react-redux';
-import Background from '../../assets/backgroundgeneral.svg';
+import { Link, useHistory, useLocation } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import Box from '@material-ui/core/Box';
+import InfoImg from '../../assets/info.png';
+import { ReactComponent as ExitIcon } from '../../assets/exit.svg';
+import MenuIcon from '@material-ui/icons/Menu';
+import IconButton from '@material-ui/core/IconButton';
+import { CSSTransition } from 'react-transition-group';
 
 import "./Layout.scss";
+
+import MainLogo from '../../assets/splashlogo.png';
 import { RootState } from '../../store';
 import { BackButton } from '../BackButton';
 import { sif } from '../../utils/Styels';
 import { FamilyIcon, DoneIcon, ListIcon, PasportIcon } from '../../components/UI/Icons/Icons';
+import { AppModal } from '../UI/AppModal';
+import { AppButton } from '../UI';
+import { exit } from '../../store/user/action';
+import { useAccessToken } from '../../hooks';
+
 
 type LayoutProps = {
     title: string
@@ -23,6 +35,7 @@ type LayoutProps = {
     domainPage?: boolean
     clearScroll?: boolean
     background?: boolean
+    toolMenu?: React.ReactElement
 }
 
 const useStyles = makeStyles((theme) => ({
@@ -51,6 +64,13 @@ const useStyles = makeStyles((theme) => ({
 
     layout__hideNav: {
         paddingBottom: 0
+    },
+
+    exitButtons: {
+        display: 'flex',
+        marginTop: 40,
+        gap: '0 10',
+        justifyContent: 'space-between'
     }
 }));
 
@@ -64,15 +84,43 @@ export const Layout: React.FC<LayoutProps> = ({
     BackButtonCustom,
     domainPage,
     clearScroll,
+    toolMenu,
     background
 }) => {
     const classes = useStyles();
+
+    const dispatch = useDispatch();
     const history = useHistory();
+    const { set: setToken } = useAccessToken();
+
     const locationData = useLocation();
     const currentUser = useSelector((state: RootState) => state.user.currentUser);
+    const mainUser = useSelector((state: RootState) => state.user.user);
+
+    const [asideMenu, setAsideMenu] = useState(false);
+    const [exitModal, setExitModal] = useState(false);
+
+    const userEmail = mainUser?.email?.Value ?? mainUser?.name;
 
     // определяем в какой мы находимся сущности(разделе)
     const parentRoute = '/' + locationData.pathname.split('/')[1];
+
+    // handle back click
+    useEffect(() => {
+        const toggleAsideMenu = (e: Event) => { setAsideMenu(false) };
+
+        window.addEventListener('popstate', toggleAsideMenu);
+
+        return () => {
+            window.removeEventListener('popstate', toggleAsideMenu);
+        }
+    }, []);
+
+
+    const exitHandle = () => {
+        dispatch(exit());
+        setToken("");
+    }
 
 
     return (
@@ -81,12 +129,23 @@ export const Layout: React.FC<LayoutProps> = ({
             [classes.layout]: true,
             [classes.layout__hideNav]: Boolean(hideNav)
         })}>
+            {/* header */}
             {!hideHeader &&
                 <header className={sif({
                     ["layout__header"]: true,
                     [classes.header__Green]: Boolean(domainPage)
                 })}>
                     {BackButtonCustom ? BackButtonCustom : <BackButton />}
+
+                    {domainPage &&
+                        <IconButton
+                            edge="start"
+                            className="aside-menu__toggler"
+                            aria-label="menu"
+                            onClick={setAsideMenu.bind(null, !asideMenu)}>
+                            <MenuIcon />
+                        </IconButton>
+                    }
 
                     <Typography className={classes.title} variant="h3">
                         {titleCurrentName ? currentUser?.name : title}
@@ -95,10 +154,11 @@ export const Layout: React.FC<LayoutProps> = ({
                     <Avatar className={classes.avatar}>
                         {currentUser ? currentUser.name[0] + currentUser.name.slice(-1) : "😎"}
                     </Avatar>
-                </header>}
+                </header>
+            }
 
 
-
+            {/* content */}
             <main
                 className={
                     sif({
@@ -111,6 +171,10 @@ export const Layout: React.FC<LayoutProps> = ({
                 {children}
             </main>
 
+            {/* подменю */}
+            {toolMenu}
+
+            {/* navigation */}
             {!hideNav &&
                 <div className="layout__navigation">
                     <BottomNavigation
@@ -157,6 +221,49 @@ export const Layout: React.FC<LayoutProps> = ({
                         />
                     </BottomNavigation>
                 </div>}
+
+            {/* боковое меню */}
+            {Boolean(domainPage) &&
+                <div className={sif({
+                    ["aside-menu-container"]: true,
+                    ["aside-menu-container--active"]: asideMenu
+                })}>
+                    <div className="aside-menu__overlay" onClick={setAsideMenu.bind(null, !asideMenu)} />
+                    <div className="aside-menu">
+                        <img src={MainLogo} alt="immunify" className="aside-menu__logo" />
+
+                        <Box fontSize={24} fontWeight={500}>
+                            {
+                                userEmail
+                            }
+                        </Box>
+
+                        <div className="links">
+                            <a href="https://Immunify.co/" target="_blank" className="links__link" onClick={setAsideMenu.bind(null, false)}>
+                                <img className="links__icon" alt="info" src={InfoImg} /> <span>О приложении</span>
+                            </a>
+
+                            <div className="links__link" onClick={() => setExitModal(true)}>
+                                <ExitIcon className="links__icon" /> <span>Выход</span>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            }
+
+            {/* модальное окно предложения выйти */}
+            <CSSTransition timeout={300} in={exitModal} classNames="fade2" mountOnEnter unmountOnExit>
+                <AppModal onClose={setExitModal.bind(null, false)}>
+                    <Box component="h2" textAlign="center" >Выйти из аккаунта?</Box>
+
+                    <div className={classes.exitButtons}>
+                        <AppButton minWidth onClick={() => exitHandle()}>да</AppButton>
+                        <AppButton minWidth appColor="white" onClick={setExitModal.bind(null, false)}>нет</AppButton>
+                    </div>
+                </AppModal>
+            </CSSTransition>
+
         </div>
     );
 };

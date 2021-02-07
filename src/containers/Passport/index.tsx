@@ -8,7 +8,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import { DiseasCard } from '../../components/UI/DiseasCard';
 import { PageLayout } from '../../components/UI/PageLayout';
 import { RootState } from '../../store';
-import { UserModel } from '../../models/User';
+import { UserModel } from '../../models/User/User';
 import { AppLinkButton } from '../../components/UI/AppLinkButton';
 import { useServer } from '../../hooks';
 import { GetVaccinationByPatient, PatientVaccinations, PatientVaccination, GetVaccines, GetLastPoll } from '../../server';
@@ -76,18 +76,18 @@ const useStyles = makeStyles({
 
 const PassportPlaceholder: React.FC<any> = (props) => {
     return (
-        <Box textAlign="center" pt={4} mb={8}>
+        <Box textAlign="center" pt={4} mb={11}>
             <ShieldIcon />
 
             <Box fontSize={18} fontWeight={500} m="0 auto" width={0.5} mt={4}>
                 Недостаточно данных
             </Box>
 
-            <Box m="0 auto" width={0.5} mt={1}>
+            <Box m="0 auto" width={0.8} mt={1} mb={2}>
                 Заполните данные о себе, чтобы изучить личный иммунный паспорт
             </Box>
 
-            <AppLinkButton to={`/profile`} appColor="linear" floated>
+            <AppLinkButton to={`/profile`} appColor="linear" floated minWidth>
                 Добавить
             </AppLinkButton>
         </Box>
@@ -209,7 +209,7 @@ export const Passport: React.FC<PassportProps> = (props) => {
 
                     {!compleatedStatus && !loading && <PassportPlaceholder />}
 
-                    {/* {compleatedStatus && !loading &&
+                    {/* фильтр {compleatedStatus && !loading &&
                         <>
                             <Box fontSize={24} fontWeight={500}>Риски</Box>
 

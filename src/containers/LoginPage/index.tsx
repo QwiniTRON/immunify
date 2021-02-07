@@ -1,13 +1,12 @@
-import React, { FC } from 'react';
+import React, { FC, useEffect } from 'react';
 import googlelogo from '../../assets/google.png';
 import vklogo from '../../assets/vk.png';
 import facebooklogo from '../../assets/facebook.png';
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 
 import { useForm } from 'react-hook-form';
 
 import { useServer } from '../../hooks/useServer';
-import { useAccessToken } from '../../hooks/useAccessToken';
 
 import { GoogleLogin, GoogleLoginResponse, GoogleLoginResponseOffline } from 'react-google-login';
 import FacebookLogin from 'react-facebook-login/dist/facebook-login-render-props';
@@ -20,6 +19,9 @@ import {
 } from '../../server';
 
 import './loginpage.scss';
+import { UserModel } from '../../models/User/User';
+import { useAccessToken, useGetPersonality } from '../../hooks';
+import { LoginMark, LoginTypeEnum } from '../../models';
 
 type Form = {
   username: string,
@@ -27,14 +29,16 @@ type Form = {
 }
 
 export const LoginPage: FC = () => {
+  const history = useHistory();
   const loginFetcher = useServer(Login);
   const externalLoginFetcher = useServer(ExternalLogin);
-  const { set: setToken } = useAccessToken();
+  const { set: setToken, token } = useAccessToken();
 
   const {
     register,
     handleSubmit,
     errors,
+    getValues
   } = useForm<Form>();
 
   const onSubmit = (data: Form) => {
@@ -50,18 +54,35 @@ export const LoginPage: FC = () => {
 
   const error = !loading && (loginFetcher.state.answer.errorMessage || externalLoginFetcher.state.answer.errorMessage || "");
 
+
+  /**
+   * успешный стандартный вход
+   */
   if (successLogin) {
+    UserModel.CurrentUserEmail = new LoginMark(LoginTypeEnum.Simple, getValues().username).toJSON();
+    UserModel.chekUserEmail();
+
     setToken(loginFetcher.state.answer.data?.token || "");
-    window.location.href = "/profile";
+
     loginFetcher.reload();
   }
 
+  /**
+   * успешный вход через сети
+   */
   if (successExternal) {
+    UserModel.chekUserEmail();
+
     setToken(externalLoginFetcher.state.answer.data?.token || "");
-    window.location.href = "/profile";
+
     externalLoginFetcher.reload();
   }
 
+  /**
+   * положительный ответ входа через Google
+   * 
+   * @param response 
+   */
   const responseGoogle = (response: GoogleLoginResponse | GoogleLoginResponseOffline): void => {
 
     function isGoogleResponse(obj: any): obj is GoogleLoginResponse {
@@ -69,6 +90,8 @@ export const LoginPage: FC = () => {
     }
 
     if (isGoogleResponse(response)) {
+      UserModel.CurrentUserEmail = new LoginMark(LoginTypeEnum.Google, response.profileObj.email).toJSON();
+
       externalLoginFetcher.fetch({
         externalAuth: ExternalAuth.Google,
         identity: response.googleId,
@@ -76,13 +99,25 @@ export const LoginPage: FC = () => {
     }
   }
 
+  /**
+   * отрицательный овтет входа через Google
+   * 
+   * @param response
+   */
   const failureResponseGoogle = (response: GoogleLoginResponse): void => {
     // Show error maybe?
     console.log(response.profileObj.googleId);
   }
 
+  /**
+   * ответ входа через facebook
+   * 
+   * @param userInfo 
+   */
   const facebookCallback = (userInfo: any): void => {
     if (userInfo.userID !== undefined) {
+      UserModel.CurrentUserEmail = new LoginMark(LoginTypeEnum.Facebook, userInfo.email).toJSON();
+
       externalLoginFetcher.fetch({
         externalAuth: ExternalAuth.Facebook,
         identity: userInfo.userID,
@@ -90,14 +125,22 @@ export const LoginPage: FC = () => {
     }
   }
 
+  /**
+   * ответ входа через вк
+   * 
+   * @param userInfo 
+   */
   const vkCallback = (userInfo: any): void => {
     if (userInfo.session !== undefined) {
+      UserModel.CurrentUserEmail = new LoginMark(LoginTypeEnum.VK, userInfo.session.user.href).toJSON();
+
       externalLoginFetcher.fetch({
         externalAuth: ExternalAuth.VK,
         identity: userInfo.session.user.id,
       });
     }
   }
+
 
   return (
     <div className="login-page">
@@ -145,7 +188,7 @@ export const LoginPage: FC = () => {
 
 
           <div className="login__buttons">
-            <button className="button button--app" disabled={loading} type="submit">войти</button>
+            <button className="button button--app" disabled={loading as boolean} type="submit">войти</button>
           </div>
         </form>
 

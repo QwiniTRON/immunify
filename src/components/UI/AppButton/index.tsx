@@ -9,6 +9,8 @@ export type AppButtonProps = {
     [p: string]: any
     floated?: boolean
     appColor?: 'linear' | 'white'
+    minWidth?: boolean
+    fixed?: boolean
 }
 
 const ButtonColors = {
@@ -34,27 +36,64 @@ const ButtonColors = {
             backgroundColor: 'rgba(155, 200, 63, 0.1)',
         }
     },
-    'default': {color: '#fff'}
+    'default': { color: '#fff' }
 }
 const useStyles = makeStyles((theme) => ({
     root: (props: AppButtonProps) => ({
         borderRadius: 45,
         ...ButtonColors[props.appColor ?? 'default'],
         textAlign: 'center',
-        padding: 12
+        padding: 12,
+        display: 'inline-block',
+        minHeight: 48
     }),
+
+    minWidth: {
+        minWidth: 160,
+
+        '@media (max-width: 360px)': {
+            minWidth: 120
+        }
+    },
+
     floated: {
         position: 'fixed',
         top: 'calc(var(--full_height) - 130px)',
         margin: '0 auto',
-        zIndex: 10,
+        zIndex: 1,
         left: '50%',
         transform: 'translateX(-50%)',
-        minWidth: 160,
+        width: 'auto',
+        display: 'inline-block',
 
-        ['@media (max-width:319px)']: {
-            bottom: 15
+        '@supports (position: sticky)': {
+            position: 'sticky',
+            bottom: 15,
+            top: 0
+        },
+
+        '@supports (position: -webkit-sticky)': {
+            position: '-webkit-sticky',
+            bottom: 15,
+            top: 0
+        },
+
+        '@supports (position: -moz-sticky)': {
+            position: '-moz-sticky',
+            bottom: 15,
+            top: 0
         }
+    },
+
+    fixed: {
+        position: 'fixed',
+        top: 'calc(var(--full_height) - 130px)',
+        margin: '0 auto',
+        zIndex: 1,
+        left: '50%',
+        transform: 'translateX(-50%)',
+        width: 'auto',
+        display: 'inline-block',
     }
 }));
 
@@ -66,7 +105,12 @@ export const AppButton: React.FC<AppButtonProps> = (props) => {
             color="primary"
             variant="contained"
             classes={{
-                root: sif({ [classes.root]: true, [classes.floated]: Boolean(props.floated) })
+                root: sif({
+                    [classes.root]: true,
+                    [classes.floated]: Boolean(props.floated),
+                    [classes.fixed]: Boolean(props.fixed),
+                    [classes.minWidth]: Boolean(props.minWidth)
+                })
             }}
             className='app-button'
             {...props}>

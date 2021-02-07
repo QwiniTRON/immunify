@@ -1,11 +1,17 @@
 .page-layout {
     padding: 5px;
-    min-height: 100%;
-    display: flex;
-    flex-direction: column;
+    flex-grow: 1;
 
     .page-layout__content {
         min-height: 100%;
         flex-grow: 1;
     }
+}
+
+.page-layout--flex {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    justify-content: stretch;
+    align-items: stretch;
 }

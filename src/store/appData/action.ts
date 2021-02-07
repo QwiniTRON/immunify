@@ -61,7 +61,7 @@ export function claculateRisks(authOidc: string) {
     });
 
     if (calculateReq.succeeded) {
-      await dispatch(updateMember({ Risks: (calculateReq.data as any) }, currentUser.name));
+      // await dispatch(updateMember({ Risks: (calculateReq.data as any) }, currentUser.name));
     }
 
     return;

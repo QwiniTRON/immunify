@@ -21,13 +21,9 @@ const useStyles = makeStyles((theme) => ({
     },
 
     rootLink: {
-        margin: '8px 0',
         textDecoration: 'none',
         display: 'block',
-
-        '&:visited': {
-            color: 'currentColor'
-        }
+        cursor: 'pointer'
     },
 
     content: {
@@ -54,33 +50,52 @@ const useStyles = makeStyles((theme) => ({
     },
 
     text: {
-        flexGrow: 1
+        flexGrow: 1,
+        marginRight: 10
     },
 
     title: {
         fontSize: 18,
-        fontWeight: 500
+        fontWeight: 500,
+        color: 'var(--textColor)',
+
+        '@media (max-width: 340px)': {
+            fontSize: 14,
+        }
     },
 
     age: {
         fontSize: 18,
         fontWeight: 300,
         color: "#ACACAC",
-        display: 'flex'
+        display: 'flex',
+
+        '@media (max-width: 340px)': {
+            fontSize: 14,
+        }
     },
 
     active: {
-        backgroundColor: 'var(--accentColor)'
+        backgroundColor: 'var(--accentColor)',
     },
 
     indicator: {
-        height: 12,
-        width: 12,
+        position: 'relative',
+        height: 24,
+        width: 24,
+        minWidth: 24,
         border: '1px solid #DADADA',
         borderRadius: 12,
         display: 'inline-block',
         verticalAlign: 'baseline',
-        marginRight: 10
+        marginRight: 10,
+        padding: 2,
+        backgroundClip: 'content-box',
+        textAlign: 'center',
+
+        '@media (max-width: 340px)': {
+            marginRight: 5
+        }
     },
 
     chooseButton: {
@@ -90,33 +105,24 @@ const useStyles = makeStyles((theme) => ({
         textAlign: 'center',
         borderRadius: 4,
         position: 'relative',
-        zIndex: 5
+        zIndex: 5,
+        textDecoration: 'none',
+        minWidth: 90,
+
+        ':visited': {
+            color: 'currentColor'
+        }
     },
 
     chooseButton__active: {
-        color: 'var(--accentColor)',
-        border: '1px solid var(--accentColor)',
-    },
-
-    doneIcon: {
-        marginRight: 13,
-        opacity: 0,
-        color: 'var(--mainColor2)',
-        stroke: 'currentColor',
-        marginTop: 5
+        backgroundColor: 'var(--mainColor2, #67CDFD)',
+        color: 'white'
     },
 
     doneIcon__active: {
         opacity: 1
     }
 }));
-
-const DoneIcon: React.FC<{ [p: string]: any }> = (props) => (
-    <svg width="15" height="13" viewBox="0 0 15 13" fill="none" xmlns="http://www.w3.org/2000/svg" {...props}>
-        <path d="M2.36172 5.97908L6.48606 10.7368L13.1472 1.85585" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
-    </svg>
-);
-
 
 
 export const UserCard: React.FC<UserCardProps> = ({
@@ -131,38 +137,34 @@ export const UserCard: React.FC<UserCardProps> = ({
     const classes = useStyles(props);
 
     return (
-        <Link to={to} className={classes.rootLink}>
+        <div className={classes.rootLink}>
             <div className={classes.root}>
                 <div className={classes.content}>
-                    <div className={classes.avatarBlock}>
-
+                    <div className={sif({ [classes.indicator]: true, [classes.active]: Boolean(active) })} >
+                        {active &&
+                            <svg width="11" height="9" viewBox="0 0 13 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M1.11207 5.99238L5.49827 10.5063L11.6417 1.26501" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                            </svg>
+                        }
                     </div>
+
+                    {/* текст */}
                     <div className={classes.text}>
                         <p className={classes.title}>
-                            <div className={sif({ [classes.indicator]: true, [classes.active]: Boolean(active) })} /> <span>{title}</span>
+                            <span>{title}</span>
+                            <p className={classes.age}> <span>{progress < 100 ? "Профиль заполнен" : "Профиль не заполнен"} </span></p>
                         </p>
-
-                        {progress == 100 &&
-                            <p className={classes.age}>
-                                <DoneIcon className={s(classes.doneIcon, classes.doneIcon__active)} />
-
-                                <span>Профиль заполнен</span>
-                            </p>
-                        }
-
-                        {progress < 100 &&
-                            <p className={classes.age}><DoneIcon className={classes.doneIcon} /> <span>Профиль не заполнен</span></p>
-                        }
-
                     </div>
 
-                    {/* <AppCircleProgress progress={progress} isDone={progress == 100} /> */}
-                    <div className={sif({
-                        [classes.chooseButton]: true,
-                        [classes.chooseButton__active]: Boolean(active)
-                    })}>{active ? "Выбран" : "Выбрать"}</div>
+                    {progress == 100 &&
+                        <Link to={to} className={classes.chooseButton}>Изменить</Link>
+                    }
+
+                    {progress < 100 &&
+                        <Link to={to} className={s(classes.chooseButton, classes.chooseButton__active)}>Заполнить</Link>
+                    }
                 </div>
             </div>
-        </Link>
+        </div>
     );
 };

@@ -16,16 +16,13 @@ import { AppButton } from '../../components/UI/AppButton';
 import { updateCurrentUserData } from '../../store/user/action';
 import { RootState } from '../../store';
 import { Layout } from '../../components/Layout/Layout';
-import { useIsEmptyFamily } from '../../hooks';
 import { BackButton } from '../../components/BackButton';
-import { Region as RegionType } from '../../type';
 
-import { useAccessToken } from '../../hooks/useAccessToken';
+import { useAccessToken, useServer, useUpdatePersonality } from '../../hooks/';
 
 import { claculateRisks } from '../../store/appData/action';
 import { useHistory } from 'react-router-dom';
 import { useTimerFunction } from '../../hooks/timerFunction';
-import { AppButtonGroup } from '../../components';
 
 
 
@@ -38,6 +35,10 @@ export const Region: React.FC<RegionProps> = (props) => {
     const dispatch = useDispatch();
     const history = useHistory();
     const { token } = useAccessToken();
+
+    const mainUser = useSelector((state: RootState) => state.user.user);
+    const updatePersonality = useUpdatePersonality();
+
 
     const regions = useSelector((state: RootState) => state.appData.regions) ?? [];
     const currentUser = useSelector((state: RootState) => state.user.currentUser);
@@ -65,64 +66,71 @@ export const Region: React.FC<RegionProps> = (props) => {
                 setOpen(true);
                 performTimer(() => history.push(pathToBack), timeToBack);
                 dispatch(claculateRisks(token));
+
+                // обновление персональных данных
+                if (mainUser?.savePersonality) {
+                    updatePersonality();
+                }
             });
     }
 
 
     return (
         <Layout title="" BackButtonCustom={<BackButton text="Вернуться в профиль" to={pathToBack} />} >
-            <PageLayout className="region-page">
-                <h4 className="region-page__title">В каком регионе Вы проживаете?</h4>
+            <PageLayout flex className="region-page">
+                <div className="region-page__content">
+                    <h4 className="region-page__title">В каком регионе Вы проживаете?</h4>
 
-                <Typography color="error">{errors.region}</Typography>
-                <Autocomplete
-                    id="combo-region-main"
-                    options={regions}
-                    getOptionLabel={(option) => option.name}
-                    value={region?.main}
-                    fullWidth
-                    renderInput={(params) =>
-                        <TextField
-                            {...params}
-                            helperText={errors.region}
-                            error={Boolean(errors.region)}
-                            label="выбирите регион"
-                            variant="outlined" />
+                    <Typography color="error">{errors.region}</Typography>
+                    <Autocomplete
+                        id="combo-region-main"
+                        options={regions}
+                        getOptionLabel={(option) => option.name}
+                        value={region?.main}
+                        fullWidth
+                        renderInput={(params) =>
+                            <TextField
+                                {...params}
+                                helperText={errors.region}
+                                error={Boolean(errors.region)}
+                                label="выбирите регион"
+                                variant="outlined" />
+                        }
+                        onChange={(event, newValue) => {
+                            setRegion(Object.assign({}, region, { main: newValue }));
+                        }}
+                    />
+
+                    <FormControlLabel className="region-page__work"
+                        control={
+                            <Checkbox
+                                checked={otherWork}
+                                onChange={(e) => setOtherWork(e.target.checked)}
+                                color="primary"
+                            />}
+                        label="Я работаю в другом регионе"
+                    />
+
+                    {otherWork &&
+                        <Box mt={2} mb={12}>
+                            <h4 className="region-page__title">В каком регионе Вы работаете?</h4>
+                            <Typography color="error">{errors.workRegion}</Typography>
+                            <Autocomplete
+                                id="combo-region-work"
+                                options={regions}
+                                getOptionLabel={(option) => option.name}
+                                value={region?.work}
+                                fullWidth
+                                renderInput={(params) => <TextField {...params} label="выбирите регион" variant="outlined" />}
+                                onChange={(event, newValue) => {
+                                    setRegion(Object.assign({}, region, { work: newValue }));
+                                }}
+                            />
+                        </Box>
                     }
-                    onChange={(event, newValue) => {
-                        setRegion(Object.assign({}, region, { main: newValue }));
-                    }}
-                />
 
-                <FormControlLabel className="region-page__work"
-                    control={
-                        <Checkbox
-                            checked={otherWork}
-                            onChange={(e) => setOtherWork(e.target.checked)}
-                            color="primary"
-                        />}
-                    label="Я работаю в другом регионе"
-                />
-
-                {otherWork &&
-                    <Box mt={2}>
-                        <h4 className="region-page__title">В каком регионе Вы работаете?</h4>
-                        <Typography color="error">{errors.workRegion}</Typography>
-                        <Autocomplete
-                            id="combo-region-work"
-                            options={regions}
-                            getOptionLabel={(option) => option.name}
-                            value={region?.work}
-                            fullWidth
-                            renderInput={(params) => <TextField {...params} label="выбирите регион" variant="outlined" />}
-                            onChange={(event, newValue) => {
-                                setRegion(Object.assign({}, region, { work: newValue }));
-                            }}
-                        />
-                    </Box>
-                }
-
-                <div className="btns">
+                </div>
+                <div className="region-page__buttons">
                     <AppButton className="region-page__save region-button" color="default">отмена</AppButton>
                     <AppButton className="region-page__save region-button" onClick={handleEdit}>сохранить</AppButton>
                 </div>

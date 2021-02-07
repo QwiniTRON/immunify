@@ -4,6 +4,8 @@ import { BrowserRouter } from 'react-router-dom';
 import { LastPathProvider, LastPathContext, lastPathContext } from './LastPathProvider';
 import { pathDictionary } from './pathConfig';
 
+export * from './Routes';
+
 
 export const AppRouter: React.FC = ({ children }) => {
   return (

@@ -3,7 +3,6 @@ import Radio from '@material-ui/core/Radio';
 import RadioGroup from '@material-ui/core/RadioGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import FormControl from '@material-ui/core/FormControl';
-import FormLabel from '@material-ui/core/FormLabel';
 import LinearProgress from '@material-ui/core/LinearProgress';
 import { makeStyles } from '@material-ui/core/styles';
 import { useSelector, useDispatch } from 'react-redux';
@@ -11,7 +10,7 @@ import Snackbar from '@material-ui/core/Snackbar';
 import MuiAlert from '@material-ui/lab/Alert';
 import { useHistory } from 'react-router-dom';
 
-import { useAccessToken } from '../../hooks/useAccessToken';
+import { useAccessToken, useServer, useUpdatePersonality } from '../../hooks/';
 
 import './quiz.scss';
 
@@ -23,10 +22,9 @@ import { updateCurrentUserData } from '../../store/user/action';
 import { QuizAnswer } from '../../store/types';
 import { Layout } from '../../components/Layout/Layout';
 import { BackButton } from '../../components/BackButton';
-import { useIsEmptyFamily } from '../../hooks';
-import { QuizData } from '../../models/User';
+import { QuizData } from '../../models/User/User';
 import { useTimerFunction } from '../../hooks/timerFunction';
-import { AppButtonGroup } from '../../components';
+import { UpdatePersonality } from '../../server';
 
 
 
@@ -39,6 +37,16 @@ const useStyles = makeStyles((theme) => ({
 
     radio: {
         marginBottom: 18
+    },
+
+    answer: {
+        display: 'block',
+        marginBottom: 18
+    },
+
+    noticeMessage: {
+        zIndex: 25,
+        bottom: 65
     }
 }));
 
@@ -54,6 +62,11 @@ export const Quiz: React.FC<QuizProps> = (props) => {
     const dispatch = useDispatch();
     const history = useHistory();
     const { token } = useAccessToken();
+    const updatePersonality = useUpdatePersonality();
+
+    const mainUser = useSelector((state: RootState) => state.user.user);
+
+    const updatePersonalityReq = useServer(UpdatePersonality);
 
     const [performTimer, cancelTimer] = useTimerFunction();
     const [open, setOpen] = useState(false);
@@ -76,12 +89,12 @@ export const Quiz: React.FC<QuizProps> = (props) => {
     const quizQuestions = Questionnaire?.questions!;
 
     let quizProgress: number;
-    if(quiz.userAnswers.length == quizQuestions?.length) {
+    if (quiz.userAnswers.length == quizQuestions?.length) {
         quizProgress = Math.round((quiz.currentStep + 1) / quizQuestions.length * 100);
     } else {
         quizProgress = quiz.userAnswers.length / quizQuestions?.length * 100;
     }
-    
+
     const isNotCurrentAnswer = !Boolean(quiz.userAnswers[quiz.currentStep]) && !Boolean(Number(selectedAnswer));
     const currentQuestion = quizQuestions?.[quiz.currentStep];
 
@@ -151,6 +164,11 @@ export const Quiz: React.FC<QuizProps> = (props) => {
                 setOpen(true);
                 performTimer(() => history.push(pathToBack), timeToBack);
                 dispatch(claculateRisks(token));
+
+                // обновление персональных данных
+                if (mainUser?.savePersonality) {
+                    updatePersonality();
+                }
             });
     }
 
@@ -169,40 +187,48 @@ export const Quiz: React.FC<QuizProps> = (props) => {
                         aria-label="answer"
                         name="quiz"
                         value={Number(selectedAnswer)}
-                        onChange={setAnswer}>
+                        onChange={setAnswer}
+                        classes={{root: classes.answer}}>
                         {currentQuestion.answers.map((answer) => (
-                            <FormControlLabel classes={{root: classes.radio}} key={answer.id} value={answer.id} control={<Radio color="primary" />} label={answer.text} />
+                            <FormControlLabel 
+                            key={answer.id} 
+                            value={answer.id} 
+                            control={<Radio color="primary" />} 
+                            label={answer.text}
+                            classes={{root: classes.answer}} />
                         ))}
                     </RadioGroup>
                 </FormControl>
 
                 <div className="btns">
-
                     <AppButton
                         onClick={backQuestion}
                         disabled={quiz.currentStep === 0}
                         className="quiz-button"
-                        color="default">назад</AppButton>
+                        color="default"
+                        minWidth>назад</AppButton>
 
                     {!(quiz.currentStep + 1 === quizQuestions.length) && <AppButton
                         onClick={nextQuestion}
                         disabled={isNotCurrentAnswer || quiz.currentStep + 1 === quizQuestions.length}
                         className="quiz-button"
-                        color="primary">далее</AppButton>}
+                        color="primary"
+                        minWidth>далее</AppButton>}
 
                     {quiz.currentStep + 1 === quizQuestions.length && <AppButton
                         onClick={finishQuiz}
                         disabled={isNotCurrentAnswer}
                         appColor="linear"
                         className="quiz-button"
-                        color="primary">завершить</AppButton>}
+                        color="primary"
+                        minWidth>завершить</AppButton>}
                 </div>
 
 
-                <Snackbar open={open} autoHideDuration={3000} onClose={() => setOpen(false)}>
+                <Snackbar open={open} autoHideDuration={1500} onClose={() => setOpen(false)} className={classes.noticeMessage}>
                     <MuiAlert onClose={() => setOpen(false)} elevation={6} variant="filled">
                         данные сохранены.
-                </MuiAlert>
+                    </MuiAlert>
                 </Snackbar>
             </PageLayout>
         </Layout>
