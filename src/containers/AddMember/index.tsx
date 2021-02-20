@@ -1,4 +1,4 @@
-import React, { useEffect, useLayoutEffect, useState } from 'react';
+import React, { useCallback, useEffect, useLayoutEffect, useState } from 'react';
 import Typography from '@material-ui/core/Typography';
 import TextField from '@material-ui/core/TextField';
 import Box from '@material-ui/core/Box';
@@ -104,26 +104,24 @@ const AddMember: React.FC<AddMemberProps> = ({
     const [isValid, setIsValid] = useState(false);
 
     // запрос добавления нового пациента
-    useLayoutEffect(() => {
-        if (success) {
-            addMember(name, selectedDate?.getTime(), sex, addReq?.state?.answer?.data?.id)
-                .then((r: any) => {
-                    if(mainUser?.savePersonality) {
-                        updatePersonality();
-                    }
+    if (success) {
+        addMember(name, selectedDate?.getTime(), sex, addReq?.state?.answer?.data?.id)
+            .then((r: any) => {
+                if (mainUser?.savePersonality) {
+                    updatePersonality();
+                }
 
-                    history.push(`/profile/${name}`);
-                    addReq.reload();
-                });
-        } else if (addReq.state.answer.errorMessage) {
-            // handle error
-        }
-    }, [success]);
+                history.push(`/profile/${name}`);
+                addReq.reload();
+            });
+    } else if (addReq.state.answer.errorMessage) {
+        // handle error
+    }
 
     /**
      * валидаци данных
      */
-    const validate = () => {
+    const validate = useCallback(() => {
         let valid = true;
 
         // sanitize
@@ -157,7 +155,7 @@ const AddMember: React.FC<AddMemberProps> = ({
         setErrors(errors);
 
         return [valid, errors]
-    }
+    }, [sex, name, inputTouches, selectedDate])
 
     // при изменении пола
     useEffect(() => {
@@ -170,7 +168,7 @@ const AddMember: React.FC<AddMemberProps> = ({
      * 
      * @param e 
      */
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = useCallback((e: React.FormEvent) => {
         e.preventDefault();
         if (loading) return;
 
@@ -179,9 +177,27 @@ const AddMember: React.FC<AddMemberProps> = ({
         if (valid) {
             addReq.fetch({});
         }
-    }
+    }, [validate])
 
-    
+
+    // установка касания
+    const setTouches = useCallback(
+        (touch: { [p: string]: boolean }) => setInputTouches(Object.assign({}, inputTouches, touch)),
+        [inputTouches]
+    );
+
+    // изменение имени
+    const nameChangeHandler = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+        setName(e.target.value);
+        setTouches({ name: true });
+    }, [setTouches]);
+
+    const genderChangeHandler = useCallback((value: string) => {
+        setTouches({ sex: true });
+        setSex(value);
+        validate();
+    }, [setTouches, validate]);
+
     return (
         <Layout title="" BackButtonCustom={<BackButton text="вернуться в профиль" />} hideNav={true}>
             <div className={"reg " + classes.root}>
@@ -219,11 +235,7 @@ const AddMember: React.FC<AddMemberProps> = ({
 
                             <Typography color="error">{errors.sex}</Typography>
                             <Box marginBottom={3}>
-                                <AppRadioGroup onChange={(value: string) => {
-                                    setInputTouches(Object.assign({}, inputTouches, { sex: true }));
-                                    setSex(value);
-                                    validate();
-                                }}
+                                <AppRadioGroup onChange={genderChangeHandler}
                                     value={sex}
                                     className={classes.genderContainer}
                                 >
@@ -245,7 +257,7 @@ const AddMember: React.FC<AddMemberProps> = ({
                                     />
                                 </AppRadioGroup>
                             </Box>
-                            
+
                             <TextField
                                 label="Введите имя"
                                 variant="outlined"
@@ -255,10 +267,7 @@ const AddMember: React.FC<AddMemberProps> = ({
                                 error={Boolean(errors.name)}
                                 helperText={errors.name}
                                 onBlurCapture={validate}
-                                onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                                    setName(e.target.value);
-                                    setInputTouches(Object.assign({}, inputTouches, { name: true }));
-                                }}
+                                onChange={nameChangeHandler}
                             />
 
                             <MuiPickersUtilsProvider utils={DateFnsUtils} locale={ruLocale}>
@@ -275,7 +284,7 @@ const AddMember: React.FC<AddMemberProps> = ({
                                     inputVariant="outlined"
                                     clearable
                                     onBlurCapture={validate}
-                                    onFocus={() => setInputTouches(Object.assign({}, inputTouches, { age: true }))}
+                                    onFocus={setTouches.bind(null, { age: true })}
                                 />
                             </MuiPickersUtilsProvider>
 

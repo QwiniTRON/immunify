@@ -125,7 +125,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 
-export const UserCard: React.FC<UserCardProps> = ({
+const UserCard: React.FC<UserCardProps> = ({
     title,
     subtitle,
     avatarLetters,
@@ -168,3 +168,7 @@ export const UserCard: React.FC<UserCardProps> = ({
         </div>
     );
 };
+
+const Memoed = React.memo(UserCard);
+
+export { Memoed as UserCard };

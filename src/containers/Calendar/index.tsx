@@ -1,4 +1,4 @@
-import React, { useEffect, useLayoutEffect, useState } from 'react';
+import React, { useEffect, useLayoutEffect, useMemo, useState } from 'react';
 import { Layout } from '../../components/Layout/Layout';
 import { makeStyles } from '@material-ui/core/styles';
 import Box from '@material-ui/core/Box';
@@ -58,20 +58,19 @@ export const Calendar: React.FC<CalendarProps> = (props) => {
     const visitsList = useServer(GetHospitalByPatient);
     const loading = visitsList.state.fetching;
     const success = !loading && visitsList.state.answer.succeeded;
-    const [visits, setVisits] = useState<Visit[]>([]);
+    let [visits, setVisits] = useState<Visit[]>([]);
 
     useLayoutEffect(() => {
         visitsList.fetch({ patientId: Number(currentUser?.id) });
     }, []);
 
-    useEffect(() => {
-        if (success) {
-            setVisits(visitsList?.state?.answer?.data as any);
-        }
-    }, [success]);
+    if (success) {
+        setVisits(visitsList?.state?.answer?.data as any);
+        visitsList.reload();
+    }
 
     // сортируем записи по дате
-    visits.sort((l, r) => Date.parse(l.date) - Date.parse(r.date));
+    const sortedVisits = useMemo(() => visits.sort((l, r) => Date.parse(l.date) - Date.parse(r.date)), [visits]);
 
 
     return (
@@ -82,16 +81,16 @@ export const Calendar: React.FC<CalendarProps> = (props) => {
                 }
 
                 {
-                    !loading && (visitsList.state.answer.data as any)?.length == 0 &&
+                    !loading && visits?.length == 0 &&
                     <TakePlaceholder />
                 }
 
-                {!loading && (visitsList.state.answer.data as any)?.length > 0 &&
+                {!loading && visits?.length > 0 && visitsList.isFetched &&
                     <Box p="10px 20px">
                         <Box mb={2} fontSize={24} fontWeight={500}>Вы записаны на прием</Box>
 
                         {
-                            (visits.map(
+                            (sortedVisits.map(
                                 (visit, idx) => (
                                     <Box marginY={2} key={idx}>
                                         <VisitCard visit={visit} />

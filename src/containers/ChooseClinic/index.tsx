@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
@@ -137,12 +137,10 @@ export const ChooseClinic: React.FC<ChooseClinicProps> = (props) => {
   }, []);
 
   // получение клиник
-  useEffect(() => {
-    if (success) {
-      setClinics(clinicsReq.state.answer.data! as Clinic[]);
-      clinicsReq.reload();
-    }
-  }, [success]);
+  if (success) {
+    setClinics(clinicsReq.state.answer.data! as Clinic[]);
+    clinicsReq.reload();
+  }
 
   // drag submenu
   useEffect(() => {
@@ -255,19 +253,22 @@ export const ChooseClinic: React.FC<ChooseClinicProps> = (props) => {
   }, []);
 
   // смена таба
-  const handleTabChange = (event: any, newValue: any) => {
+  const handleTabChange = useCallback((event: any, newValue: any) => {
     setTabValue(newValue);
-  };
+  }, []);
 
   // точки клиник на карте
-  let clinicToShow = clinics.filter(x => x.latitude !== "" && x.longitude !== "").map((clinic) => {
-    const latitude = global.parseFloat(clinic.latitude);
-    const longitude = global.parseFloat(clinic.longitude);
+  let clinicToShow = useMemo(() => {
+    return clinics.filter(x => x.latitude !== "" && x.longitude !== "").map((clinic) => {
+      const latitude = global.parseFloat(clinic.latitude);
+      const longitude = global.parseFloat(clinic.longitude);
 
-    return (
-      <Placemark key={clinic.id} geometry={[latitude, longitude]} onClick={() => (setClinic(clinic), setSubMenuOpen(true))} />
-    );
-  });
+      return (
+        <Placemark key={clinic.id} geometry={[latitude, longitude]} onClick={() => (setClinic(clinic), setSubMenuOpen(true))} />
+      );
+    });
+  }, [clinics]);
+
 
 
   // содержимое подменю

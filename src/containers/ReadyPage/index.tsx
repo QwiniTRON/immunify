@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { DatePicker, MuiPickersUtilsProvider } from '@material-ui/pickers';
 import ruLocale from "date-fns/locale/ru";
 import DateFnsUtils from '@date-io/date-fns';
@@ -65,12 +65,12 @@ export const ReadyPage: React.FC<ReadyPageProps> = (props) => {
     let arrivedDiseas: Diseas | undefined;
 
     // определяем откуда мы пришли и что нам передали
-    if(routerData?.type == 'diseas') {
+    if (routerData?.type == 'diseas') {
         arrivedDiseas = routerData.data as Diseas;
-    } 
-    if(routerData?.type == 'vaccine') {
+    }
+    if (routerData?.type == 'vaccine') {
         arrivedVaccine = routerData.data as Vaccine;
-    } 
+    }
 
     // общие списки
     const [vaccines, setVaccines] = useState<Vaccine[]>([]);
@@ -115,15 +115,15 @@ export const ReadyPage: React.FC<ReadyPageProps> = (props) => {
 
     // фильтруем вакцины по выбранной болезни
     let filteredVaccines: Vaccine[] = vaccines;
-    if(Boolean(diseas)) {
-        filteredVaccines = vaccines.filter((vaccine) => vaccine.diseaseIds.includes(Number(diseas?.id)) );
+    if (Boolean(diseas)) {
+        filteredVaccines = vaccines.filter((vaccine) => vaccine.diseaseIds.includes(Number(diseas?.id)));
     }
 
-    
+
     /**
      * валидация
      */
-    const validate = () => {
+    const validate = useCallback(() => {
         let isValid = true;
         const clearedErrors = {
             'vaccine': '',
@@ -147,12 +147,12 @@ export const ReadyPage: React.FC<ReadyPageProps> = (props) => {
         }
 
         return [isValid, clearedErrors];
-    }
+    }, [vaccine, currentStage, selectedDate]);
 
     /**
      * сохранение пройденных заявок
      */
-    const saveHandle = () => {
+    const saveHandle = useCallback(() => {
         const [isValid, errors] = validate();
 
         if (!isValid) {
@@ -164,7 +164,7 @@ export const ReadyPage: React.FC<ReadyPageProps> = (props) => {
             stageId: currentStage,
             date: selectedDate,
         });
-    }
+    }, [currentUser, currentStage, selectedDate]);
 
 
     // пришли вакцины
@@ -180,7 +180,7 @@ export const ReadyPage: React.FC<ReadyPageProps> = (props) => {
     }
 
     // пришли болезни
-    if(successDiseas) {
+    if (successDiseas) {
         setDiseases(diseasRequest.state.answer.data as Diseas[]);
         diseasRequest.reload();
     }
@@ -190,6 +190,36 @@ export const ReadyPage: React.FC<ReadyPageProps> = (props) => {
         history.push(`/vaccination`);
         vaccinationRequest.reload();
     }
+
+
+    const DiseaseAutocompleateField = useCallback((params) =>
+        <TextField
+            {...params}
+            helperText="найти вакцины по болезни"
+            label="болезнь"
+            variant="outlined" />, []);
+
+    const diseasChangeHandler = useCallback((event, newValue) => {
+        setDiseas(newValue);
+    }, []);
+
+    const VaccineAutocompleateField = useCallback((params) =>
+        <TextField
+            {...params}
+            helperText={errors.vaccine}
+            error={Boolean(errors.vaccine)}
+            label="укажите вакцину"
+            variant="outlined" />, []);
+
+    const VaccineChangeHandle = useCallback((event, newValue) => {
+        stagesRequest.cancel();
+        stagesRequest.fetch({ vaccineId: Number(newValue?.id) });
+        setErrors(Object.assign({}, errors, { 'vaccine': '' }));
+        setVaccine(newValue);
+    }, [stagesRequest, errors]);
+
+    const vaccineStageChangeHandle = useCallback((e) => setCurrentStage(Number(e.target.value)), []);
+
 
     return (
         <Layout title="" BackButtonCustom={<BackButton simpleBack routeText />}>
@@ -209,16 +239,10 @@ export const ReadyPage: React.FC<ReadyPageProps> = (props) => {
                             getOptionLabel={(option) => option.name}
                             value={diseas}
                             fullWidth
-                            renderInput={(params) =>
-                                <TextField
-                                    {...params}
-                                    helperText="найти вакцины по болезни"
-                                    label="болезнь"
-                                    variant="outlined" />
+                            renderInput={
+                                DiseaseAutocompleateField
                             }
-                            onChange={(event, newValue) => {
-                                setDiseas(newValue);
-                            }}
+                            onChange={diseasChangeHandler}
                         />
                     </Box>
                 }
@@ -235,20 +259,8 @@ export const ReadyPage: React.FC<ReadyPageProps> = (props) => {
                             getOptionLabel={(option) => option.name}
                             value={vaccine}
                             fullWidth
-                            renderInput={(params) =>
-                                <TextField
-                                    {...params}
-                                    helperText={errors.vaccine}
-                                    error={Boolean(errors.vaccine)}
-                                    label="укажите вакцину"
-                                    variant="outlined" />
-                            }
-                            onChange={(event, newValue) => {
-                                stagesRequest.cancel();
-                                stagesRequest.fetch({ vaccineId: Number(newValue?.id) });
-                                setErrors(Object.assign({}, errors, { 'vaccine': '' }));
-                                setVaccine(newValue);
-                            }}
+                            renderInput={VaccineAutocompleateField}
+                            onChange={VaccineChangeHandle}
                         />
                     </Box>
                 }
@@ -265,7 +277,7 @@ export const ReadyPage: React.FC<ReadyPageProps> = (props) => {
                         native
                         label="какая по счёту"
                         value={currentStage}
-                        onChange={(e) => setCurrentStage(Number(e.target.value))}
+                        onChange={vaccineStageChangeHandle}
                         inputProps={{
                             name: 'region',
                             id: 'filled-age-native-simple',

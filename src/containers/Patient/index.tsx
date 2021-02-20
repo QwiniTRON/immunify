@@ -1,4 +1,4 @@
-import React, { useEffect, useLayoutEffect } from 'react';
+import React, { useCallback, useEffect, useLayoutEffect } from 'react';
 import { useDispatch, useStore } from 'react-redux';
 import { useHistory, useRouteMatch } from 'react-router-dom';
 import Box from '@material-ui/core/Box';
@@ -59,6 +59,8 @@ export const Patient: React.FC<PatientProps> = (props) => {
   }, [success]);
 
 
+  const pasportClickHandle = useCallback(() => history.push(`/passport`), [history]);
+
   return (
     <Layout title="" BackButtonCustom={<BackButton text="Вернуться к пациентам" />} background>
       <PageLayout className="patient-page">
@@ -68,7 +70,7 @@ export const Patient: React.FC<PatientProps> = (props) => {
           <div className="patient-page__pasport">
             <AppButton
               disabled={!UserModel.getCurrentUserDataStatus()}
-              onClick={() => history.push(`/passport`)}
+              onClick={pasportClickHandle}
               appColor="linear">
               иммунный паспорт
           </AppButton>

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import Avatar from '@material-ui/core/Avatar';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
@@ -117,10 +117,22 @@ export const Layout: React.FC<LayoutProps> = ({
     }, []);
 
 
-    const exitHandle = () => {
+    const exitHandle = useCallback(() => {
         dispatch(exit());
         setToken("");
-    }
+    }, [dispatch, setToken]);
+
+    const navigationChangeHandler = useCallback((event, newValue) => {
+        history.push(newValue);
+    }, [history]);
+
+    const modalCloseHandle = useCallback(() => setExitModal(false), []);
+
+    const asideMenuCloseHandler = useCallback(() => setAsideMenu(false), []);
+
+    const asideMenuToggleHandler = useCallback(() => setAsideMenu(!asideMenu), [asideMenu]);
+
+    const exitModalOpenHandler = useCallback(() => setExitModal(true), []);
 
 
     return (
@@ -179,9 +191,7 @@ export const Layout: React.FC<LayoutProps> = ({
                 <div className="layout__navigation">
                     <BottomNavigation
                         value={parentRoute}
-                        onChange={(event, newValue) => {
-                            history.push(newValue);
-                        }}
+                        onChange={navigationChangeHandler}
                         showLabels
                     >
                         <BottomNavigationAction
@@ -228,7 +238,7 @@ export const Layout: React.FC<LayoutProps> = ({
                     ["aside-menu-container"]: true,
                     ["aside-menu-container--active"]: asideMenu
                 })}>
-                    <div className="aside-menu__overlay" onClick={setAsideMenu.bind(null, !asideMenu)} />
+                    <div className="aside-menu__overlay" onClick={asideMenuToggleHandler as any} />
                     <div className="aside-menu">
                         <img src={MainLogo} alt="immunify" className="aside-menu__logo" />
 
@@ -239,11 +249,11 @@ export const Layout: React.FC<LayoutProps> = ({
                         </Box>
 
                         <div className="links">
-                            <a href="https://Immunify.co/" target="_blank" className="links__link" onClick={setAsideMenu.bind(null, false)}>
+                            <a href="https://Immunify.co/" target="_blank" className="links__link" onClick={asideMenuCloseHandler as any}>
                                 <img className="links__icon" alt="info" src={InfoImg} /> <span>О приложении</span>
                             </a>
 
-                            <div className="links__link" onClick={() => setExitModal(true)}>
+                            <div className="links__link" onClick={exitModalOpenHandler as any}>
                                 <ExitIcon className="links__icon" /> <span>Выход</span>
                             </div>
                         </div>
@@ -253,13 +263,13 @@ export const Layout: React.FC<LayoutProps> = ({
             }
 
             {/* модальное окно предложения выйти */}
-            <CSSTransition timeout={300} in={exitModal} classNames="fade2" mountOnEnter unmountOnExit>
-                <AppModal onClose={setExitModal.bind(null, false)}>
+            <CSSTransition timeout={400} in={exitModal} classNames="fade2" mountOnEnter unmountOnExit>
+                <AppModal onClose={modalCloseHandle as any}>
                     <Box component="h2" textAlign="center" >Выйти из аккаунта?</Box>
 
                     <div className={classes.exitButtons}>
-                        <AppButton minWidth onClick={() => exitHandle()}>да</AppButton>
-                        <AppButton minWidth appColor="white" onClick={setExitModal.bind(null, false)}>нет</AppButton>
+                        <AppButton minWidth onClick={exitHandle}>да</AppButton>
+                        <AppButton minWidth appColor="white" onClick={modalCloseHandle as any}>нет</AppButton>
                     </div>
                 </AppModal>
             </CSSTransition>

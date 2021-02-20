@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import Box from '@material-ui/core/Box';
 import { makeStyles } from '@material-ui/core/styles';
 import CallIcon from '@material-ui/icons/Call';
@@ -149,7 +149,7 @@ export const Appointment: React.FC<AppointmentProps> = (props) => {
   /**
    * создание визита на приём 
    */
-  const handleCreateVaisit = () => {
+  const handleCreateVaisit = useCallback(() => {
     if (!selectedDate) {
       return setErrors({ date: 'укажите дату и время приёма', time: '' });
     }
@@ -167,7 +167,7 @@ export const Appointment: React.FC<AppointmentProps> = (props) => {
       hospitalId: Number(clinicId),
       date: new Date(timeToVisit.getTime() - userTimeZoneOffset)
     });
-  }
+  }, [selectedDate, selectedTime, clinicId, currentUser?.id])
 
   /**
    * загрузка данных по клинике
@@ -179,12 +179,10 @@ export const Appointment: React.FC<AppointmentProps> = (props) => {
   /**
    * установка получение данных пол клинике
    */
-  useEffect(() => {
-    if (detailSuccess) {
-      setClinicDetails(clinicReq.state.answer.data as ClinicDetailed);
-      clinicReq.reload();
-    }
-  }, [detailSuccess]);
+  if (detailSuccess) {
+    setClinicDetails(clinicReq.state.answer.data as ClinicDetailed);
+    clinicReq.reload();
+  }
 
   /**
    * обработка успешно созданной заявки

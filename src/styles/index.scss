@@ -59,29 +59,29 @@ p {
 }
 
 .App > div {
-    height: 100%;
+    height: calc(var(--vh) * 100);
 }
 
 // Page slide animation
 .page-enter .page-anim {
     opacity: 0;
-    transform: translateY(-40%);
+    transform: translateY(-60%);
 }
 .page-enter-active .page-anim {
     opacity: 1;
     transform: translateY(0);
-    transition: opacity 200ms, transform 200ms;
+    transition: opacity 300ms linear 0ms, transform 200ms linear 0ms;
 }
 
 .page-exit .page-anim {
-    opacity: 1;
-    transform: scale(1);
+    // opacity: 1;
+    // transform: scale(1);
 }
 
 .page-exit-active .page-anim {
-    opacity: 0;
-    transform: scale(0.9);
-    transition: opacity 150ms, transform 150ms;
+    // opacity: 0;
+    // transform: scale(0.9);
+    // transition: opacity 150ms, transform 150ms;
 }
 // Page slide animation
 

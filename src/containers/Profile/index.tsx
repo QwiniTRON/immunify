@@ -64,6 +64,8 @@ export const Profile: React.FC<ProfileProps> = (props) => {
     dataText = 'всё хорошо';
   };
 
+  
+
   return (
     <Layout title="Профиль" domainPage>
       <PageLayout className={sif({ ["profile-page"]: true, ['profile-page--nobackground']: Number(user?.family?.length) > 0 })}>

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Box from '@material-ui/core/Box';
 import { Link, useHistory, useRouteMatch } from 'react-router-dom';
@@ -19,7 +19,7 @@ import { GetVaccinationByPatient, PatientVaccinations, GetVaccines } from '../..
 import { VaccinationModel, VaccinationStatus } from '../../models/Vaccination';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../store';
-import { AppButtonGroup, Divider, SubMenuContainer } from '../../components';
+import { Divider, SubMenuContainer } from '../../components';
 import { s } from '../../utils';
 
 
@@ -190,7 +190,7 @@ type RiskTableProps = {
 //#endregion
 
 //#region risktable
-const RiskTable: React.FC<RiskTableProps> = ({
+const RiskTableScource: React.FC<RiskTableProps> = ({
     personRisk = '4',
     professionalRisk,
     regionalRisk
@@ -238,6 +238,8 @@ const RiskTable: React.FC<RiskTableProps> = ({
         </div>
     );
 }
+
+const RiskTable = React.memo<React.FC<RiskTableProps>>(RiskTableScource);
 //#endregion
 
 
@@ -270,11 +272,10 @@ export const Diseas: React.FC<DiseasProps> = (props) => {
     }, []);
 
     // успешная загрузка данных болезни
-    useEffect(() => {
-        if (success && diseasReq.state.answer?.data !== undefined) {
-            setDiseas(diseasReq.state.answer.data as any);
-        }
-    }, [success]);
+    if (success && diseasReq.state.answer?.data !== undefined) {
+        setDiseas(diseasReq.state.answer.data as any);
+        diseasReq.reload();
+    }
 
     // запрашиваем вакцинации и вакцины
     useEffect(() => {
@@ -287,9 +288,9 @@ export const Diseas: React.FC<DiseasProps> = (props) => {
     /**
      * обработка клика кнопки "я привит"
      */
-    const takeHandle = () => {
+    const takeHandle = useCallback(() => {
         history.push('/vaccination/add', { type: 'diseas', data: diseas });
-    }
+    }, [history, diseas]);
 
     // пришли вакцинации для пациента
     if (vaccinationsRequestSuccess) {
@@ -305,10 +306,10 @@ export const Diseas: React.FC<DiseasProps> = (props) => {
     }
 
     // вакцины пройденные пациентом
-    let correctVaccines: CorrectVaccinationData[] = getCorrectVaccinations(vaccines, vaccinations, Number(diseasId));
+    let correctVaccines: CorrectVaccinationData[] = useMemo(() => getCorrectVaccinations(vaccines, vaccinations, Number(diseasId)), [vaccines, vaccinations, diseasId]);
 
     // самая последняя из пройденных вакцин
-    let newestVaccine = getNewestCorrectVaccination(correctVaccines);
+    let newestVaccine = useMemo(() => getNewestCorrectVaccination(correctVaccines), [correctVaccines]);
 
     const isVaccined = Boolean(newestVaccine);
     const personRisk = currentRisk?.risk ? String(currentRisk?.risk) : undefined;
@@ -317,7 +318,7 @@ export const Diseas: React.FC<DiseasProps> = (props) => {
 
 
     // если данных по болезни не нашлось
-    if (!loading && !success) return (
+    if (!diseasReq.isFetched && !diseas && !loading) return (
         <Layout title="" BackButtonCustom={<BackButton text="Вернуться к иммунному паспорту" />}>
             <PageLayout className="diseas-page">
                 <h3 className={classes.title}>Такой болезни не нашлось</h3>

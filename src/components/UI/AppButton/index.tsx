@@ -97,7 +97,7 @@ const useStyles = makeStyles((theme) => ({
     }
 }));
 
-export const AppButton: React.FC<AppButtonProps> = (props) => {
+const AppButton: React.FC<AppButtonProps> = (props) => {
     const classes = useStyles(props);
 
     return (
@@ -118,3 +118,7 @@ export const AppButton: React.FC<AppButtonProps> = (props) => {
         </Button>
     );
 };
+
+const Memoized = React.memo(AppButton);
+
+export {Memoized as AppButton};

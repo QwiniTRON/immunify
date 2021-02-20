@@ -32,7 +32,7 @@ const useStyles = makeStyles({
 
 
 
-export const VaccineCard: React.FC<VaccineCardProps> = ({
+const VaccineCard: React.FC<VaccineCardProps> = ({
   vaccine,
   status
 }) => {
@@ -54,3 +54,7 @@ export const VaccineCard: React.FC<VaccineCardProps> = ({
     </CardLink>
   );
 };
+
+const Memoized = React.memo<React.FC<VaccineCardProps>>(VaccineCard);
+
+export { Memoized as VaccineCard };

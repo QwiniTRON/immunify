@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import Box from '@material-ui/core/Box';
 import { makeStyles } from '@material-ui/core/styles';
 import CallIcon from '@material-ui/icons/Call';
@@ -237,6 +237,13 @@ const DeletePlaceholder: React.FC<DeletePlaceholderProps> = ({
 }) => {
   const classes = useStyles();
 
+  const onCloseHandler = useCallback(() => setDeleteNotieceOpen(false), [setDeleteNotieceOpen]);
+
+  const animationEndHandler = useCallback(() => {
+    history.push('/calendar');
+  }, [history]);
+
+
   return (
     <Layout title="" BackButtonCustom={<BackButton text="Вернуться к списку записей" to={`/calendar`} />}>
       <PageLayout className={classes.root}>
@@ -247,11 +254,9 @@ const DeletePlaceholder: React.FC<DeletePlaceholderProps> = ({
         <Snackbar
           open={deleteNotieceOpen}
           autoHideDuration={TimeToRedirect}
-          onClose={() => setDeleteNotieceOpen(false)}
-          onAnimationEnd={() => {
-            history.push('/calendar');
-          }}>
-          <MuiAlert onClose={() => setDeleteNotieceOpen(false)} elevation={6} variant="filled">
+          onClose={onCloseHandler}
+          onAnimationEnd={animationEndHandler}>
+          <MuiAlert onClose={onCloseHandler} elevation={6} variant="filled">
             Заявка отменена
             <Box p={1}><Link to={`/calendar`}>к записям</Link></Box>
           </MuiAlert>
@@ -274,6 +279,12 @@ const UpdatePlaceholder: React.FC<UpdatePlaceholderProps> = ({
 }) => {
   const classes = useStyles();
 
+  const onCloseHandler = useCallback(() => setEditNotieceOpen(false), [setEditNotieceOpen]);
+
+  const animationEndHandler = useCallback(() => {
+    history.push('/calendar');
+  }, [history]);
+
   return (
     <Layout title="" BackButtonCustom={<BackButton text="Вернуться к списку записей" to={`/calendar`} />}>
       <PageLayout className={classes.root}>
@@ -284,11 +295,9 @@ const UpdatePlaceholder: React.FC<UpdatePlaceholderProps> = ({
         <Snackbar
           open={editNotieceOpen}
           autoHideDuration={TimeToRedirect}
-          onClose={() => setEditNotieceOpen(false)}
-          onAnimationEnd={() => {
-            history.push('/calendar');
-          }}>
-          <MuiAlert onClose={() => setEditNotieceOpen(false)} elevation={6} variant="filled">
+          onClose={onCloseHandler}
+          onAnimationEnd={animationEndHandler}>
+          <MuiAlert onClose={onCloseHandler} elevation={6} variant="filled">
             запись обновлена
             <Box p={1}><Link to={`/calendar`}>к записям</Link></Box>
           </MuiAlert>
@@ -301,6 +310,9 @@ const UpdatePlaceholder: React.FC<UpdatePlaceholderProps> = ({
 
 const TimeToRedirect = 3000;
 
+const BakcdropOptions = {
+  timeout: 500,
+};
 
 export const LastAppointment: React.FC<LastAppointmentProps> = (props) => {
   const classes = useStyles(props);
@@ -344,25 +356,25 @@ export const LastAppointment: React.FC<LastAppointmentProps> = (props) => {
   /**
    * нажатие отмена
    */
-  const cancelHandle = () => {
+  const cancelHandle = useCallback(() => {
     if (isEdit) {
       return setIsEdit(false);
     }
 
     setDeleteOpen(true);
-  }
+  }, [isEdit]);
 
   /**
    *  удаление заявки
    */
-  const deleteHandle = () => {
+  const deleteHandle = useCallback(() => {
     deleteReq.fetch({ id: Number(appointmentId) });
-  }
+  }, [deleteReq]);
 
   /**
    * редактирование заявки
    */
-  const editHandle = () => {
+  const editHandle = useCallback(() => {
     if (!selectedDate) {
       return setErrors({ date: 'укажите дату и время приёма', time: '' });
     }
@@ -379,12 +391,12 @@ export const LastAppointment: React.FC<LastAppointmentProps> = (props) => {
       date: new Date(timeToVisit.getTime() - userTimeZoneOffset),
       visitId: Number(appointmentId)
     });
-  }
+  }, [selectedDate, selectedTime, updateReq, appointmentId]);
 
   /**
    * добавление в календарь
    */
-  const handleAddCalendar = () => {
+  const handleAddCalendar = useCallback(() => {
     const visitDate = new Date(String(detail?.date));
     const year = visitDate.getFullYear();
     const month = visitDate.getMonth() + 1;
@@ -416,12 +428,12 @@ export const LastAppointment: React.FC<LastAppointmentProps> = (props) => {
         window.open(type + eventSource);
       })
     } catch (e) { }
-  }
+  }, [detail?.date, detail?.hospital.name, hospital?.address]);
 
   /**
    * добавление события в google календарь
    */
-  const handleAddCalendarGoogle = () => {
+  const handleAddCalendarGoogle = useCallback(() => {
     const visitDate = new Date(String(detail?.date));
     const year = visitDate.getFullYear();
     const month = visitDate.getMonth() + 1;
@@ -445,7 +457,15 @@ export const LastAppointment: React.FC<LastAppointmentProps> = (props) => {
     params.set('dates', `${dateToGoogle}/${dateToGoogle}`);
 
     window.open(googleType + params.toString());
-  }
+  }, [detail?.date, detail?.hospital.name, hospital?.address]);
+
+  // закрытие модального окна
+  const closeModalHandler = useCallback(function () { setDeleteOpen(false); }, []);
+
+  const vaccineLinkHandle = useCallback(() => history.push(
+    '/calendar/mark',
+    detail
+  ), [detail, history]);
 
   // загрузка информации по визиту
   useEffect(() => {
@@ -453,20 +473,19 @@ export const LastAppointment: React.FC<LastAppointmentProps> = (props) => {
 
     return () => {
       clearTimeout(redirectTimer.current);
+      appointmentDetailReq.cancel();
     }
   }, []);
 
 
   // получение информации по визиту
-  useEffect(() => {
-    if (success) {
-      setDetail(appointmentDetailReq.state.answer.data as any);
-      handleDateChange(new Date(String(appointmentDetailReq.state.answer.data?.date)));
-      handleTimeChange(new Date(String(appointmentDetailReq.state.answer.data?.date)));
+  if (success) {
+    setDetail(appointmentDetailReq.state.answer.data as any);
+    handleDateChange(new Date(String(appointmentDetailReq.state.answer.data?.date)));
+    handleTimeChange(new Date(String(appointmentDetailReq.state.answer.data?.date)));
 
-      appointmentDetailReq.reload();
-    }
-  }, [success]);
+    appointmentDetailReq.reload();
+  }
 
   // информация по клинике
   useEffect(() => {
@@ -476,33 +495,30 @@ export const LastAppointment: React.FC<LastAppointmentProps> = (props) => {
   }, [detail]);
 
   // успешное удаление визита
-  useEffect(() => {
-    if (successDelete) {
+  if (successDelete) {
+    deleteReq.reload();
 
-      setDeleteNotieceOpen(true);
-      setDeleteOpen(false);
-      redirectTimer.current = setTimeout(() => {
-        history.push(`/calendar`);
-      }, TimeToRedirect);
-    }
-  }, [successDelete]);
+    setDeleteNotieceOpen(true);
+    setDeleteOpen(false);
+    redirectTimer.current = setTimeout(() => {
+      history.push(`/calendar`);
+    }, TimeToRedirect);
+  }
 
 
   // успешное обновление визита
-  useEffect(() => {
-    if (successUpdate) {
-      // updateReq.reload();
+  if (successUpdate) {
+    updateReq.reload();
 
-      setEditNotieceOpen(true);
-      redirectTimer.current = setTimeout(() => {
-        history.push(`/calendar`);
-      }, TimeToRedirect);
-    }
-  }, [successUpdate]);
+    setEditNotieceOpen(true);
+    redirectTimer.current = setTimeout(() => {
+      history.push(`/calendar`);
+    }, TimeToRedirect);
+  }
 
 
   // если визит был удалён, показываем вставку для удаления
-  if (successDelete) {
+  if (deleteNotieceOpen) {
     return (
       <DeletePlaceholder deleteNotieceOpen={deleteNotieceOpen} history={history} setDeleteNotieceOpen={setDeleteNotieceOpen} />
     );
@@ -514,7 +530,7 @@ export const LastAppointment: React.FC<LastAppointmentProps> = (props) => {
   }
 
   // если визит был обновлён, показываем вставку для обновления
-  if (successUpdate) {
+  if (editNotieceOpen) {
     return (
       <UpdatePlaceholder editNotieceOpen={editNotieceOpen} history={history} setEditNotieceOpen={setEditNotieceOpen} />
     );
@@ -698,10 +714,7 @@ export const LastAppointment: React.FC<LastAppointmentProps> = (props) => {
                 <IconButton
                   classes={{ label: classes.menuButton }}
                   color="primary"
-                  onClick={() => history.push(
-                    '/calendar/mark',
-                    detail
-                  )}>
+                  onClick={vaccineLinkHandle}>
                   <AddIcon />
                   <div>Я привился</div>
                 </IconButton>
@@ -727,12 +740,10 @@ export const LastAppointment: React.FC<LastAppointmentProps> = (props) => {
           aria-describedby="transition-modal-description"
           className={classes.modal}
           open={deleteOpen}
-          onClose={() => setDeleteOpen(false)}
+          onClose={closeModalHandler}
           closeAfterTransition
           BackdropComponent={Backdrop}
-          BackdropProps={{
-            timeout: 500,
-          }}
+          BackdropProps={BakcdropOptions}
         >
           <Fade in={deleteOpen}>
             <div className={classes.paper}>
@@ -740,7 +751,7 @@ export const LastAppointment: React.FC<LastAppointmentProps> = (props) => {
 
               <Box display="flex" justifyContent="space-between" mt={2}>
                 <AppButton appColor="white" onClick={deleteHandle}>отменить</AppButton>
-                <AppButton onClick={() => setDeleteOpen(false)}>не отменять</AppButton>
+                <AppButton onClick={closeModalHandler}>не отменять</AppButton>
               </Box>
             </div>
           </Fade>

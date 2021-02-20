@@ -9,8 +9,12 @@ interface AppLinkButtonProps extends AppButtonProps {
     disabled?: boolean
 }
 
-export const AppLinkButton: React.FC<AppLinkButtonProps> = (props) => {
+const AppLinkButton: React.FC<AppLinkButtonProps> = (props) => {
     return (
         <AppButton {...props} component={Link} />
     )
 }
+
+const Memoized = React.memo(AppLinkButton);
+
+export {Memoized as AppLinkButton};

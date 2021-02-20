@@ -98,7 +98,7 @@ export const Passport: React.FC<PassportProps> = (props) => {
     const classes = useStyles();
 
     const currentUser = useSelector((state: RootState) => state.user.currentUser)!;
-    const compleatedStatus = UserModel.getCurrentUserDataStatus();
+    const compleatedStatus = useMemo(() => UserModel.getCurrentUserDataStatus(), []);
     const dispatch = useDispatch();
 
     const [risks, setRisks] = useState(currentUser.Risks);
@@ -178,24 +178,41 @@ export const Passport: React.FC<PassportProps> = (props) => {
     }
 
     // отфильтрованные вакцинации для болезней
-    const risksFiltred = risks.filter((risk) => {
-        const riskStatus = Math.max(risk.risk, risk.regionRisk + 1, risk.professionRisk + 1);
+    const risksFiltred = useMemo(() => {
+        return risks.filter((risk) => {
+            const riskStatus = Math.max(risk.risk, risk.regionRisk + 1, risk.professionRisk + 1);
 
-        if (step == "high") {
-            return riskStatus == 3;
-        }
-        if (step == "med") {
-            return riskStatus == 2;
-        }
-        if (step == "low") {
-            return riskStatus == 1;
-        }
-        if (step == "all") {
-            return true;
-        }
-    }).sort((l, r) => Math.max(r.risk, r.regionRisk + 1, r.professionRisk + 1) - Math.max(l.risk, l.regionRisk + 1, l.professionRisk + 1));
+            if (step == "high") {
+                return riskStatus == 3;
+            }
+            if (step == "med") {
+                return riskStatus == 2;
+            }
+            if (step == "low") {
+                return riskStatus == 1;
+            }
+            if (step == "all") {
+                return true;
+            }
+        }).sort((l, r) => Math.max(r.risk, r.regionRisk + 1, r.professionRisk + 1) - Math.max(l.risk, l.regionRisk + 1, l.professionRisk + 1));
+    }, [risks])
 
+    const risksList = useMemo(() => {
+        return risksFiltred?.map((risk) => {
+            const foundVaccination = vaccinationsForDiseases.find(
+                (vaccination) => vaccination.diseaseIds.includes(risk.diseaseId)
+            );
 
+            return (
+                <Box key={risk.diseaseId} mb="10px">
+                    <DiseasCard
+                        to={`/passport/${risk.diseaseId}`}
+                        risk={risk}
+                        vaccination={foundVaccination} />
+                </Box>
+            )
+        })
+    }, [risksFiltred, vaccinationsForDiseases]);
 
 
     return (
@@ -234,6 +251,7 @@ export const Passport: React.FC<PassportProps> = (props) => {
                         </>
                     } */}
 
+
                     {compleatedStatus && !loading &&
                         <>
                             <Box fontSize={24} fontWeight={500}>
@@ -243,20 +261,8 @@ export const Passport: React.FC<PassportProps> = (props) => {
                                 Вы ещё не защищены от этих заболеваний
                             </Box>
 
-                            {risksFiltred?.map((risk) => {
-                                const foundVaccination = vaccinationsForDiseases.find(
-                                    (vaccination) => vaccination.diseaseIds.includes(risk.diseaseId)
-                                );
-
-                                return (
-                                    <Box key={risk.diseaseId} mb="10px">
-                                        <DiseasCard
-                                            to={`/passport/${risk.diseaseId}`}
-                                            risk={risk}
-                                            vaccination={foundVaccination} />
-                                    </Box>
-                                )
-                            })}
+                            {/* список рисков */}
+                            {risksList}
                         </>
                     }
                 </Box>

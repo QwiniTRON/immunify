@@ -1,4 +1,4 @@
-import react from 'react';
+import React, { useMemo } from 'react';
 import { Paper } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import { Link } from 'react-router-dom';
@@ -71,7 +71,7 @@ const useStyle = makeStyles((theme) => ({
 }));
 //#endregion
 
-export const CardLink: React.FC<CardLinkProps> = ({
+const CardLink: React.FC<CardLinkProps> = ({
     title,
     subTitle,
     to,
@@ -85,11 +85,14 @@ export const CardLink: React.FC<CardLinkProps> = ({
     if (status == 'success') StatusIcon = (<CheckIcon className={classes.statusIcon} />);
     const isStatus = !!status;
 
+    
+    const rootClasses = useMemo(() => ({
+        root: classes.root
+    }), []);
+
     return (
         <Link className={classes.rootLink} to={to}>
-            <Paper classes={{
-                root: classes.root
-            }}>
+            <Paper classes={rootClasses}>
                 {Boolean(Icon) &&
                     <div className={classes.customIcon}>
                         {Icon}
@@ -121,3 +124,7 @@ export const CardLink: React.FC<CardLinkProps> = ({
         </Link>
     );
 };
+
+const Memoized = React.memo<React.FC<CardLinkProps>>(CardLink);
+
+export { Memoized as CardLink };
